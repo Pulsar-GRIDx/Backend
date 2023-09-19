@@ -40,8 +40,7 @@ Authorization: Bearer
 ###
 get http://localhost:4000/protected
 ###
-get http://localhost:4000/profile/1
-
-
+get http://localhost:4000/reset-password
 ###
 
+get http://localhost:4000/profile/1

@@ -175,7 +175,7 @@ router.post('/reset-password', async (req, res) => {
         }
   
         // Generate a JWT with user's role
-        const token = jwt.sign({ id: user.id,full_name:user.full_name ,email: user.email, role: user.role }, 'your_secret_key', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id,role: user.role }, 'your_secret_key', { expiresIn: '1h' });
         
         // Include the token and role in the response
         res.status(200).json({ token, role: user.role });
