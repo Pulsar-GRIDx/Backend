@@ -1,0 +1,47 @@
+
+
+post http://localhost:4000/signup
+
+{
+"Full Name": "undefined",
+"Email": "undefined",
+"Password": "undefined",
+"Role":"undefined"
+}
+
+###
+post http://localhost:4000/signin
+
+{"email": "test@gmail.com", "password": "12345678"}
+
+###
+post http://localhost:4000/forgot-password
+
+{
+
+"Email": "etangoking6@gmail.com"
+
+}
+
+###
+post http://localhost:4000/reset-password
+
+{
+"newPassword": "undefined",
+"onfirm_password": "undefined"
+
+}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+
+###
+post http://localhost:4000/protected
+
+Authorization: Bearer
+###
+get http://localhost:4000/protected
+###
+get http://localhost:4000/profile/1
+
+
+###
+
