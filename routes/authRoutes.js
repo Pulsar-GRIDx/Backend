@@ -52,7 +52,7 @@ router.post('/forgot-password',limiter, (req, res) => {
   resetTokens[token] = email;
 
   // Include the token in the reset link
-  const resetLink = `https://example.com/reset-password?token=${token}`;
+  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
 
   // Send the reset link to the user's email
   sendResetEmail(email, resetLink, temporaryPassword);
