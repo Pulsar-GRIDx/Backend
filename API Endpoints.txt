@@ -24,7 +24,7 @@ API Endpoints:
 
 4. Update User Information:
    - Endpoint: /update/:userId
-   - Method: PUT
+   - Method: POST
    - Parameters:
      - userId (number)
    - Request Body:
