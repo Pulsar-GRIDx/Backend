@@ -1,0 +1,47 @@
+API Endpoints:
+
+1. User Registration:
+   - Endpoint: /signup
+   - Method: POST
+   - Request Body:
+     - full_name (string)
+     - email (string)
+     - password (string)
+     - role (string)
+
+2. User Login:
+   - Endpoint: /signin
+   - Method: POST
+   - Request Body:
+     - email (string)
+     - password (string)
+
+3. Get User Profile:
+   - Endpoint: /profile/:userId
+   - Method: GET
+   - Parameters:
+     - userId (number)
+
+4. Update User Information:
+   - Endpoint: /update/:userId
+   - Method: PUT
+   - Parameters:
+     - userId (number)
+   - Request Body:
+     - full_name (string)
+     - email (string)
+     - role (string)
+
+5. Update User Status:
+   - Endpoint: /updateStatus/:userId
+   - Method: POST
+   - Parameters:
+     - userId (number)
+   - Request Body:
+     - status (string)
+
+6. Delete User:
+   - Endpoint: /delete/:userId
+   - Method: DELETE
+   - Parameters:
+     - userId (number)
