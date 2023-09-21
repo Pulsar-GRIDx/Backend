@@ -22,7 +22,6 @@ router.get('/signin', (req, res) => {
   });
 
 
-
   // Get userProfile router
 router.get('/profile/:Id', (req, res) => {
   const { Id } = req.params; 
@@ -54,16 +53,30 @@ router.get('/profile/:Id', (req, res) => {
         console.error('Error retrieving user profile:', err);
         return res.status(500).json({ error: 'Failed to fetch user profile' });
       }
-
+     
       // Send the user profile data as JSON response
       const userProfile = results[0];
       res.status(200).json(userProfile);
     });
+    
   } catch (err) {
     return res.status(401).json({ error: 'Token verification failed' });
   }
 });
 
+//Router to get all the detaikls of the users from the database
+router.get('/allUsers', (req, res) => {
+  // Query the database to get the users
+  db.query('SELECT id, full_name, email, role FROM users', (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Send the list of users as a JSON response
+    res.status(200).json({ users: results });
+  });
+});
 
 
   

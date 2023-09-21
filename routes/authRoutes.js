@@ -8,7 +8,7 @@ const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 
 
-//Rate limiter w
+//Rate limiter 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 5, 
@@ -215,4 +215,92 @@ const validateEmail = (email) => {
     });
   });
 
+
+//Route to update user information
+router.post('/update/:userId', (req, res) => {
+  const userId = req.params.userId; // Extract the userId from the URL
+  const { full_name, email, role } = req.body; // Additional information from the request body
+
+  // SQL UPDATE query to update user information
+  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?';
+
+  // Execute the SQL query to update user information
+  db.query(updateUserQuery, [full_name, email, role,userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Check if the user was found and updated
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Send a success response
+    res.status(200).json({ message: 'User information updated successfully' });
+  });
+});
+
+// Route to update user information for the currently logged-in user
+router.post('/login/:userId', (req, res) => {
+  const userId = req.params.userId; // Extract the userId from the URL
+  const { full_name, email, role } = req.body; // Updated information from the request body
+
+  // SQL UPDATE query to update user information
+  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?';
+
+  // Execute the SQL query to update user information
+  db.query(updateUserQuery, [full_name, email, role, userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Check if the user was found and updated
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Send a success response
+    res.status(200).json({ message: 'User information updated successfully' });
+  });
+});
+
+// Route to delete the currently logged-in user
+router.post('/deleteUser', (req, res) => {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  jwt.verify(token, 'your_secret_key', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token verification failed' });
+    }
+
+    const userId = decoded.userId;
+
+    // SQL DELETE query to remove the user by userId
+    const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+
+    // Execute the SQL query to delete the user
+    db.query(deleteUserQuery, [userId], (err, results) => {
+      if (err) {
+        console.error('Error deleting user:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+
+      // Check if the user was found and deleted
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Send a success response
+      res.status(200).json({ message: 'User deleted successfully' });
+    });
+  });
+});
+
+  
 module.exports = router;
