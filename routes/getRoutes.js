@@ -48,7 +48,7 @@ router.get('/profile/:Id', (req, res) => {
     }
 
     // Query the database to retrieve user profile
-    db.query('SELECT full_name, email, role FROM users WHERE id = ?', [userId], (err, results) => {
+    db.query('SELECT full_name, email, role,status FROM users WHERE id = ?', [userId], (err, results) => {
       if (err) {
         console.error('Error retrieving user profile:', err);
         return res.status(500).json({ error: 'Failed to fetch user profile' });
@@ -67,7 +67,7 @@ router.get('/profile/:Id', (req, res) => {
 //Router to get all the detaikls of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
-  db.query('SELECT id, full_name, email, role FROM users', (err, results) => {
+  db.query('SELECT id, full_name, email, role,status FROM users', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
       return res.status(500).json({ error: 'Internal server error' });
