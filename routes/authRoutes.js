@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
+const checkPermissions = require('./permissions');
 
 
 //Rate limiter 
@@ -218,6 +219,7 @@ const validateEmail = (email) => {
 
 
 //Route to update user information
+
 router.post('/update/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
   const { full_name, email, role } = req.body; // Additional information from the request body
@@ -268,7 +270,7 @@ router.post('/login/:userId', (req, res) => {
 });
 
 // Route to delete the currently logged-in user
-router.post('/deleteUser/:userId', (req, res) => {
+router.post('/deleteUser', (req, res) => {
   const token = req.header('Authorization');
 
   if (!token) {

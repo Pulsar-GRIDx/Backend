@@ -41,7 +41,7 @@ API Endpoints:
      - status (string)
 
 6. Delete User:
-   - Endpoint: /deleteUser
+   - Endpoint: /deleteUser/:userId
    - Method: post
    - Parameters:
      - userId (number)

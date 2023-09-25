@@ -1,15 +1,15 @@
 {
   "name": "auth-system",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node authentication_system for Pulsar_Softwar",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "devStart": "nodemon app.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["authentication_system"],
+  "author": "Pulsar_Software_Team",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
