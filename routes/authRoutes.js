@@ -109,10 +109,10 @@ router.post('/reset-password', async (req, res) => {
 //Signin  signup routers
   
  router.post('/signup',limiter, async (req, res) => {
-    const { full_name, email, password, role } = req.body;
+    const { full_name, email, password, role, status } = req.body;
   
     // Validate inputs
-    if (!full_name || !email || !password || !role || !validateEmail(email)) {
+    if (!full_name || !email || !password || !role || !status || !validateEmail(email)) {
       return res.status(400).json({ error: 'Invalid input data' });
     }
   
@@ -122,6 +122,7 @@ router.post('/reset-password', async (req, res) => {
       console.log('Email:', email);
       console.log('Password:', password);
       console.log('Role:', role);
+      console.log('Status:', status);
       console.log('Request Body:', req.body);
   
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -129,8 +130,8 @@ router.post('/reset-password', async (req, res) => {
       console.log('Hashed Password:', hashedPassword);
   
       db.query(
-        'INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, ?)',
-        [full_name, email, hashedPassword, role],
+        'INSERT INTO users (full_name, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
+        [full_name, email, hashedPassword, role, status],
         (err, result) => {
           if (err) {
             console.error('Registration error:', err);
