@@ -268,7 +268,7 @@ router.post('/login/:userId', (req, res) => {
 });
 
 // Route to delete the currently logged-in user
-router.post('/deleteUser', (req, res) => {
+router.post('/deleteUser/:userId', (req, res) => {
   const token = req.header('Authorization');
 
   if (!token) {
