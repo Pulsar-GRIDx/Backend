@@ -11,8 +11,8 @@ const checkPermissions = require('./permissions');
 
 //Rate limiter 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 5, 
+  windowMs: 1 * 60 * 1000, 
+  max: 20, 
   message: 'Too many requests, please try again later.',
 });
 
@@ -177,7 +177,7 @@ router.post('/reset-password', async (req, res) => {
         }
   
         // Generate a JWT with user's role
-        const token = jwt.sign({ id: user.id,role: user.role }, 'your_secret_key', { expiresIn: '1h' });
+        const token = jwt.sign({ id:Id,role:role }, 'your_secret_key', { expiresIn: '1h' });
         
         // Include the token and role in the response
         res.status(200).json({ token, role: user.role });
@@ -270,7 +270,9 @@ router.post('/login/:userId', (req, res) => {
 });
 
 // Route to delete the currently logged-in user
-router.post('/deleteUser/:UserId',checkPermissions(['delete']), (req, res) => {
+
+
+router.delete('/deleteUser/:UserId', (req, res) => {
   const token = req.header('Authorization');
 
   if (!token) {

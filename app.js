@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 app.use(
   cors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST','DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
