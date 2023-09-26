@@ -222,13 +222,13 @@ const validateEmail = (email) => {
 
 router.post('/AdminUpdate/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
-  const { full_name, email, role } = req.body; // Additional information from the request body
+  const { full_name, email, role, status } = req.body; // Additional information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?';
+  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ?, status = ?  WHERE id = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [full_name, email, role,userId], (err, results) => {
+  db.query(updateUserQuery, [full_name, email, role, status, userId], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error' });
