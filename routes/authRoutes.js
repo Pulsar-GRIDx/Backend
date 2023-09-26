@@ -11,7 +11,7 @@ const checkPermissions = require('./permissions');
 
 //Rate limiter 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
+  windowMs: 1 * 60 * 1000, 
   max: 5, 
   message: 'Too many requests, please try again later.',
 });
@@ -177,7 +177,7 @@ router.post('/reset-password', async (req, res) => {
         }
   
         // Generate a JWT with user's role
-        const token = jwt.sign({ id: user.id,role: user.role }, 'your_secret_key', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.userId,role: user.role }, 'your_secret_key', { expiresIn: '1h' });
         
         // Include the token and role in the response
         res.status(200).json({ token, role: user.role });
@@ -218,17 +218,17 @@ const validateEmail = (email) => {
   });
 
 
-//Route to update user information
+//Admin Route to update user information 
 
-router.post('/update/:userId', (req, res) => {
+router.post('/AdminUpdate/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
-  const { full_name, email, role } = req.body; // Additional information from the request body
+  const { full_name, email, role, status } = req.body; // Additional information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?';
+  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ?, status = ?  WHERE id = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [full_name, email, role,userId], (err, results) => {
+  db.query(updateUserQuery, [full_name, email, role, status, userId], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -244,16 +244,19 @@ router.post('/update/:userId', (req, res) => {
   });
 });
 
-// Route to update user information for the currently logged-in user
-router.post('/login/:userId', (req, res) => {
+
+//User Route to update user information for the currently logged-in user
+
+
+router.post('/UserUpdate/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
-  const { full_name, email, role } = req.body; // Updated information from the request body
+  const { full_name, email} = req.body; // Updated information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?';
+  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, WHERE id = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [full_name, email, role, userId], (err, results) => {
+  db.query(updateUserQuery, [full_name, email, userId], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -270,40 +273,28 @@ router.post('/login/:userId', (req, res) => {
 });
 
 // Route to delete the currently logged-in user
-router.post('/deleteUser', checkPermissions(['delete']), (req, res) => {
-  const token = req.header('Authorization');
+router.delete('/deleteUser/:userId', (req, res) => {
+  const userId = req.params.userId; // Get the userId from the URL parameter
+  
+  const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
 
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
-  jwt.verify(token, 'your_secret_key', (err, decoded) => {
+  // Execute the SQL query to delete the user
+  db.query(deleteUserQuery, [userId], (err, results) => {
     if (err) {
-      return res.status(401).json({ error: 'Token verification failed' });
+      console.error('Error deleting user:', err);
+      return res.status(500).json({ error: 'Internal server error' });
     }
 
-    const userId = decoded.userId;
+    // Check if the user was found and deleted
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
-    // SQL DELETE query to remove the user by userId
-    const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
-
-    // Execute the SQL query to delete the user
-    db.query(deleteUserQuery, [userId], (err, results) => {
-      if (err) {
-        console.error('Error deleting user:', err);
-        return res.status(500).json({ error: 'Internal server error' });
-      }
-
-      // Check if the user was found and deleted
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      // Send a success response
-      res.status(200).json({ message: 'User deleted successfully' });
-    });
+    // Send a success response
+    res.status(200).json({ message: 'User deleted successfully' });
   });
 });
+
 
   
 module.exports = router;
