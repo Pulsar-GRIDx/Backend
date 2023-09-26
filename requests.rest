@@ -12,7 +12,10 @@ post http://localhost:4000/signup
 ###
 post http://localhost:4000/signin
 
-{"email": "me@gmail.com", "password": "12345678"}
+{
+    "email": "admin01@gmail.com", 
+    "password": "qwertyui"
+}
 
 ###
 post http://localhost:4000/forgot-password
@@ -56,7 +59,16 @@ post http://localhost:4000/update/1
 "role":"user"
 }
 ###
-post http://localhost:4000/deleteUser
+delete http://localhost:4000/deleteUser/2
+
+{
+    "email":"admin02@gmail.com",
+    "password":"qwertyui"
+}
+
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTU3NTI3NjgsImV4cCI6MTY5NTc1NjM2OH0.omZ1JoA7ouCt5-uEo88_LSiK22rBGkRX1D0xfVO14aU
+Content-Type: application/json
+
 
 ###
 post http:/localhost:4000/login/1

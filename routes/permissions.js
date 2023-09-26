@@ -23,7 +23,8 @@ const roles = {
 
 module.exports = function checkPermissions(permissions) {
     return (req, res, next) => {
-      const { role } = req.user; 
+      const  role  = req.user;
+       
   
       if (!role || !roles[role]) {
         return res.status(403).json({ error: 'Access denied' });
