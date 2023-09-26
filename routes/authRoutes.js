@@ -218,7 +218,7 @@ const validateEmail = (email) => {
   });
 
 
-//Route to update user information
+//Admin Route to update user information 
 
 router.post('/AdminUpdate/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
@@ -244,7 +244,10 @@ router.post('/AdminUpdate/:userId', (req, res) => {
   });
 });
 
-// Route to update user information for the currently logged-in user
+
+//User Route to update user information for the currently logged-in user
+
+
 router.post('/UserUpdate/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
   const { full_name, email} = req.body; // Updated information from the request body

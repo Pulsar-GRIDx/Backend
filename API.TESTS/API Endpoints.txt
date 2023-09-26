@@ -22,9 +22,9 @@ API Endpoints:
    - Parameters:
      - userId (number)
 
-4. Update User Information:
-   - Endpoint: /update/:userId
-   - Method: POST
+4. Admin Update User Information:
+   - Endpoint: /AdminUpdate/:userId
+   - Method: post
    - Parameters:
      - userId (number)
    - Request Body:
@@ -32,13 +32,14 @@ API Endpoints:
      - email (string)
      - role (string)
 
-5. Update User Status:
-   - Endpoint: /updateStatus/:userId
-   - Method: POST
+5. User Update User information:
+   - Endpoint: /UserUpdate/:userId
+   - Method: post
    - Parameters:
      - userId (number)
    - Request Body:
-     - status (string)
+     - full_name (string)
+     - email (string)
 
 6. Delete User:
    - Endpoint: /deleteUser/:userId

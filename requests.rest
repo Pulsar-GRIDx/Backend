@@ -66,8 +66,8 @@ delete http://localhost:4000/deleteUser/2
     "password":"qwertyui"
 }
 
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTU3NTI3NjgsImV4cCI6MTY5NTc1NjM2OH0.omZ1JoA7ouCt5-uEo88_LSiK22rBGkRX1D0xfVO14aU
-Content-Type: application/json
+# authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTU3NTI3NjgsImV4cCI6MTY5NTc1NjM2OH0.omZ1JoA7ouCt5-uEo88_LSiK22rBGkRX1D0xfVO14aU
+# Content-Type: application/json
 
 
 ###
