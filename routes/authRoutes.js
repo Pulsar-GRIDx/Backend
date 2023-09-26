@@ -296,5 +296,37 @@ router.delete('/deleteUser/:userId', (req, res) => {
 });
 
 
+// Route to update user status
+router.put('/updateStatus/:userId', (req, res) => {
+  const userId = req.params.userId;
+
+  // Check if the user exists in the database 
+  const checkUserQuery = 'SELECT * FROM users WHERE id = ?';
+
+  db.query(checkUserQuery, [userId], (err, results) => {
+    if (err) {
+      console.error('Error checking user:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+    } else if (results.length === 0) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      const user = results[0];
+      const newStatus = user.status === 'active' ? 'inactive' : 'active';
+
+      // Update user status
+      const updateStatusQuery = 'UPDATE users SET status = ? WHERE id = ?';
+
+      db.query(updateStatusQuery, [newStatus, userId], (err, updateResult) => {
+        if (err) {
+          console.error('Error updating user status:', err);
+          res.status(500).json({ message: 'Internal Server Error' });
+        } else {
+          res.status(200).json({ message: 'User status updated successfully', newStatus });
+        }
+      });
+    }
+  });
+});
+
   
 module.exports = router;
