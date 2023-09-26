@@ -245,15 +245,15 @@ router.post('/update/:userId', (req, res) => {
 });
 
 // Route to update user information for the currently logged-in user
-router.post('/login/:userId', (req, res) => {
+router.post('/User/:userId', (req, res) => {
   const userId = req.params.userId; // Extract the userId from the URL
-  const { full_name, email, role } = req.body; // Updated information from the request body
+  const { full_name, email} = req.body; // Updated information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ? WHERE id = ?';
+  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, WHERE id = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [full_name, email, role, userId], (err, results) => {
+  db.query(updateUserQuery, [full_name, email, userId], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error' });

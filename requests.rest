@@ -31,8 +31,8 @@ post http://localhost:4000/reset-password
 "onfirm_password": "undefined"
 
 }
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
-
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+Content-Type: application/json
 ###
 post http://localhost:4000/protected
 
@@ -42,8 +42,7 @@ get http://localhost:4000/protected
 ###
 get http://localhost:4000/reset-password
 ###
-
-post http://localhost:4000/profile/1
+get http://localhost:4000/profile/1
 
 ###
 get http://localhost:4000/allUsers
