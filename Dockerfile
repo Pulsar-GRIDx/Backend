@@ -1,8 +1,8 @@
-FROM node:alpine
+FROM node:20
 
 WORKDIR /app
 
-COPY  parckage.json .
+COPY package*.json ./
 
 RUN npm install
 

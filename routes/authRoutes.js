@@ -91,7 +91,7 @@ router.post('/reset-password', async (req, res) => {
 
     // Update the user's password in the database using the email
     const updateUserQuery = 'UPDATE users SET password = ? WHERE email = ?';
-    db.query(updateUserQuery, [hashedNewPassword, email], (err) => {
+    db.config(updateUserQuery, [hashedNewPassword, email], (err) => {
       if (err) {
         return res.status(500).json({ error: 'Password reset failed' });
       }
@@ -109,30 +109,26 @@ router.post('/reset-password', async (req, res) => {
 
 //Signin  signup routers
   
- router.post('/signup',limiter, async (req, res) => {
-    const { full_name, email, password, role, status } = req.body;
+ router.post('/signup', async (req, res) => {
+    const { Username , Password , FirstName , LastName , Email , IsActive , RoleName , AccessLevel } = req.body;
   
     // Validate inputs
-    if (!full_name || !email || !password || !role || !status || !validateEmail(email)) {
+    if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive|| !RoleName || !AccessLevel || !validateEmail(Email)) {
       return res.status(400).json({ error: 'Invalid input data' });
     }
   
     try {
       console.log('Received registration request with data:');
-      console.log('Full Name:', full_name);
-      console.log('Email:', email);
-      console.log('Password:', password);
-      console.log('Role:', role);
-      console.log('Status:', status);
+      
       console.log('Request Body:', req.body);
   
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(Password, 10);
   
       console.log('Hashed Password:', hashedPassword);
   
       db.query(
-        'INSERT INTO users (full_name, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
-        [full_name, email, hashedPassword, role, status],
+        'INSERT INTO users (Username,Password,FirstName,LastName,Email,IsActive,RoleName,AccessLevel) VALUES (?, ?, ?, ?, ?,?,?,?)',
+        [Username,hashedPassword,FirstName,LastName,Email,IsActive,RoleName,AccessLevel],
         (err, result) => {
           if (err) {
             console.error('Registration error:', err);
@@ -151,40 +147,50 @@ router.post('/reset-password', async (req, res) => {
   
   
   // Login
-  router.post('/signin',limiter, (req, res) => {
-    const { email, password } = req.body;
-  
-    // Find the user by email
-    const findUserQuery = 'SELECT * FROM users WHERE email = ?';
-    db.query(findUserQuery, [email], (err, results) => {
+  // Login
+router.post('/signin', (req, res) => {
+  const { Email, Password } = req.body;
+
+  console.log('Request Body:', req.body);
+
+  // Find the user by email
+  const findUserQuery = 'SELECT * FROM users WHERE email = ?';
+  db.query(findUserQuery, [Email], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database query failed' });
+    }
+   console.log(results);
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Authentication failed' });
+    }
+
+    // Compare passwords
+    const user = results[0];
+    console.log('Hashed Password from Database:', user.Password); // Debugging line
+    bcrypt.compare(Password, user.Password, (err, isMatch) => {
       if (err) {
-        return res.status(500).json({ error: 'Database query failed' });
+        return res.status(500).json({ error: 'Password comparison failed' });
       }
-  
-      if (results.length === 0) {
+
+      console.log('Password Comparison Result:', isMatch); // Debugging line
+
+      if (!isMatch) {
         return res.status(401).json({ error: 'Authentication failed' });
       }
-  
-      // Compare passwords
-      const user = results[0];
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err) {
-          return res.status(500).json({ error: 'Password comparison failed' });
-        }
-  
-        if (!isMatch) {
-          return res.status(401).json({ error: 'Authentication failed' });
-        }
-  
-        // Generate a JWT with user's role
-        const token = jwt.sign({ id: user.userId,role: user.role }, 'your_secret_key', { expiresIn: '1h' });
-        
-        // Include the token and role in the response
-        res.status(200).json({ token, role: user.role });
-      });
+
+      // Generate a JWT with user's role
+      const token = jwt.sign(
+        { id: user.userId, email: user.email, accessLevel: user.AccessLevel },
+        'your_secret_key',
+        { expiresIn: '1h' }
+      );
+
+      // Include the token and role in the response
+      res.status(200).json({ token, role: user.role });
     });
   });
-  
+});
+
   // Validation function for email
 const validateEmail = (email) => {
   if (!validator.isEmail(email)) {
@@ -209,10 +215,10 @@ const validateEmail = (email) => {
       }
   
       // Check user's role or any other authorization logic
-      if (decoded.role === 'user') {
-        console.log('welcom,user');
+      if (decoded.role === 1 ) {
+        console.log('welcom , admin');
       } else {
-        console.log('Welcome, admin!');
+        console.log('Welcome, user!');
       }
     });
   });

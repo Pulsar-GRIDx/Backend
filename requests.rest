@@ -1,28 +1,40 @@
 
 
-post http://localhost:4000/signup
+###
+
+post http://localhost:4000/signin
+Content-Type: application/json
 
 {
-"Full Name": "undefined",
-"Email": "undefined",
-"Password": "undefined",
-"Role":"undefined"
+"Email": "king@pulsarelectronic.com",
+"Password": "adminpassword1"
 }
+
 
 ###
-post http://localhost:4000/signin
+
+
+post http://localhost:4000/signup
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
+Content-Type: application/json
 
 {
-    "email": "admin01@gmail.com", 
-    "password": "qwertyui"
+    "Username": "admin22",
+    "Password": "adminpassword1",
+    "FirstName": "Adrian",
+    "LastName": "Larreal",
+    "Email": "king@pulsarelectronic.com",
+    "IsActive": 1,
+    "RoleName": "Engineer",
+    "AccessLevel": "1"
 }
+
 
 ###
 post http://localhost:4000/forgot-password
 
 {
-
-"Email": "etangoking6@gmail.com"
+"Email": "admin@pulsarelectronic.com"
 
 }
 
@@ -34,14 +46,14 @@ post http://localhost:4000/reset-password
 "onfirm_password": "undefined"
 
 }
+
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
 Content-Type: application/json
 ###
-post http://localhost:4000/protected
-
-Authorization: Bearer
-###
 get http://localhost:4000/protected
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTYzNjQzMTEsImV4cCI6MTY5NjM2NzkxMX0.H5Jp_5MyCL6MZ9lXzW77gnXq7L_0-x32oAGkLaur-uI
+
 ###
 get http://localhost:4000/reset-password
 ###
@@ -63,7 +75,7 @@ delete http://localhost:4000/deleteUser/2
 
 {
     "email":"admin02@gmail.com",
-    "password":"qwertyui"
+    "password":"$2a$10$5VQubs5GKDKsFJQ0ZvAE2er58ELqWjfqzcRNSAXcRCoQyF0t1tDE6"
 }
 
 # authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTU3NTI3NjgsImV4cCI6MTY5NTc1NjM2OH0.omZ1JoA7ouCt5-uEo88_LSiK22rBGkRX1D0xfVO14aU
@@ -72,3 +84,10 @@ delete http://localhost:4000/deleteUser/2
 
 ###
 post http:/localhost:4000/login/1
+
+###
+
+get http://localhost:4000/protected
+
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2OTU3NTI3NjgsImV4cCI6MTY5NTc1NjM2OH0.omZ1JoA7ouCt5-uEo88_LSiK22rBGkRX1D0xfVO14aU
+Content-Type: application/json

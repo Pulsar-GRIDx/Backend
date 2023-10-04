@@ -67,7 +67,7 @@ router.get('/profile/:Id', (req, res) => {
 //Router to get all the detaikls of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
-  db.query('SELECT id, full_name, email, role,status FROM users', (err, results) => {
+  db.query('SELECT id, full_name, email, role,status,password FROM users', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
       return res.status(500).json({ error: 'Internal server error' });

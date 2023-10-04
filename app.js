@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes'); // Import your authRoutes
 const getRoutes = require('./routes/getRoutes');
 
 const db = require('./db'); // Import the database connection
+const { config } = require('dotenv');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -25,7 +26,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Use CORS middleware before defining routes
+// // Use CORS middleware 
 app.use(
   cors({
     origin: 'http://localhost:5173',

@@ -11,14 +11,6 @@ const roles = {
     }
   };
   
-//   const roles{
-//     user: {
-//         can: [],
-//     },
-//     admin: {
-//         can: []
-//     },
-//   }
 
 
 module.exports = function checkPermissions(permissions) {
