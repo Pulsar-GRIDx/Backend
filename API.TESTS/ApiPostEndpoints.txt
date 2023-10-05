@@ -1,0 +1,216 @@
+# API Endpoints
+
+## Forgot Password Route
+
+- **Route:** `POST /forgot-password`
+- **Description:** Sends a reset password link to the user's email.
+- **Request:**
+  - Method: POST
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "Email": "user@example.com"
+    }
+    ```
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "Password reset link sent"
+    }
+    ```
+
+## Reset Password Route
+
+- **Route:** `POST /reset-password`
+- **Description:** Resets the user's password using a valid reset token.
+- **Request:**
+  - Method: POST
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "token": "valid_reset_token",
+      "newPassword": "newPassword123",
+      "confirm_password": "newPassword123"
+    }
+    ```
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "Password reset successful"
+    }
+    ```
+- **Error Response:**
+  - Status: 401 Unauthorized
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "error": "Invalid or expired token"
+    }
+    ```
+
+## User Registration Route
+
+- **Route:** `POST /signup`
+- **Description:** Registers a new user with the provided information.
+- **Request:**
+  - Method: POST
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "Username": "newuser",
+      "Password": "newPassword123",
+      "FirstName": "John",
+      "LastName": "Doe",
+      "Email": "newuser@example.com",
+      "IsActive": true,
+      "RoleName": "user",
+      "AccessLevel": 1
+    }
+    ```
+- **Response:**
+  - Status: 201 Created
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "Registration successful"
+    }
+    ```
+
+## User Authentication Route
+
+- **Route:** `POST /signin`
+- **Description:** Authenticates a user with the provided email and password.
+- **Request:**
+  - Method: POST
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "Email": "user@example.com",
+      "Password": "password"
+    }
+    ```
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "token": "authentication_token_here"
+    }
+    ```
+- **Error Response:**
+  - Status: 401 Unauthorized
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "error": "Authentication failed"
+    }
+    ```
+
+## Admin Update User Information Route
+
+- **Route:** `POST /AdminUpdate/:userId`
+- **Description:** Updates user information (FirstName, Email, RoleName, IsActive) for a specific user by their UserID. This route is typically used by an admin.
+- **Request:**
+  - Method: POST
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "FirstName": "UpdatedFirstName",
+      "Email": "updated@example.com",
+      "RoleName": "admin",
+      "IsActive": true
+    }
+    ```
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "User information updated successfully"
+    }
+    ```
+
+## User Update User Information Route
+
+- **Route:** `POST /UserUpdate/:UserID`
+- **Description:** Updates user information (FirstName, Email) for the currently logged-in user.
+- **Request:**
+  - Method: POST
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "FirstName": "UpdatedFirstName",
+      "Email": "updated@example.com"
+    }
+    ```
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "User information updated successfully"
+    }
+    ```
+
+## Delete User Route
+
+- **Route:** `DELETE /deleteUser/:userId`
+- **Description:** Deletes a user by their UserID. Typically, this route is used to delete the currently logged-in user.
+- **Request:**
+  - Method: DELETE
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "User deleted successfully"
+    }
+    ```
+
+## Update User Status Route
+
+- **Route:** `PUT /updateStatus/:userId`
+- **Description:** Updates the status (IsActive) of a user by their UserID. The status is toggled between active and inactive.
+- **Request:**
+  - Method: PUT
+- **Response:**
+  - Status: 200 OK
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "message": "User status updated successfully",
+      "newStatus": 1
+    }
+    ```
+
+- **Error Response:**
+  - Status: 404 Not Found
+  - Content-Type: application/json
+  - Body:
+    ```json
+    {
+      "error": "User not found"
+    }
+    ```
+
+# End of API Endpoints

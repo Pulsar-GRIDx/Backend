@@ -26,14 +26,14 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// // Use CORS middleware 
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST','DELETE','PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
+// // // Use CORS middleware 
+// app.use(
+//   cors({
+//     origin: 'http://localhost:5173',
+//     methods: ['GET', 'POST','DELETE','PUT'],
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//   })
+// );
 
 // Use your authRoutes
 app.use('/', authRoutes);

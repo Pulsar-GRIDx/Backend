@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
-const checkPermissions = require('./permissions');
+const PermissionsMiddleware = require('./PermissionsMiddleware');
 
 
 //Rate limiter 
@@ -27,7 +27,7 @@ function generateTemporaryPassword() {
 }
 
 // Send a password reset email (You can use a library like Nodemailer to send emails)
-function sendResetEmail(email, tempPassword) {
+function sendResetEmail(Email, tempPassword) {
   // Implement your email sending logic here
   // Send an email to the user's email address with the temporary password
 }
@@ -40,13 +40,13 @@ const resetTokens = {};
 
 // Forgot Password route
 router.post('/forgot-password',limiter, (req, res) => {
-  const { email } = req.body;
+  const { Email } = req.body;
 
   // Generate a unique temporary password
   const temporaryPassword = generateTemporaryPassword();
 
   // Generate a token with user's email and temporary password
-  const tokenPayload = { email, temporaryPassword };
+  const tokenPayload = { Email, temporaryPassword };
   const token = jwt.sign(tokenPayload, 'your_secret_key', { expiresIn: '1h' });
 
   // Store the token and email in the temporary storage
@@ -56,7 +56,7 @@ router.post('/forgot-password',limiter, (req, res) => {
   const resetLink = `http://localhost:5173/reset-password?token=${token}`;
 
   // Send the reset link to the user's email
-  sendResetEmail(email, resetLink, temporaryPassword);
+  sendResetEmail(Email, resetLink, temporaryPassword);
 
   res.status(200).json({ message: 'Password reset link sent' });
 });
@@ -66,18 +66,18 @@ router.post('/reset-password', async (req, res) => {
   const { token, newPassword, confirm_password } = req.body;
 
   // Check if the reset token exists and retrieve the associated email
-  const email = resetTokens[token];
+  const Email = resetTokens[token];
 
-  if (!email) {
+  if (!Email) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 
   // Verify the token and get the payload (including temporary password)
   try {
     const decoded = jwt.verify(token, 'your_secret_key');
-    const { email: decodedEmail, temporaryPassword } = decoded;
+    const { Email: decodedEmail, temporaryPassword } = decoded;
 
-    if (decodedEmail !== email) {
+    if (decodedEmail !== Email) {
       return res.status(401).json({ error: 'Invalid token for this email' });
     }
 
@@ -180,61 +180,39 @@ router.post('/signin', (req, res) => {
 
       // Generate a JWT with user's role
       const token = jwt.sign(
-        { id: user.userId, email: user.email, accessLevel: user.AccessLevel },
+        { ID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
         'your_secret_key',
         { expiresIn: '1h' }
       );
 
-      // Include the token and role in the response
-      res.status(200).json({ token, role: user.role });
+      // Include the token 
+      res.status(200).json({ token });
     });
   });
 });
 
   // Validation function for email
-const validateEmail = (email) => {
-  if (!validator.isEmail(email)) {
+const validateEmail = (Email) => {
+  if (!validator.isEmail(Email)) {
     return false;
   }
   return true;
 };
 
-  // Protected route
-  router.get('/protected', (req, res) => {
-    // Check if the user has a valid token
-    const token = req.header('Authorization');
-  
-    if (!token) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-  
-    // Verify the token
-    jwt.verify(token, 'your_secret_key', (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ error: 'Token verification failed' });
-      }
-  
-      // Check user's role or any other authorization logic
-      if (decoded.role === 1 ) {
-        console.log('welcom , admin');
-      } else {
-        console.log('Welcome, user!');
-      }
-    });
-  });
+ 
 
 
 //Admin Route to update user information 
 
-router.post('/AdminUpdate/:userId', (req, res) => {
-  const userId = req.params.userId; // Extract the userId from the URL
-  const { full_name, email, role, status } = req.body; // Additional information from the request body
+router.post('/AdminUpdate/:UserID',(req, res) => {
+  const UserID = req.params.UserID; // Extract the userId from the URL
+  const { FirstName, Email, RoleName, IsActive } = req.body; // Additional information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, role = ?, status = ?  WHERE id = ?';
+  const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ?, RoleName = ?, IsActive = ?  WHERE UserID = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [full_name, email, role, status, userId], (err, results) => {
+  db.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -254,15 +232,16 @@ router.post('/AdminUpdate/:userId', (req, res) => {
 //User Route to update user information for the currently logged-in user
 
 
-router.post('/UserUpdate/:userId', (req, res) => {
-  const userId = req.params.userId; // Extract the userId from the URL
-  const { full_name, email} = req.body; // Updated information from the request body
+router.post('/UserUpdate/:UserID', (req, res) => {
+  const UserID = req.params.UserID; // Extract the userId from the URL
+  const { FirstName, Email} = req.body; // Updated information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET full_name = ?, email = ?, WHERE id = ?';
+  const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ? WHERE UserID = ?';
+
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [full_name, email, userId], (err, results) => {
+  db.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -280,12 +259,12 @@ router.post('/UserUpdate/:userId', (req, res) => {
 
 // Route to delete the currently logged-in user
 router.delete('/deleteUser/:userId', (req, res) => {
-  const userId = req.params.userId; // Get the userId from the URL parameter
+  const UserID = req.params.UserID; // Get the userId from the URL parameter
   
-  const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+  const deleteUserQuery = 'DELETE FROM users WHERE UserID = ?';
 
   // Execute the SQL query to delete the user
-  db.query(deleteUserQuery, [userId], (err, results) => {
+  db.query(deleteUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error deleting user:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -304,12 +283,12 @@ router.delete('/deleteUser/:userId', (req, res) => {
 
 // Route to update user status
 router.put('/updateStatus/:userId', (req, res) => {
-  const userId = req.params.userId;
+  const UserID = req.params.UserID;
 
   // Check if the user exists in the database 
-  const checkUserQuery = 'SELECT * FROM users WHERE id = ?';
+  const checkUserQuery = 'SELECT * FROM users WHERE ID = ?';
 
-  db.query(checkUserQuery, [userId], (err, results) => {
+  db.query(checkUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error checking user:', err);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -317,10 +296,10 @@ router.put('/updateStatus/:userId', (req, res) => {
       res.status(404).json({ message: 'User not found' });
     } else {
       const user = results[0];
-      const newStatus = user.status === 'active' ? 'inactive' : 'active';
+      const newStatus = user.IsActive === 1 ? 0 : 1;
 
       // Update user status
-      const updateStatusQuery = 'UPDATE users SET status = ? WHERE id = ?';
+      const updateStatusQuery = 'UPDATE users SET status = ? WHERE ID = ?';
 
       db.query(updateStatusQuery, [newStatus, userId], (err, updateResult) => {
         if (err) {
