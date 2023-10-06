@@ -29,7 +29,7 @@ Content-Type: application/json
 
 
 ###
-post http://localhost:4000/forgot-password
+post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/forgot-password
 
 {
 "Email": "admin@pulsarelectronic.com"
@@ -37,7 +37,7 @@ post http://localhost:4000/forgot-password
 }
 
 ###
-post http://localhost:4000/reset-password
+post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/reset-password
 
 {
 "newPassword": "undefined",
@@ -49,19 +49,19 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd
 Content-Type: application/json
 ###
 
-get http://localhost:4000/protected
+get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/protected
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
 Content-Type: application/json
 ###
-get http://localhost:4000/reset-password
+get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/reset-password
 ###
-get http://localhost:4000/profile/1
+get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/profile/1
 
 ###
-get http://localhost:4000/allUsers
+get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/allUsers
 ###
 
-post http://localhost:4000/UserUpdate/1
+post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/UserUpdate/1
 
 {
 "FirstName":"Update update",
@@ -70,10 +70,10 @@ post http://localhost:4000/UserUpdate/1
 }
 ###
 
-post http://localhost:4000/AdminUpdate/1
+post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/AdminUpdate/1
 
 ###
-delete http://localhost:4000/deleteUser/1
+delete http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/deleteUser/1
 
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
 Content-Type: application/jsonn
@@ -81,7 +81,7 @@ Content-Type: application/jsonn
 
 ###
 
-get http://localhost:4000/protected
+get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/protected
 
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjIsImlhdCI6MTY5NjU3MjY4OSwiZXhwIjoxNjk2NTc2Mjg5fQ.BZUIJu-P1AnrmigReuJi6p4R42YnVdQCD7j3tNKGUMQ
 Content-Type: application/json
