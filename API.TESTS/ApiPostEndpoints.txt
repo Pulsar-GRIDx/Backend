@@ -19,7 +19,7 @@
   - Body:
     ```json
     {
-      "message": "Password reset link sent"
+      "message": "Password reset link sent"                  
     }
     ```
 

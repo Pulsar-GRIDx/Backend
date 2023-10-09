@@ -17,14 +17,14 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin6",
+    "Username": "admin9",
     "Password": "adminpassword1",
     "FirstName": "Adrian",
     "LastName": "Larreal",
     "Email": "mina@pulsarelectronic.com",
     "IsActive": 1,
     "RoleName": "Engineer",
-    "AccessLevel": 2
+    "AccessLevel": 1
 }
 
 

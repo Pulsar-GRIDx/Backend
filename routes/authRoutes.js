@@ -50,7 +50,7 @@ router.post('/forgot-password',limiter, (req, res) => {
   const token = jwt.sign(tokenPayload, 'your_secret_key', { expiresIn: '1h' });
 
   // Store the token and email in the temporary storage
-  resetTokens[token] = email;
+  resetTokens[token] = Email;
 
   // Include the token in the reset link
   const resetLink = `http://localhost:5173/reset-password?token=${token}`;
@@ -146,7 +146,7 @@ router.post('/reset-password', async (req, res) => {
   
   
   
-  // Login
+ 
   // Login
 router.post('/signin', (req, res) => {
   const { Email, Password } = req.body;
