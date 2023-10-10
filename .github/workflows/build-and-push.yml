@@ -30,4 +30,4 @@ jobs:
             echo "Build was not successful, skipping ECR push."
           fi
         env:
-          <your-ecr-repo-url>: public.ecr.aws/l0z9j4j6/authentiation  # Replace with your ECR repository URL
+          <ecr-repo-url>: public.ecr.aws/l0z9j4j6/authentiation  
