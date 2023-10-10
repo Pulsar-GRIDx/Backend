@@ -93,13 +93,13 @@ router.post('/reset-password', async (req, res) => {
     const updateUserQuery = 'UPDATE users SET password = ? WHERE email = ?';
     db.config(updateUserQuery, [hashedNewPassword, email], (err) => {
       if (err) {
-        return res.status(500).json({ error: 'Password reset failed' });
+        return res.status(500).json({ error: 'Password reset failed',err });
       }
 
       // Remove the used reset token from temporary storage
       delete resetTokens[token];
 
-      res.status(200).json({ message: 'Password reset successful' });
+      res.status(200).json({ message: 'Password reset successful',err });
     });
   } catch (err) {
     return res.status(401).json({ error: 'Token verification failed' });
@@ -124,23 +124,23 @@ router.post('/reset-password', async (req, res) => {
   
       const hashedPassword = await bcrypt.hash(Password, 10);
   
-      console.log('Hashed Password:', hashedPassword);
+      //console.log('Hashed Password:', hashedPassword);
   
       db.query(
         'INSERT INTO users (Username,Password,FirstName,LastName,Email,IsActive,RoleName,AccessLevel) VALUES (?, ?, ?, ?, ?,?,?,?)',
         [Username,hashedPassword,FirstName,LastName,Email,IsActive,RoleName,AccessLevel],
         (err, result) => {
           if (err) {
-            console.error('Registration error:', err);
-            return res.status(500).json({ error: 'Registration failed' });
+            console.error('Registration error:');
+            return res.status(500).json({ error: 'Registration failed',err });
           }
-          console.log('Registration successful');
+          console.log('Registration successful',err);
           res.status(201).json({ message: 'Registration successful' });
         }
       );
     } catch (error) {
       console.error('Error during registration:', error);
-      res.status(500).json({ error: 'Registration failed' });
+      res.status(500).json({ error: 'Registration failed',err });
     }
   });
   
@@ -157,11 +157,11 @@ router.post('/signin', (req, res) => {
   const findUserQuery = 'SELECT * FROM users WHERE email = ?';
   db.query(findUserQuery, [Email], (err, results) => {
     if (err) {
-      return res.status(500).json({ error: 'Database query failed' });
+      return res.status(500).json({ error: 'Database query failed',err });
     }
    console.log(results);
     if (results.length === 0) {
-      return res.status(401).json({ error: 'Authentication failed' });
+      return res.status(401).json({ error: 'Authentication failed',err });
     }
 
     // Compare passwords
@@ -169,13 +169,13 @@ router.post('/signin', (req, res) => {
     console.log('Hashed Password from Database:', user.Password); // Debugging line
     bcrypt.compare(Password, user.Password, (err, isMatch) => {
       if (err) {
-        return res.status(500).json({ error: 'Password comparison failed' });
+        return res.status(500).json({ error: 'Password comparison failed',err });
       }
 
       console.log('Password Comparison Result:', isMatch); // Debugging line
 
       if (!isMatch) {
-        return res.status(401).json({ error: 'Authentication failed' });
+        return res.status(401).json({ error: 'Authentication failed',err });
       }
 
       // Generate a JWT with user's role
@@ -215,7 +215,7 @@ router.post('/AdminUpdate/:UserID',(req, res) => {
   db.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error' ,err});
     }
 
     // Check if the user was found and updated
@@ -244,7 +244,7 @@ router.post('/UserUpdate/:UserID', (req, res) => {
   db.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error',err });
     }
 
     // Check if the user was found and updated
@@ -258,21 +258,22 @@ router.post('/UserUpdate/:UserID', (req, res) => {
 });
 
 // Route to delete the currently logged-in user
-router.delete('/deleteUser/:userId', (req, res) => {
+router.delete('/deleteUser/:UserID', (req, res) => {
   const UserID = req.params.UserID; // Get the userId from the URL parameter
-  
+  console.log(UserID);
+
   const deleteUserQuery = 'DELETE FROM users WHERE UserID = ?';
 
   // Execute the SQL query to delete the user
   db.query(deleteUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error deleting user:', err);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error',err });
     }
 
     // Check if the user was found and deleted
     if (results.affectedRows === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' ,err});
     }
 
     // Send a success response
@@ -291,7 +292,7 @@ router.put('/updateStatus/:userId', (req, res) => {
   db.query(checkUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error checking user:', err);
-      res.status(500).json({ message: 'Internal Server Error' });
+      res.status(500).json({ message: 'Internal Server Error',err });
     } else if (results.length === 0) {
       res.status(404).json({ message: 'User not found' });
     } else {
@@ -304,7 +305,7 @@ router.put('/updateStatus/:userId', (req, res) => {
       db.query(updateStatusQuery, [newStatus, userId], (err, updateResult) => {
         if (err) {
           console.error('Error updating user status:', err);
-          res.status(500).json({ message: 'Internal Server Error' });
+          res.status(500).json({ message: 'Internal Server Error',err });
         } else {
           res.status(200).json({ message: 'User status updated successfully', newStatus });
         }

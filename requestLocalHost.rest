@@ -1,0 +1,85 @@
+
+###
+post http://localhost:4000/signin
+Content-Type: application/json
+
+{
+"Email": "mina@pulsarelectronic.com",
+"Password": "adminpassword1"
+}
+
+###
+
+post http://localhost:4000/signup
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
+Content-Type: application/json
+
+{
+    "Username": "admin9",
+    "Password": "adminpassword1",
+    "FirstName": "Adrian",
+    "LastName": "Larreal",
+    "Email": "mina@pulsarelectronic.com",
+    "IsActive": 1,
+    "RoleName": "Engineer",
+    "AccessLevel": 1
+}
+
+
+###
+post http://localhost:4000/forgot-password
+
+{
+"Email": "admin@pulsarelectronic.com"
+
+}
+
+###
+post http://localhost:4000/reset-password
+
+{
+"newPassword": "undefined",
+"confirm_password": "undefined"
+
+}
+
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+Content-Type: application/json
+###
+
+get http://localhost:4000/protected
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
+Content-Type: application/json
+###
+get http://localhost:4000/reset-password
+###
+get http://localhost:4000/profile/1
+
+###
+get http://localhost:4000/allUsers
+###
+
+post http://localhost:4000/UserUpdate/1
+
+{
+"FirstName":"Update update",
+"Email":"etangoking90@gmail.com"
+
+}
+###
+
+post http://localhost:4000/AdminUpdate/1
+
+###
+delete http://localhost:4000/deleteUser/3
+
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
+Content-Type: application/jsonn
+
+
+###
+
+get http://localhost:4000/protected
+
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjIsImlhdCI6MTY5NjU3MjY4OSwiZXhwIjoxNjk2NTc2Mjg5fQ.BZUIJu-P1AnrmigReuJi6p4R42YnVdQCD7j3tNKGUMQ
+Content-Type: application/json

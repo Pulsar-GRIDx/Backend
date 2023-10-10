@@ -11,6 +11,7 @@ Content-Type: application/json
 
 ###
 
+
 post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/signup
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
 Content-Type: application/json
@@ -28,7 +29,7 @@ Content-Type: application/json
 
 
 ###
-post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/forgot-password
+post http://localhost:4000/forgot-password
 
 {
 "Email": "admin@pulsarelectronic.com"
@@ -72,7 +73,7 @@ post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/UserUpdate/1
 post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/AdminUpdate/1
 
 ###
-delete http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/deleteUser/1
+delete http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/deleteUser/3
 
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
 Content-Type: application/jsonn
