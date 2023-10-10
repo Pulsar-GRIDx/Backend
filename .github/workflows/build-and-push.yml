@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build Docker Image
-        run: docker build -t my-node-app .
+        run: docker build -t node-web-app .
 
       - name: Build Status Check
         id: build
@@ -24,10 +24,10 @@ jobs:
       - name: Push Docker Image to ECR
         run: |
           if [ "$GITHUB_JOB_STATUS" == "success" ]; then
-            docker tag my-node-app:latest <your-ecr-repo-url>:latest
-            docker push <your-ecr-repo-url>:latest
+            docker tag node-web-app:latest public.ecr.aws/l0z9j4j6/authentiation:latest
+            docker push public.ecr.aws/l0z9j4j6/authentiation:latest
           else
             echo "Build was not successful, skipping ECR push."
           fi
         env:
-          <your-ecr-repo-url>: <your-ecr-repo-url>  # Replace with your ECR repository URL
+          <your-ecr-repo-url>: public.ecr.aws/l0z9j4j6/authentiation  # Replace with your ECR repository URL
