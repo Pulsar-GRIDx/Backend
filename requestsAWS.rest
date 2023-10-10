@@ -16,7 +16,7 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin9",
+    "Username": "admin67",
     "Password": "adminpassword1",
     "FirstName": "Adrian",
     "LastName": "Larreal",
@@ -28,7 +28,7 @@ Content-Type: application/json
 
 
 ###
-post http://localhost:4000/forgot-password
+post http://ec2-3-227-253-120.compute-1.amazonaws.com/forgot-password
 
 {
 "Email": "admin@pulsarelectronic.com"
