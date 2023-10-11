@@ -25,7 +25,7 @@ jobs:
 
       - name: AWS ECR Login
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ecr-repo-url>
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l0z9j4j6/authentiation
 
       - name: Build Status Check
         id: build
@@ -36,8 +36,8 @@ jobs:
       - name: Push Docker Image to ECR
         run: |
           if [ "$success" == "true" ]; then
-            docker tag node-web-app:latest <ecr-repo-url>:latest
-            docker push <ecr-repo-url>:latest
+            docker tag node-web-app:latest public.ecr.aws/l0z9j4j6/authentiation:latest
+            docker push public.ecr.aws/l0z9j4j6/authentiation:latest
           else
             echo "Build was not successful, skipping ECR push."
           fi
