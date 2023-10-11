@@ -4,7 +4,7 @@ post http://localhost:4000/signin
 Content-Type: application/json
 
 {
-"Email": "meke@pulsarelectronic.com",
+"Email": "figa@pulsarelectronic.com",
 "Password": "adminpassword1"
 }
 
@@ -15,14 +15,14 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin90",
+    "Username": "admin1",
     "Password": "adminpassword1",
-    "FirstName": "Adrian",
-    "LastName": "Larreal",
-    "Email": "meke@pulsarelectronic.com",
+    "FirstName": "figa",
+    "LastName": "figa",
+    "Email": "figa@pulsarelectronic.com",
     "IsActive": 1,
     "RoleName": "Engineer",
-    "AccessLevel": 2
+    "AccessLevel": 1
 }
 
 
@@ -73,13 +73,13 @@ post http://localhost:4000/AdminUpdate/1
 ###
 delete http://localhost:4000/deleteUser/3
 
-Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjMwLCJBY2Nlc3NMZXZlbCI6MSwiaWF0IjoxNjk3MDM4ODkzfQ.ib2Gbym7p6iC_p5gSdY3lNarXeyzsnX_8dWvoMUZbRA
 Content-Type: application/jsonn
 
 
 ###
 get http://localhost:4000/protected
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjE1LCJBY2Nlc3NMZXZlbCI6MiwiaWF0IjoxNjk3MDIyMzkyfQ.mIfaDfswWSIE08xL-0IzCC_9tQTSAvH2t9VsopBFlIQ
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjMwLCJBY2Nlc3NMZXZlbCI6MSwiaWF0IjoxNjk3MDM4ODkzfQ.ib2Gbym7p6iC_p5gSdY3lNarXeyzsnX_8dWvoMUZbRA
 
 ###
 put http://localhost:4000/updateStatus/5
