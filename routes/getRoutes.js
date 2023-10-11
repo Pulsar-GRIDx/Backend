@@ -3,9 +3,10 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
+// const secretKey = process.env.SECRET_KEY;
+// const dotenv = require('dotenv'); 
 
-
-
+// dotenv.config();
 //Get Signin router
 router.get('/signin', (req, res) => {
     res.sendFile(__dirname + '/signin.html');
@@ -16,12 +17,7 @@ router.get('/signin', (req, res) => {
     res.status(200).json({ message: 'Welome' });
   });
 
-  //Get protected router 
-  router.get('/protected', (req, res) => {
-    res.status(200).json({ message: 'Welome' });
-  });
-
-
+  
   // Get userProfile router
 router.get('/profile/:UserID', (req, res) => {
   const { UserID } = req.params; 
@@ -78,31 +74,57 @@ router.get('/allUsers', (req, res) => {
   });
 });
 
- // Protected route
- router.get('/protected',(req, res) => {
-  // Check if the user has a valid token
-  const token = req.header('Authorization');
 
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+//  // Protected route
+//  router.get('/protected', (req, res) => {
+//   const token = req.header('Authorization');
 
-  // Verify the token
-  jwt.verify(token, 'your_secret_key', (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: 'Token verification failed' });
-    }
+//   if (!token) {
+//     return res.status(401).json({ error: 'Authentication required' });
+//   }
 
-    // Check user's role or any other authorization logic
-    if (decoded.AccessLevel === 1 ) {
-      console.log('welcom , admin');
-      res.json({ message: 'Welcome, admin' });
-    } 
-    if (decoded.AccessLevel === 2 ) {
-      console.log('Welcome, user!');
-      res.json({ message: 'Welcome, user' });
-    }
-  });
-});
+//   jwt.verify(token, secretKey, (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ error: 'Token verification failed',err });
+//     }
+
+
+//     const { AccessLevel } = decoded;
+
+//     if (AccessLevel === 1) {
+//       return res.json({ message: 'Welcome admin' });
+//     } else if (AccessLevel !== 1) {
+//       return res.json({ message: 'Welcome user' });
+//     } else {
+//       return res.status(403).json({ error: 'Access denied' });
+//     }
+//   });
+// });
+// router.get('/protected', (req, res) => {
+//   const token = req.header('Authorization');
+
+  
+
+//   if (!token) {
+//     return res.status(401).json({ error: 'Authentication required' });
+//   }
+
+//   jwt.verify(token, secretKey, (err, decoded) => {
+//     if (err) {
+//       console.log(token,secretKey);
+//       return res.status(401).json({ error: 'Token verification failed',err });
+//     }
+
+//     const { AccessLevel } = decoded;
+
+//     if (AccessLevel === 1) {
+//       return res.json({ message: 'Welcome admin' });
+//     } else if (AccessLevel === 2) {
+//       return res.json({ message: 'Welcome user' });
+//     } else {
+//       return res.status(403).json({ error: 'Access denied' });
+//     }
+//   });
+// });
   
   module.exports = router;

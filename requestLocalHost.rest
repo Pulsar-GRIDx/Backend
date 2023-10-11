@@ -4,7 +4,7 @@ post http://localhost:4000/signin
 Content-Type: application/json
 
 {
-"Email": "mina@pulsarelectronic.com",
+"Email": "meke@pulsarelectronic.com",
 "Password": "adminpassword1"
 }
 
@@ -15,14 +15,14 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin9",
+    "Username": "admin90",
     "Password": "adminpassword1",
     "FirstName": "Adrian",
     "LastName": "Larreal",
-    "Email": "mina@pulsarelectronic.com",
+    "Email": "meke@pulsarelectronic.com",
     "IsActive": 1,
     "RoleName": "Engineer",
-    "AccessLevel": 1
+    "AccessLevel": 2
 }
 
 
@@ -78,8 +78,8 @@ Content-Type: application/jsonn
 
 
 ###
-
-get http://localhost:4000/protected
-
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjIsImlhdCI6MTY5NjU3MjY4OSwiZXhwIjoxNjk2NTc2Mjg5fQ.BZUIJu-P1AnrmigReuJi6p4R42YnVdQCD7j3tNKGUMQ
+GET http://localhost:4000/protected
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIkFjY2Vzc0xldmVsIjoyLCJpYXQiOjE2OTcwMDMwODksImV4cCI6MTY5NzAwNjY4OX0.ixjqkq7yH7r4-EgW0UlWolDl2B9y3t7h7HKNdhghiPc
 Content-Type: application/json
+
+
