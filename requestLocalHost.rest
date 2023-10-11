@@ -81,5 +81,8 @@ Content-Type: application/jsonn
 get http://localhost:4000/protected
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjE1LCJBY2Nlc3NMZXZlbCI6MiwiaWF0IjoxNjk3MDIyMzkyfQ.mIfaDfswWSIE08xL-0IzCC_9tQTSAvH2t9VsopBFlIQ
 
+###
+put http://localhost:4000/updateStatus/5
+
 
 

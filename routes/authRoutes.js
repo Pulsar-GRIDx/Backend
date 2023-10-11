@@ -286,7 +286,7 @@ router.put('/updateStatus/:UserID', (req, res) => {
   const UserID = req.params.UserID;
 
   // Check if the user exists in the database
-  const checkUserQuery = 'SELECT * FROM users WHERE ID = ?';
+  const checkUserQuery = 'SELECT * FROM users WHERE UserID = ?';
 
   db.query(checkUserQuery, [UserID], (err, results) => {
     if (err) {
@@ -299,7 +299,7 @@ router.put('/updateStatus/:UserID', (req, res) => {
       const newStatus = user.IsActive === 1 ? 0 : 1;
 
       // Update user status
-      const updateStatusQuery = 'UPDATE users SET status = ? WHERE ID = ?';
+      const updateStatusQuery = 'UPDATE users SET IsActive = ? WHERE UserID = ?';
 
       db.query(updateStatusQuery, [newStatus, UserID], (err, updateResult) => {
         if (err) {
