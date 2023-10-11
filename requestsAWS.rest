@@ -82,5 +82,5 @@ Content-Type: application/jsonn
 
 get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/protected
 
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjIsImlhdCI6MTY5NjU3MjY4OSwiZXhwIjoxNjk2NTc2Mjg5fQ.BZUIJu-P1AnrmigReuJi6p4R42YnVdQCD7j3tNKGUMQ
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
 Content-Type: application/json
