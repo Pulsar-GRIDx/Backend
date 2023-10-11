@@ -18,16 +18,15 @@ jobs:
 
       - name: Build Status Check
         id: build
-        run: echo "::set-output name=success::true"
+        run: |
+          echo "success=true" > $GITHUB_ENV
         continue-on-error: true
 
       - name: Push Docker Image to ECR
         run: |
-          if [ "$GITHUB_JOB_STATUS" == "success" ]; then
+          if [ "$success" == "true" ]; then
             docker tag node-web-app:latest public.ecr.aws/l0z9j4j6/authentiation:latest
             docker push public.ecr.aws/l0z9j4j6/authentiation:latest
           else
             echo "Build was not successful, skipping ECR push."
           fi
-        env:
-          ecr_repo_url: public.ecr.aws/l0z9j4j6/authentiation
