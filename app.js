@@ -5,6 +5,15 @@ const path = require('path');
 
 
 
+
+
+const corsOptions ={
+  origin:'*', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200,
+}
+
+
 //Importing routes
 const authRoutes = require('./routes/authRoutes'); // Import your authRoutes
 const getRoutes = require('./routes/getRoutes');
@@ -21,7 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.get('/', (req, res) => {
   res.render('index');
 });
-
+app.use(cors(corsOptions))
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

@@ -7,10 +7,7 @@ const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 const PermissionsMiddleware = require('./PermissionsMiddleware');
-const dotenv = require('dotenv'); // Import dotenv
-const secretKey = process.env.SECRET_KEY;
 
-dotenv.config();
 
 //Rate limiter 
 const limiter = rateLimit({
@@ -147,14 +144,14 @@ router.post('/reset-password', async (req, res) => {
     }
   });
   
-   
+  
   
  
   // Login
 router.post('/signin', (req, res) => {
   const { Email, Password } = req.body;
 
-  console.log('Request Body:', req.body);
+ 
 
   // Find the user by email
   const findUserQuery = 'SELECT * FROM users WHERE email = ?';
@@ -162,14 +159,14 @@ router.post('/signin', (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Database query failed',err });
     }
-  
+   console.log(results);
     if (results.length === 0) {
       return res.status(401).json({ error: 'Authentication failed',err });
     }
 
     // Compare passwords
     const user = results[0];
-    console.log('Hashed Password from Database:'); // Debugging line
+    
     bcrypt.compare(Password, user.Password, (err, isMatch) => {
       if (err) {
         return res.status(500).json({ error: 'Password comparison failed',err });
@@ -181,46 +178,18 @@ router.post('/signin', (req, res) => {
         return res.status(401).json({ error: 'Authentication failed',err });
       }
 
-      
-      accessToken = jwt.sign(user, process.env.SECRET_KEY);
-      res.json({ accessToken: accessToken });
+      // Generate a JWT with user's role
+      const token = jwt.sign(
+        { ID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
+        'your_secret_key',
+        { expiresIn: '1h' }
+      );
 
-      
+      // Include the token 
+      res.status(200).json({ token });
     });
   });
 });
-
-// Protected Route
-router.post('/protected', (req, res) => {
-  const token = req.header('Authorization');
-
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' , err});
-  }
-
-  console.log('Token:', token);
-
-jwt.verify(token,secretKey, (err, decoded) => {
-  if (err) {
-    console.log(secretKey);
-    console.error('Token verification error:', err);
-    return res.status(401).json({ error: 'Token verification failed' , err });
-  }
-
-  console.log('Decoded Payload:', decoded);
-
-  const { AccessLevel } = decoded;
-
-  if (AccessLevel === 1) {
-    return res.json({ message: 'Welcome admin' });
-  } else if (AccessLevel === 2) {
-    return res.json({ message: 'Welcome user' });
-  } else {
-    return res.status(403).json({ error: 'Access denied' });
-  }
-});
-});
-
 
   // Validation function for email
 const validateEmail = (Email) => {

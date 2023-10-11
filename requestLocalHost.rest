@@ -79,7 +79,7 @@ Content-Type: application/jsonn
 
 ###
 GET http://localhost:4000/protected
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIkFjY2Vzc0xldmVsIjoyLCJpYXQiOjE2OTcwMDMwODksImV4cCI6MTY5NzAwNjY4OX0.ixjqkq7yH7r4-EgW0UlWolDl2B9y3t7h7HKNdhghiPc
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIkFjY2Vzc0xldmVsIjoyLCJpYXQiOjE2OTcwMTU1MzIsImV4cCI6MTY5NzAxOTEzMn0.oQ329IB-DZ8eWCWkD10eM5zDJVAxs5XsC4jcVdXmZHI
 Content-Type: application/json
 
 
