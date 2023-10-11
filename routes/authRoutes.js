@@ -24,9 +24,9 @@ function generateTemporaryPassword() {
   return tempPassword;
 }
 
-// Send a password reset email (You can use a library like Nodemailer to send emails)
+// Send a password reset email 
 function sendResetEmail(Email, tempPassword) {
-  // Implement your email sending logic here
+ 
   // Send an email to the user's email address with the temporary password
 }
 
@@ -161,7 +161,7 @@ router.post('/signin', (req, res) => {
         return res.status(401).json({ error: 'Authentication failed' });
       }
 
-      // Generate a JWT with user's role
+      // Generate a JWT with user's AccessLevel
       const token = jwt.sign(
         { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
         enviroment.SECRET_KEY
@@ -174,7 +174,7 @@ router.post('/signin', (req, res) => {
     });
   });
 });
-
+//Protected router
 router.get('/protected', (req, res) => {
   // Get the token from the request headers
   const token = req.headers.authorization;
