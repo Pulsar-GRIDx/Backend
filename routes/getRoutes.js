@@ -75,31 +75,31 @@ router.get('/allUsers', (req, res) => {
 });
 
 
- // Protected route
- router.get('/protected', (req, res) => {
-  const token = req.header('Authorization');
+// router.get('/protected', (req, res) => {
+//   // Get the token from the request headers
+//   const token = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
+//   if (!token) {
+//     return res.status(401).json({ error: 'Authentication required' });
+//   }
 
-  jwt.verify(token, 'your_secret_key',(err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: 'Token verification failed',err });
-    }
+//   // Verify the token
+//   jwt.verify(token, 'your_secret_key', (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ error: 'Authentication failed' });
+//     }
 
+//     const { AccessLevel } = decoded;
 
-    const { AccessLevel } = decoded;
-
-    if (AccessLevel === 1) {
-      return res.json({ message: 'Welcome admin' });
-    } else if (AccessLevel !== 1) {
-      return res.json({ message: 'Welcome user' });
-    } else {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-  });
-});
+//     if (AccessLevel === 1) {
+//       return res.json({ message: 'Welcome admin' });
+//     } else if (AccessLevel !== 1) {
+//       return res.json({ message: 'Welcome user' });
+//     } else {
+//       return res.status(403).json({ error: 'Access denied' });
+//     }
+//   });
+// });
 // router.get('/protected', (req, res) => {
 //   const token = req.header('Authorization');
 

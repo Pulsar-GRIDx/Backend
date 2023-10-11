@@ -43,7 +43,7 @@ post http://localhost:4000/reset-password
 
 }
 
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
 Content-Type: application/json
 ###
 
@@ -78,8 +78,8 @@ Content-Type: application/jsonn
 
 
 ###
-GET http://localhost:4000/protected
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIkFjY2Vzc0xldmVsIjoyLCJpYXQiOjE2OTcwMTU1MzIsImV4cCI6MTY5NzAxOTEzMn0.oQ329IB-DZ8eWCWkD10eM5zDJVAxs5XsC4jcVdXmZHI
-Content-Type: application/json
+get http://localhost:4000/protected
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjE1LCJBY2Nlc3NMZXZlbCI6MiwiaWF0IjoxNjk3MDIyMzkyfQ.mIfaDfswWSIE08xL-0IzCC_9tQTSAvH2t9VsopBFlIQ
+
 
 
