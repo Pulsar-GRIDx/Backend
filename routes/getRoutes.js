@@ -2,11 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../db');
-// const secretKey = process.env.SECRET_KEY;
-// const dotenv = require('dotenv'); 
+const connection = require("../db");
 
-// dotenv.config();
+
 //Get Signin router
 router.get('/signin', (req, res) => {
     res.sendFile(__dirname + '/signin.html');
@@ -28,7 +26,7 @@ router.get('/profile/:UserID', (req, res) => {
   }
 
   // Query the database to retrieve user profile
-  db.query('SELECT FirstName, Email, RoleName, IsActive FROM users WHERE UserID = ?', [UserID], (err, results) => {
+  connection.query('SELECT FirstName, Email, RoleName, IsActive FROM users WHERE UserID = ?', [UserID], (err, results) => {
     if (err) {
       console.error('Error retrieving user profile:', err);
       return res.status(500).json({ error: 'Failed to fetch user profile' });
@@ -50,7 +48,7 @@ router.get('/profile/:UserID', (req, res) => {
 //Router to get all the detaikls of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
-  db.query('SELECT UserID, FirstName,RoleName,IsActive FROM users', (err, results) => {
+  connection.query('SELECT UserID, FirstName,RoleName,IsActive FROM users', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
       return res.status(500).json({ error: 'Internal server error' });

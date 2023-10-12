@@ -48,7 +48,7 @@ Content-Type: application/json
 ###
 
 get http://localhost:4000/protected
-Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjEsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcwODk1NDd9.e0w2iP1HWpyuztzeDI7LIFsNkL0W71me_Y-xDFr5xEI
 Content-Type: application/json
 ###
 get http://localhost:4000/reset-password

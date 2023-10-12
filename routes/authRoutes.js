@@ -6,6 +6,8 @@ const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv'); // Import dotenv
+const connection = require("../db");
+
 
 dotenv.config();
 const config = process.env;
@@ -86,7 +88,7 @@ router.post('/reset-password', async (req, res) => {
 
     // Update the user's password in the database using the email
     const updateUserQuery = 'UPDATE users SET password = ? WHERE email = ?';
-    db.query(updateUserQuery, [hashedNewPassword, Email], (err) => {
+    connection.query(updateUserQuery, [hashedNewPassword, Email], (err) => {
       if (err) {
         return res.status(500).json({ error: 'Password reset failed', err });
       }
@@ -116,7 +118,7 @@ router.post('/signup', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(Password, 10);
 
-    db.query(
+    connection.query(
       'INSERT INTO users (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
       (err, result) => {
@@ -140,7 +142,7 @@ router.post('/signin', (req, res) => {
 
   // Find the user by email
   const findUserQuery = 'SELECT * FROM users WHERE email = ?';
-  db.query(findUserQuery, [Email], (err, results) => {
+  connection.query(findUserQuery, [Email], (err, results) => {
     if (err) {
       return res.status(500).json({ error: 'Database query failed', err });
     }
@@ -217,7 +219,7 @@ router.post('/AdminUpdate/:UserID', (req, res) => {
   const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ?, RoleName = ?, IsActive = ?  WHERE UserID = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
+  connection.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -242,7 +244,7 @@ router.post('/UserUpdate/:UserID', (req, res) => {
   const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ? WHERE UserID = ?';
 
   // Execute the SQL query to update user information
-  db.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
+  connection.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -265,7 +267,7 @@ router.delete('/deleteUser/:UserID', (req, res) => {
   const deleteUserQuery = 'DELETE FROM users WHERE UserID = ?';
 
   // Execute the SQL query to delete the user
-  db.query(deleteUserQuery, [UserID], (err, results) => {
+  connection.query(deleteUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error deleting user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -288,7 +290,7 @@ router.put('/updateStatus/:UserID', (req, res) => {
   // Check if the user exists in the database
   const checkUserQuery = 'SELECT * FROM users WHERE UserID = ?';
 
-  db.query(checkUserQuery, [UserID], (err, results) => {
+  connection.query(checkUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error checking user:', err);
       res.status(500).json({ message: 'Internal Server Error', err });
@@ -301,7 +303,7 @@ router.put('/updateStatus/:UserID', (req, res) => {
       // Update user status
       const updateStatusQuery = 'UPDATE users SET IsActive = ? WHERE UserID = ?';
 
-      db.query(updateStatusQuery, [newStatus, UserID], (err, updateResult) => {
+      connection.query(updateStatusQuery, [newStatus, UserID], (err, updateResult) => {
         if (err) {
           console.error('Error updating user status:', err);
           res.status(500).json({ message: 'Internal Server Error', err });

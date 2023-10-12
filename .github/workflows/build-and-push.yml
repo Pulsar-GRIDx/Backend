@@ -1,43 +1,29 @@
-name: Build and Push Docker Image
+# name: CICD
 
-on:
-  push:
-    branches:
-      - main  
+# on:
+#   push:
+#     branches: [cicd-docker-ec2]
 
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-      
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Build Docker Image
-        run: docker build -t node-web-app .
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:  us-east-1
-
-      - name: AWS ECR Login
-        run: |
-           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 242927478162.dkr.ecr.us-east-1.amazonaws.com
-
-      - name: Build Status Check
-        id: build
-        run: |
-          echo "success=true" >> $GITHUB_ENV
-        continue-on-error: true
-
-      - name: Push Docker Image to ECR
-        run: |
-          if [ "$success" == "true" ]; then
-            docker tag node-web-app:latest public.ecr.aws/l0z9j4j6/authentiation:latest
-            docker push public.ecr.aws/l0z9j4j6/authentiation:latest
-          else
-            echo "Build was not successful, skipping ECR push."
-          fi
+# jobs:
+#   build:
+#     runs-on: [ubuntu-latest]
+#     steps:
+#       - name: Checkout source
+#         uses: actions/checkout@v3
+#       - name: Login to docker hub
+#         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
+#       - name: Build docker image
+#         run: docker build -t integrationninjas/nodejs-app .
+#       - name: Publish image to docker hub
+#         run: docker push integrationninjas/nodejs-app:latest
+        
+#   deploy:
+#     needs: build
+#     runs-on: [aws-ec2]
+#     steps:
+#       - name: Pull image from docker hub
+#         run: docker pull integrationninjas/nodejs-app:latest
+#       - name: Delete old container
+#         run: docker rm -f nodejs-app-container
+#       - name: Run docker container
+#         run: docker run -d -p 5000:5000 --name nodejs-app-container integrationninjas/nodejs-app
