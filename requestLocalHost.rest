@@ -1,25 +1,25 @@
 
 ###
-post http://localhost:4000/signin
+post http://localhost:5000/signin
 Content-Type: application/json
 
 {
-"Email": "figa@pulsarelectronic.com",
+"Email": "mina@pulsarelectronic.com",
 "Password": "adminpassword1"
 }
 
 ###
 
-post http://localhost:4000/signup
+post http://localhost:5000/signup
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
 Content-Type: application/json
 
 {
-    "Username": "admin1",
+    "Username": "admin6",
     "Password": "adminpassword1",
     "FirstName": "figa",
     "LastName": "figa",
-    "Email": "figa@pulsarelectronic.com",
+    "Email": "mina@pulsarelectronic.com",
     "IsActive": 1,
     "RoleName": "Engineer",
     "AccessLevel": 1

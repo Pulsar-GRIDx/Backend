@@ -1,86 +1,86 @@
 
-# ###
-# post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/signin
-# Content-Type: application/json
+###
+post http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/signin
+Content-Type: application/json
 
-# {
-# "Email": "mina@pulsarelectronic.com",
-# "Password": "adminpassword1"
-# }
-
-
-# ###
-
-# post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/signup
-# authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
-# Content-Type: application/json
-
-# {
-#     "Username": "admin67",
-#     "Password": "adminpassword1",
-#     "FirstName": "Adrian",
-#     "LastName": "Larreal",
-#     "Email": "mina@pulsarelectronic.com",
-#     "IsActive": 1,
-#     "RoleName": "Engineer",
-#     "AccessLevel": 1
-# }
+{
+"Email": "mina@pulsarelectronic.com",
+"Password": "adminpassword1"
+}
 
 
-# ###
-# post http://ec2-3-227-253-120.compute-1.amazonaws.com/forgot-password
+###
 
-# {
-# "Email": "admin@pulsarelectronic.com"
+post http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/signup
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
+Content-Type: application/json
 
-# }
-
-# ###
-# post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/reset-password
-
-# {
-# "newPassword": "undefined",
-# "confirm_password": "undefined"
-
-# }
-
-# authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
-# Content-Type: application/json
-# ###
-
-# get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/protected
-# Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
-# Content-Type: application/json
-# ###
-# get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/reset-password
-# ###
-# get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/profile/1
-
-# ###
-# get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/allUsers
-# ###
-
-# post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/UserUpdate/1
-
-# {
-# "FirstName":"Update update",
-# "Email":"etangoking90@gmail.com"
-
-# }
-# ###
-
-# post http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/AdminUpdate/1
-
-# ###
-# delete http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/deleteUser/3
-
-# Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
-# Content-Type: application/jsonn
+{
+    "Username": "admin67",
+    "Password": "adminpassword1",
+    "FirstName": "Adrian",
+    "LastName": "Larreal",
+    "Email": "mina@pulsarelectronic.com",
+    "IsActive": 1,
+    "RoleName": "Engineer",
+    "AccessLevel": 1
+}
 
 
-# ###
+###
+post http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/forgot-password
 
-# get http://ec2-3-227-253-120.compute-1.amazonaws.com:5000/protected
+{
+"Email": "admin@pulsarelectronic.com"
 
-# authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
-# Content-Type: application/json
+}
+
+###
+post http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/reset-password
+
+{
+"newPassword": "undefined",
+"confirm_password": "undefined"
+
+}
+
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+Content-Type: application/json
+###
+
+get http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/protected
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
+Content-Type: application/json
+###
+get http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/reset-password
+###
+get http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/profile/1
+
+###
+get http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/allUsers
+###
+
+post http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/UserUpdate/1
+
+{
+"FirstName":"Update update",
+"Email":"etangoking90@gmail.com"
+
+}
+###
+
+post http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/AdminUpdate/1
+
+###
+delete http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/deleteUser/3
+
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
+Content-Type: application/jsonn
+
+
+###
+
+get http://ec2-3-236-249-44.compute-1.amazonaws.com:5000/protected
+
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
+Content-Type: application/json
