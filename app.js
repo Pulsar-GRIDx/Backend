@@ -44,18 +44,28 @@ app.use(bodyParser.json());
 //   })
 // );
 
-// Use your authRoutes
+//Use your authRoutes
 app.use('/', authRoutes);
 app.use('/',getRoutes);
 
+// db.connect((err) => {
+//   if (err) {
+//     console.error('Error connecting to MySQL: ' + err.message);
+//   } else {
+//     console.log('Connected to MySQL database.');
+//   }
+
+//   app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`);
+//   });
+// });
+
+
 db.connect((err) => {
   if (err) {
-    console.error('Error connecting to MySQL: ' + err.message);
-  } else {
-    console.log('Connected to MySQL database.');
+    console.log("failed to connect to AWS DB:", err.message);
+    return;
   }
-
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
+  console.log("Server Successfully connected to Gridx meters AWS database");
 });
+module.exports = db;
