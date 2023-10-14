@@ -8,9 +8,9 @@ phases:
   build:
     commands:
       - echo "Build phase: This is where you can put your build commands."
-      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Set the environment variables in your CodeBuild project
-      - docker build -t kingzzo/nodejs-app .
-      - docker push kingzzo/nodejs-app:latest
+      - run: docker login -u kingzzo  -p Kingzzo 
+      - run: docker build -t kingzzo/nodejs-app .
+      - run: docker push kingzzo/nodejs-app:latest
 
 artifacts:
   files: '**/*'  
