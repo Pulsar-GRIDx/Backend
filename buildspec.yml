@@ -5,13 +5,6 @@ phases:
     runtime-versions:
       nodejs: 16
 
-  build:
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Build docker image
-        run: docker build -t kingzzo/nodejs-app .
-      - name: Publish image to docker hub
-        run: docker push kingzzo/nodejs-app:latest
 
 artifacts:
   files: '**/*'
