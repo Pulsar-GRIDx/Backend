@@ -3,15 +3,14 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 20
+      docker: latest
 
   build:
     commands:
       - echo "Build phase: This is where you can put your build commands."
-
-  post_build:
-    commands:
-      - echo "Post-build phase: This is where you can put post-build commands, tests, or artifact handling."
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Set the environment variables in your CodeBuild project
+      - docker build -t kingzzo/nodejs-app .
+      - docker push kingzzo/nodejs-app:latest
 
 artifacts:
-  files: '**/*'  # Use appropriate patterns to specify files to be uploaded as build artifacts.
+  files: '**/*'  
