@@ -1,16 +1,17 @@
-const express = require('express');
+// db.js
 const mysql = require('mysql');
-const dotenv = require('dotenv'); // Import dotenv
+const dotenv = require('dotenv');
 
 dotenv.config(); // Load environment variables from .env file
-const enviroment = process.env;
-// Use environment variables
+
+const environment = process.env;
+
 const db = mysql.createConnection({
-  host: enviroment.RDS_HOSTNAME,
-  user: enviroment.RDS_USERNAME,
-  password: enviroment.RDS_PASSWORD,
-  port: enviroment.RDS_PORT,
-  database: enviroment.RDS_DB_NAME,
+  host: environment.RDS_HOSTNAME,
+  user: environment.RDS_USERNAME,
+  password: environment.RDS_PASSWORD,
+  port: environment.RDS_PORT,
+  database: environment.RDS_DB_NAME,
 });
 
 module.exports = db;

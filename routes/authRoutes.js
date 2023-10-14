@@ -148,7 +148,7 @@ router.post('/signin', (req, res) => {
     }
 
     if (results.length === 0) {
-      return res.status(401).json({ error: 'Authentication failed' });
+      return res.status(401).json({ error: 'Authentication failed' ,err});
     }
 
     // Compare passwords
@@ -160,7 +160,7 @@ router.post('/signin', (req, res) => {
       }
 
       if (!isMatch) {
-        return res.status(401).json({ error: 'Authentication failed' });
+        return res.status(401).json({ error: 'Authentication failed',err });
       }
 
       // Generate a JWT with user's AccessLevel
