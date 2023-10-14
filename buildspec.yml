@@ -8,8 +8,6 @@ phases:
   build:
     runs-on: [ubuntu-latest]
     steps:
-      - name: Login to docker hub
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build docker image
         run: docker build -t kingzzo/nodejs-app .
       - name: Publish image to docker hub
