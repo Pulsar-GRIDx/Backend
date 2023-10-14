@@ -7,7 +7,7 @@ phases:
 
   build:
     commands:
-      - echo "Build phase: This is where you can put your build commands."
+     
       - run: docker login -u kingzzo  -p Kingzzo 
       - run: docker build -t kingzzo/nodejs-app .
       - run: docker push kingzzo/nodejs-app:latest
