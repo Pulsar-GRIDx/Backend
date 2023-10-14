@@ -6,11 +6,16 @@ phases:
       docker: latest
 
   build:
-    commands:
-      - echo "Build phase: This is where you can put your build commands."
-      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Set the environment variables in your CodeBuild project
-      - docker build -t kingzzo/nodejs-app .
-      - docker push kingzzo/nodejs-app:latest
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Login to docker hub
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Build docker image
+        run: docker build -t kingzzo/nodejs-app .
+      - name: Publish image to docker hub
+        run: docker push kingzzo/nodejs-app:latest
 
 artifacts:
   files: '**/*'
