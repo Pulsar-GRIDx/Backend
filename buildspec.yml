@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+
+  build:
+    commands:
+      - echo "Build phase: This is where you can put your build commands."
+
+  post_build:
+    commands:
+      - echo "Post-build phase: This is where you can put post-build commands, tests, or artifact handling."
+
+artifacts:
+  files: '**/*'  # Use appropriate patterns to specify files to be uploaded as build artifacts.
