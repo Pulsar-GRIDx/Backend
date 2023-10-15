@@ -8,7 +8,7 @@ phases:
       - $(aws ecr get-login-password --region us-east-1 --output text | docker login --username AWS --password-stdin 242927478162.dkr.ecr.us-east-1.amazonaws.com)
 
   build:
-    commands:
+    commands: 
       - echo Build started on `date`
       - echo Building the Docker image...
       - REPOSITORY_URI=242927478162.dkr.ecr.us-east-1.amazonaws.com/backend-repo
