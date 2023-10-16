@@ -1,19 +1,7 @@
 version: 0.0
-os: linux
-files:
- - source: /
-   destination: /home/ec2-user/backend
-hook:
-  ApplicationStop:
-   - location: scripts/application_stop.sh
-     timeout: 300
-     runas: ec2-user
-  BeforeInstall:
-   - location: scripts/application_stop.sh
-     timeout: 300
-     runas: ec2-user
-  ApplicationStart:
-   - location: scripts/application_stop.sh
-     timeout: 300
-     runas: ec2-user   
-
+resources:
+  - name: backend-repo
+    type: AWS::ECS::TaskDefinition
+    properties:
+      taskDefinition: Backend_pipline_task
+      image: 242927478162.dkr.ecr.us-east-1.amazonaws.com/backend-repo/242927478162.dkr.ecr.us-east-1.amazonaws.com/backend-repo:latest
