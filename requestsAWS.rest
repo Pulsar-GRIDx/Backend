@@ -11,13 +11,13 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin67",
-    "Password": "adminpassword1",
-    "FirstName": "Adrian",
-    "LastName": "Larreal",
-    "Email": "mina@pulsarelectronic.com",
+    "Username": "admin100",
+    "Password": "King12345678",
+    "FirstName": "King",
+    "LastName": "Hiholike",
+    "Email": "king@pulsarelectronic.com",
     "IsActive": 1,
-    "RoleName": "Engineer",
+    "RoleName": "Software Engineer",
     "AccessLevel": 1
 }
 

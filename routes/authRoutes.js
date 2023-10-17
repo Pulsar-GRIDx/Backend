@@ -199,6 +199,11 @@ router.get('/protected', (req, res) => {
     } else {
       return res.json({ message: 'Welcome user' });
     }
+    res.status(200).json({
+  AccessLevel
+  
+    } );
+    
   });
 });
 
