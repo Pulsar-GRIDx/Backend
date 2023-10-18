@@ -53,7 +53,7 @@ Content-Type: application/json
 ###
 get http://localhost:4000/reset-password
 ###
-get http://localhost:4000/profile/5
+get http://localhost:4000/profile/1
 
 ###
 get http://localhost:4000/allUsers

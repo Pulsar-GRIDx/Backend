@@ -2,7 +2,13 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const connection = require("../db").default;
+const dotenv = require('dotenv'); // Import dotenv
+const connection = require("../db");
+
+
+dotenv.config();
+const config = process.env;
+const enviroment = process.env;
 
 
 //Get Signin router
@@ -45,10 +51,10 @@ router.get('/profile/:UserID', (req, res) => {
 
 
 
-//Router to get all the detaikls of the users from the database
+// Router to get all the details of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
-  connection.query('SELECT UserID, FirstName,RoleName,IsActive FROM users', (err, results) => {
+  connection.query('SELECT UserID, FirstName, RoleName, IsActive FROM users', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
       return res.status(500).json({ error: 'Internal server error' });
