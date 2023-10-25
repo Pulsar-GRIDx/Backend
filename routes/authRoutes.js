@@ -136,45 +136,131 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Sign-In route
-router.post('/signin', (req, res) => {
-  const { Email, Password } = req.body;
+// // Sign-In route
+// router.post('/signin', (req, res) => {
+//   const { Email, Password } = req.body;
 
-  // Find the user by email
-  const findUserQuery = 'SELECT * FROM users WHERE email = ?';
-  connection.query(findUserQuery, [Email], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database query failed', err });
-    }
+//   // Find the user by email
+//   const findUserQuery = 'SELECT * FROM users WHERE email = ?';
+//   connection.query(findUserQuery, [Email], (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: 'Database query failed', err });
+//     }
 
-    if (results.length === 0) {
-      return res.status(401).json({ error: 'Authentication failed' ,err});
-    }
+//     if (results.length === 0) {
+//       return res.status(401).json({ error: 'Authentication failed' ,err});
+//     }
 
-    // Compare passwords
-    const user = results[0];
+//     // Compare passwords
+//     const user = results[0];
 
-    bcrypt.compare(Password, user.Password, (err, isMatch) => {
-      if (err) {
-        return res.status(500).json({ error: 'Password comparison failed', err });
-      }
+//     bcrypt.compare(Password, user.Password, (err, isMatch) => {
+//       if (err) {
+//         return res.status(500).json({ error: 'Password comparison failed', err });
+//       }
 
-      if (!isMatch) {
-        return res.status(401).json({ error: 'Authentication failed',err });
-      }
+//       if (!isMatch) {
+//         return res.status(401).json({ error: 'Authentication failed',err });
+//       }
 
-      // Generate a JWT with user's AccessLevel
-      const token = jwt.sign(
-        { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
-        enviroment.SECRET_KEY
-      );
-       console.log(enviroment.SECRET_KEY);
-      res.status(200).json({
-        token
+//       // Generate a JWT with user's AccessLevel
+//       const token = jwt.sign(
+//         { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
+//         enviroment.SECRET_KEY
+//       );
+//        console.log(enviroment.SECRET_KEY);
+//       res.status(200).json({
+//         token
         
+//       });
+//     });
+//   });
+// });
+
+
+
+// Sign-In route for both regular and guest users
+router.post('/signin', (req, res) => {
+  const { Email, Password, GuestID } = req.body;
+
+  if (!GuestID && (!Email || !Password)) {
+    // If no GuestID is provided and either Email or Password is missing, reject the request.
+    return res.status(400).json({ error: 'Invalid request' });
+  }
+
+  if (GuestID) {
+    // Guest user sign-in
+    const findGuestQuery = 'SELECT * FROM guest_users WHERE GuestID = ?';
+    connection.query(findGuestQuery, [GuestID], (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database query failed', err });
+      }
+
+      if (results.length === 0) {
+        return res.status(401).json({ error: 'Authentication failed' });
+      }
+
+      const guestUser = results[0];
+
+      // Generate a JWT with a 10-minute expiration for the guest user
+      const token = jwt.sign(
+        { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
+        enviroment.SECRET_KEY,
+        { expiresIn: '10m' } // Token expires in 10 minutes
+      );
+
+      res.status(200).json({
+        token,
+        user: {
+          GuestID: guestUser.GuestID,
+          name: guestUser.name,
+          role: 'guest',
+        },
       });
     });
-  });
+  } else {
+    // Regular user sign-in
+    // Find the user by email
+    const findUserQuery = 'SELECT * FROM users WHERE email = ?';
+    connection.query(findUserQuery, [Email], (err, results) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database query failed', err });
+      }
+
+      if (results.length === 0) {
+        return res.status(401).json({ error: 'Authentication failed' });
+      }
+
+      // Compare passwords
+      const user = results[0];
+
+      bcrypt.compare(Password, user.Password, (err, isMatch) => {
+        if (err) {
+          return res.status(500).json({ error: 'Password comparison failed', err });
+        }
+
+        if (!isMatch) {
+          return res.status(401).json({ error: 'Authentication failed' });
+        }
+
+        // Generate a JWT with user's AccessLevel
+        const token = jwt.sign(
+          { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
+          enviroment.SECRET_KEY,
+          { expiresIn: '1h' } // Token expires in 1 hour
+        );
+
+        res.status(200).json({
+          token,
+          user: {
+            UserID: user.UserID,
+            email: user.email,
+            AccessLevel: user.AccessLevel,
+          }
+        });
+      });
+    });
+  }
 });
 //Protected router
 router.get('/protected', (req, res) => {

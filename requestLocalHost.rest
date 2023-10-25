@@ -6,6 +6,7 @@ Content-Type: application/json
 {
 "Email": "mina@pulsarelectronic.com",
 "Password": "adminpassword1"
+
 }
 
 ###
@@ -15,11 +16,11 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin6",
-    "Password": "adminpassword1",
-    "FirstName": "figa",
-    "LastName": "figa",
-    "Email": "mina@pulsarelectronic.com",
+    "Username": "admin10",
+    "Password": "adminpassword8",
+    "FirstName": "Adrian",
+    "LastName": "Larreal",
+    "Email": "adrian@pulsarelectronic.com",
     "IsActive": 1,
     "RoleName": "Engineer",
     "AccessLevel": 1
@@ -79,7 +80,7 @@ Content-Type: application/jsonn
 
 ###
 get http://localhost:4000/protected
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjMwLCJBY2Nlc3NMZXZlbCI6MSwiaWF0IjoxNjk3MDM4ODkzfQ.ib2Gbym7p6iC_p5gSdY3lNarXeyzsnX_8dWvoMUZbRA
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjUsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTgyMzAxMDEsImV4cCI6MTY5ODIzMzcwMX0.f1RkZQuh7UZa_lPE3WelM3wukLcf7DjD0LY9byYnLi0
 
 ###
 put http://localhost:4000/updateStatus/5

@@ -1,12 +1,12 @@
 
 ### 
-post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/signin 
+post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/signin 
 Content-Type: application/json
 
 { "Email": "mina@pulsarelectronic.com", "Password": "adminpassword1" }
 ###
 
-post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/signup
+post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/signup
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
 Content-Type: application/json
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 
 ###
-post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/forgot-password
+post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/forgot-password
 
 {
 "Email": "admin@pulsarelectronic.com"
@@ -31,7 +31,7 @@ post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/forgot-password
 }
 
 ###
-post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/reset-password
+post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/reset-password
 
 {
 "newPassword": "undefined",
@@ -43,19 +43,19 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd
 Content-Type: application/json
 ###
 
-get http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/protected
+get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/protected
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjQsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcyMjgzMDN9.9OFU8z-W3ijupu1b-qCkThdVr6P5xyA85SxrDi5hWnw
 Content-Type: application/json
 ###
-get http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/reset-password
+get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/reset-password
 ###
-get http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/profile/1
+get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/profile/1
 
 ###
-get http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/allUsers
+get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/allUsers
 ###
 
-post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/UserUpdate/1
+post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/UserUpdate/1
 
 {
 "FirstName":"Update update",
@@ -64,10 +64,10 @@ post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/UserUpdate/1
 }
 ###
 
-post http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/AdminUpdate/1
+post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/AdminUpdate/1
 
 ###
-delete http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/deleteUser/3
+delete http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/deleteUser/3
 
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
 Content-Type: application/jsonn
@@ -75,7 +75,7 @@ Content-Type: application/jsonn
 
 ###
 
-get http://ec2-3-236-249-44.compute-1.amazonaws.com:4000/protected
+get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/protected
 
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
+authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
 Content-Type: application/json
