@@ -202,20 +202,27 @@ router.post('/signin', (req, res) => {
 
       const guestUser = results[0];
 
-      // Generate a JWT with a 10-minute expiration for the guest user
-      const token = jwt.sign(
-        { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
-        enviroment.SECRET_KEY,
-        { expiresIn: '10m' } // Token expires in 10 minutes
-      );
+      // Update the login count in the database
+      connection.query('UPDATE guest_users SET login_count = login_count + 1 WHERE GuestID = ?', [GuestID], (err, updateResult) => {
+        if (err) {
+          return res.status(500).json({ error: 'Login count update failed', err });
+        }
 
-      res.status(200).json({
-        token,
-        user: {
-          GuestID: guestUser.GuestID,
-          name: guestUser.name,
-          role: 'guest',
-        },
+        // Generate a JWT with a 10-minute expiration for the guest user
+        const token = jwt.sign(
+          { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
+          enviroment.SECRET_KEY,
+          { expiresIn: '10m' } // Token expires in 10 minutes
+        );
+
+        res.status(200).json({
+          token,
+          user: {
+            GuestID: guestUser.GuestID,
+            name: guestUser.name,
+            role: 'guest',
+          },
+        });
       });
     });
   } else {
@@ -243,25 +250,33 @@ router.post('/signin', (req, res) => {
           return res.status(401).json({ error: 'Authentication failed' });
         }
 
-        // Generate a JWT with user's AccessLevel
-        const token = jwt.sign(
-          { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
-          enviroment.SECRET_KEY,
-          { expiresIn: '1h' } // Token expires in 1 hour
-        );
-
-        res.status(200).json({
-          token,
-          user: {
-            UserID: user.UserID,
-            email: user.email,
-            AccessLevel: user.AccessLevel,
+        // Update the login count in the database
+        connection.query('UPDATE users SET login_count = login_count + 1 WHERE UserID = ?', [user.UserID], (err, updateResult) => {
+          if (err) {
+            return res.status(500).json({ error: 'Login count update failed', err });
           }
+
+          // Generate a JWT with user's AccessLevel
+          const token = jwt.sign(
+            { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
+            enviroment.SECRET_KEY,
+            { expiresIn: '1h' } // Token expires in 1 hour
+          );
+
+          res.status(200).json({
+            token,
+            user: {
+              UserID: user.UserID,
+              email: user.email,
+              AccessLevel: user.AccessLevel,
+            }
+          });
         });
       });
     });
   }
 });
+
 //Protected router
 router.get('/protected', (req, res) => {
   // Get the token from the request headers

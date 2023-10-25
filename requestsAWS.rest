@@ -3,7 +3,7 @@
 post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/signin 
 Content-Type: application/json
 
-{ "Email": "mina@pulsarelectronic.com", "Password": "adminpassword1" }
+{ "Email": "adrian@pulsarelectronic.com", "Password": "12345678" }
 ###
 
 post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/signup
@@ -11,14 +11,14 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin01",
+    "Username": "admin100",
     "Password": "12345678",
-    "FirstName": "King",
-    "LastName": "Hiholike",
-    "Email": "kamati@pulsarelectronic.com",
+    "FirstName": "Adrian",
+    "LastName": "Larreal",
+    "Email": "adrian@pulsarelectronic.com",
     "IsActive": 1,
-    "RoleName": "Software Engineer",
-    "AccessLevel": 2
+    "RoleName": "Engineer",
+    "AccessLevel": 1
 }
 
 
