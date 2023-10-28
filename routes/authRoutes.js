@@ -260,7 +260,7 @@ router.post('/signin', (req, res) => {
           const token = jwt.sign(
             { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
             enviroment.SECRET_KEY,
-            { expiresIn: '1h' } // Token expires in 1 hour
+            { expiresIn: '1m' } // Token expires in 1 hour
           );
 
           res.status(200).json({
