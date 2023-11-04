@@ -5,8 +5,8 @@ Content-Type: application/json
 
 {
 //"GuestID": "1",    
-"Email": "mina@pulsarelectronic.com",
-"Password": "adminpassword1"
+"Email": "ika@gmail.com",
+"Password": "12345678"
 
 }
 
@@ -17,11 +17,11 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin10",
-    "Password": "adminpassword8",
-    "FirstName": "Adrian",
-    "LastName": "Larreal",
-    "Email": "adrian@pulsarelectronic.com",
+    "Username": "admin4000",
+    "Password": "12345678",
+    "FirstName": "Ika",
+    "LastName": "Indongo",
+    "Email": "ika@gmail.com",
     "IsActive": 1,
     "RoleName": "Engineer",
     "AccessLevel": 1
