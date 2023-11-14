@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
 //"GuestID": "1",    
-"Email": "ika@gmail.com",
+"Email": "baru@pulsarelectronic.com",
 "Password": "12345678"
 
 }
@@ -20,6 +20,7 @@ Content-Type: application/json
     "Username": "admin4000",
     "Password": "12345678",
     "FirstName": "Ika",
+    "MeterDRN": "123456789098",
     "LastName": "Indongo",
     "Email": "ika@gmail.com",
     "IsActive": 1,

@@ -211,10 +211,14 @@ router.post('/signin', (req, res) => {
         // Generate a JWT with a 10-minute expiration for the guest user
         const token = jwt.sign(
           { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
-          enviroment.SECRET_KEY,
+          environment.SECRET_KEY,
           { expiresIn: '10m' } // Token expires in 10 minutes
         );
 
+        // Set the cookie
+        res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
+
+        // Send the response
         res.status(200).json({
           token,
           user: {
@@ -260,11 +264,15 @@ router.post('/signin', (req, res) => {
           const token = jwt.sign(
             { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
             enviroment.SECRET_KEY,
-            { expiresIn: '1m' } // Token expires in 1 hour
+            { expiresIn: '1h' } // Token expires in 1 hour
           );
 
+          // Set the cookie
+          res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
+
+          // Send the response
           res.status(200).json({
-            token,
+            
             user: {
               UserID: user.UserID,
               email: user.email,
@@ -276,7 +284,6 @@ router.post('/signin', (req, res) => {
     });
   }
 });
-
 //Protected router
 router.get('/protected', (req, res) => {
   // Get the token from the request headers
