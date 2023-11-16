@@ -1,0 +1,12 @@
+resources:
+  - name: backend-repo
+    type: AWS::ECS::TaskDefinition
+    properties:
+      family: Backend_pipline_task
+      networkMode: awsvpc  # Specify the network mode if needed
+      containerDefinitions:
+        - name: backend-container
+          image: 242927478162.dkr.ecr.us-east-1.amazonaws.com/backend-repo:latest
+          memory: 512  # Define the memory requirements for the container
+          cpu: 256     # Define the CPU units for the container
+          # Add other container settings as needed

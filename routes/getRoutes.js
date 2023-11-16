@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../db');
-// const secretKey = process.env.SECRET_KEY;
-// const dotenv = require('dotenv'); 
+const dotenv = require('dotenv'); // Import dotenv
+const connection = require("../db");
 
-// dotenv.config();
+
+dotenv.config();
+const config = process.env;
+const enviroment = process.env;
+
+
 //Get Signin router
 router.get('/signin', (req, res) => {
     res.sendFile(__dirname + '/signin.html');
@@ -18,52 +22,39 @@ router.get('/signin', (req, res) => {
   });
 
   
-  // Get userProfile router
+// Get user profile router
 router.get('/profile/:UserID', (req, res) => {
-  const { UserID } = req.params; 
+  const { UserID } = req.params;
   console.log(UserID);
-  const resetTokens = {};
-  const userId = resetTokens[UserID]; 
 
   if (!UserID) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    return res.status(400).json({ error: 'Invalid UserID' });
   }
 
-  // Verify the token and get the payload userId
-  try {
-    const decoded = jwt.verify(ID, 'your_secret_key'); 
-    const { UserID: decodedUserID } = decoded;
-
-    if (decodedUserID !== UserID) {
-      return res.status(401).json({ error: 'Invalid token for this userId' });
+  // Query the database to retrieve user profile
+  connection.query('SELECT FirstName, Email, RoleName, IsActive FROM users WHERE UserID = ?', [UserID], (err, results) => {
+    if (err) {
+      console.error('Error retrieving user profile:', err);
+      return res.status(500).json({ error: 'Failed to fetch user profile' });
     }
 
-    // Check if userId from the token matches the one from the token in resetTokens
-    if (UserID !== decodedUserID) {
-      return res.status(400).json({ error: 'UserId Should Match' });
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    // Query the database to retrieve user profile
-    db.query('SELECT FirstName, Email, RoleName,IsActive FROM users WHERE ID = ?', [userId], (err, results) => {
-      if (err) {
-        console.error('Error retrieving user profile:', err);
-        return res.status(500).json({ error: 'Failed to fetch user profile' });
-      }
-     
-      // Send the user profile data as JSON response
-      const userProfile = results[0];
-      res.status(200).json(userProfile);
-    });
-    
-  } catch (err) {
-    return res.status(401).json({ error: 'Token verification failed' });
-  }
+    // Send the user profile data as JSON response
+    const userProfile = results[0];
+    res.status(200).json(userProfile);
+  });
 });
 
-//Router to get all the detaikls of the users from the database
+
+
+
+// Router to get all the details of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
-  db.query('SELECT UserID, FirstName,RoleName,IsActive FROM users', (err, results) => {
+  connection.query('SELECT UserID, FirstName, RoleName, IsActive FROM users', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
       return res.status(500).json({ error: 'Internal server error' });
@@ -75,56 +66,6 @@ router.get('/allUsers', (req, res) => {
 });
 
 
-//  // Protected route
-//  router.get('/protected', (req, res) => {
-//   const token = req.header('Authorization');
 
-//   if (!token) {
-//     return res.status(401).json({ error: 'Authentication required' });
-//   }
-
-//   jwt.verify(token, secretKey, (err, decoded) => {
-//     if (err) {
-//       return res.status(401).json({ error: 'Token verification failed',err });
-//     }
-
-
-//     const { AccessLevel } = decoded;
-
-//     if (AccessLevel === 1) {
-//       return res.json({ message: 'Welcome admin' });
-//     } else if (AccessLevel !== 1) {
-//       return res.json({ message: 'Welcome user' });
-//     } else {
-//       return res.status(403).json({ error: 'Access denied' });
-//     }
-//   });
-// });
-// router.get('/protected', (req, res) => {
-//   const token = req.header('Authorization');
-
-  
-
-//   if (!token) {
-//     return res.status(401).json({ error: 'Authentication required' });
-//   }
-
-//   jwt.verify(token, secretKey, (err, decoded) => {
-//     if (err) {
-//       console.log(token,secretKey);
-//       return res.status(401).json({ error: 'Token verification failed',err });
-//     }
-
-//     const { AccessLevel } = decoded;
-
-//     if (AccessLevel === 1) {
-//       return res.json({ message: 'Welcome admin' });
-//     } else if (AccessLevel === 2) {
-//       return res.json({ message: 'Welcome user' });
-//     } else {
-//       return res.status(403).json({ error: 'Access denied' });
-//     }
-//   });
-// });
   
   module.exports = router;

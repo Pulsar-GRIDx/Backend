@@ -4,8 +4,10 @@ post http://localhost:4000/signin
 Content-Type: application/json
 
 {
-"Email": "meke@pulsarelectronic.com",
+"GuestID": "1",    
+"Email": "mina@pulsarelectronic.com",
 "Password": "adminpassword1"
+
 }
 
 ###
@@ -15,14 +17,14 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin90",
-    "Password": "adminpassword1",
+    "Username": "admin10",
+    "Password": "adminpassword8",
     "FirstName": "Adrian",
     "LastName": "Larreal",
-    "Email": "meke@pulsarelectronic.com",
+    "Email": "adrian@pulsarelectronic.com",
     "IsActive": 1,
     "RoleName": "Engineer",
-    "AccessLevel": 2
+    "AccessLevel": 1
 }
 
 
@@ -43,12 +45,12 @@ post http://localhost:4000/reset-password
 
 }
 
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
 Content-Type: application/json
 ###
 
 get http://localhost:4000/protected
-Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDI4NSwiZXhwIjoxNjk2NDQzODg1fQ.wwAfo4ZGOFZGQy-oFUS-gLr-sl-u0t3gTf6LWtR9Pog
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjEsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcwODk1NDd9.e0w2iP1HWpyuztzeDI7LIFsNkL0W71me_Y-xDFr5xEI
 Content-Type: application/json
 ###
 get http://localhost:4000/reset-password
@@ -73,13 +75,16 @@ post http://localhost:4000/AdminUpdate/1
 ###
 delete http://localhost:4000/deleteUser/3
 
-Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjMwLCJBY2Nlc3NMZXZlbCI6MSwiaWF0IjoxNjk3MDM4ODkzfQ.ib2Gbym7p6iC_p5gSdY3lNarXeyzsnX_8dWvoMUZbRA
 Content-Type: application/jsonn
 
 
 ###
-GET http://localhost:4000/protected
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIkFjY2Vzc0xldmVsIjoyLCJpYXQiOjE2OTcwMDMwODksImV4cCI6MTY5NzAwNjY4OX0.ixjqkq7yH7r4-EgW0UlWolDl2B9y3t7h7HKNdhghiPc
-Content-Type: application/json
+get http://localhost:4000/protected
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjUsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTgyMzAxMDEsImV4cCI6MTY5ODIzMzcwMX0.f1RkZQuh7UZa_lPE3WelM3wukLcf7DjD0LY9byYnLi0
+
+###
+put http://localhost:4000/updateStatus/5
+
 
 
