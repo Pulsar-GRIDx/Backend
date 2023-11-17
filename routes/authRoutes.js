@@ -1,75 +1,63 @@
+// Import necessary modules
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
-const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../db");
+const dotenv = require('dotenv');
 
-
+// Configure dotenv
 dotenv.config();
 const config = process.env;
-const enviroment = process.env;
+const environment = process.env;
 
-// Rate limiter
+// Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 5,
   message: 'Too many requests, please try again later.',
 });
 
-// Generate a random temporary password
+// Middleware to parse URL-encoded bodies
+router.use(express.urlencoded({ extended: true }));
+
+// Helper function to generate a random temporary password
 function generateTemporaryPassword() {
-  const tempPassword = Math.random().toString(36).slice(-8); // Generate an 8-character alphanumeric password
+  const tempPassword = Math.random().toString(36).slice(-8);
   return tempPassword;
 }
 
-// Send a password reset email 
-function sendResetEmail(Email, tempPassword) {
- 
-  // Send an email to the user's email address with the temporary password
+// Helper function to send a password reset email
+function sendResetEmail(email, resetLink, tempPassword) {
+  // Implement email sending logic here
 }
 
-// Temporary storage for reset tokens (you should use a more persistent storage in production)
+// Temporary storage for reset tokens
 const resetTokens = {};
 
 // Forgot Password route
 router.post('/forgot-password', limiter, (req, res) => {
   const { Email } = req.body;
-
-  // Generate a unique temporary password
   const temporaryPassword = generateTemporaryPassword();
-
-  // Generate a token with user's email and temporary password
   const tokenPayload = { Email, temporaryPassword };
   const token = jwt.sign(tokenPayload, process.env.SECRET_KEY, { expiresIn: '1h' });
-
-  // Store the token and email in the temporary storage
   resetTokens[token] = Email;
-
-  // Include the token in the reset link
   const resetLink = `http://localhost:5173/reset-password?token=${token}`;
-
-  // Send the reset link to the user's email
   sendResetEmail(Email, resetLink, temporaryPassword);
-
   res.status(200).json({ message: 'Password reset link sent' });
 });
 
 // Reset Password route
 router.post('/reset-password', async (req, res) => {
   const { token, newPassword, confirm_password } = req.body;
-
-  // Check if the reset token exists and retrieve the associated email
   const Email = resetTokens[token];
 
   if (!Email) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 
-  // Verify the token and get the payload (including temporary password)
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const { Email: decodedEmail, temporaryPassword } = decoded;
@@ -78,22 +66,18 @@ router.post('/reset-password', async (req, res) => {
       return res.status(401).json({ error: 'Invalid token for this email' });
     }
 
-    // Check if newPassword and confirm_password match
     if (newPassword !== confirm_password) {
       return res.status(400).json({ error: 'Both New Password and Confirm Password Should Match' });
     }
 
-    // Update the user's password with the new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update the user's password in the database using the email
     const updateUserQuery = 'UPDATE users SET password = ? WHERE email = ?';
     connection.query(updateUserQuery, [hashedNewPassword, Email], (err) => {
       if (err) {
         return res.status(500).json({ error: 'Password reset failed', err });
       }
 
-      // Remove the used reset token from temporary storage
       delete resetTokens[token];
 
       res.status(200).json({ message: 'Password reset successful' });
@@ -107,15 +91,11 @@ router.post('/reset-password', async (req, res) => {
 router.post('/signup', async (req, res) => {
   const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
-  // Validate inputs
   if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
   try {
-    console.log('Received registration request with data:');
-    console.log('Request Body:', req.body);
-
     const hashedPassword = await bcrypt.hash(Password, 10);
 
     connection.query(
@@ -136,60 +116,15 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// // Sign-In route
-// router.post('/signin', (req, res) => {
-//   const { Email, Password } = req.body;
-
-//   // Find the user by email
-//   const findUserQuery = 'SELECT * FROM users WHERE email = ?';
-//   connection.query(findUserQuery, [Email], (err, results) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Database query failed', err });
-//     }
-
-//     if (results.length === 0) {
-//       return res.status(401).json({ error: 'Authentication failed' ,err});
-//     }
-
-//     // Compare passwords
-//     const user = results[0];
-
-//     bcrypt.compare(Password, user.Password, (err, isMatch) => {
-//       if (err) {
-//         return res.status(500).json({ error: 'Password comparison failed', err });
-//       }
-
-//       if (!isMatch) {
-//         return res.status(401).json({ error: 'Authentication failed',err });
-//       }
-
-//       // Generate a JWT with user's AccessLevel
-//       const token = jwt.sign(
-//         { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
-//         enviroment.SECRET_KEY
-//       );
-//        console.log(enviroment.SECRET_KEY);
-//       res.status(200).json({
-//         token
-        
-//       });
-//     });
-//   });
-// });
-
-
-
 // Sign-In route for both regular and guest users
 router.post('/signin', (req, res) => {
   const { Email, Password, GuestID } = req.body;
 
   if (!GuestID && (!Email || !Password)) {
-    // If no GuestID is provided and either Email or Password is missing, reject the request.
     return res.status(400).json({ error: 'Invalid request' });
   }
 
   if (GuestID) {
-    // Guest user sign-in
     const findGuestQuery = 'SELECT * FROM guest_users WHERE GuestID = ?';
     connection.query(findGuestQuery, [GuestID], (err, results) => {
       if (err) {
@@ -202,23 +137,19 @@ router.post('/signin', (req, res) => {
 
       const guestUser = results[0];
 
-      // Update the login count in the database
       connection.query('UPDATE guest_users SET login_count = login_count + 1 WHERE GuestID = ?', [GuestID], (err, updateResult) => {
         if (err) {
           return res.status(500).json({ error: 'Login count update failed', err });
         }
 
-        // Generate a JWT with a 10-minute expiration for the guest user
         const token = jwt.sign(
           { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
           environment.SECRET_KEY,
-          { expiresIn: '10m' } // Token expires in 10 minutes
+          { expiresIn: '10m' }
         );
 
-        // Set the cookie
         res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
 
-        // Send the response
         res.status(200).json({
           token,
           user: {
@@ -230,8 +161,6 @@ router.post('/signin', (req, res) => {
       });
     });
   } else {
-    // Regular user sign-in
-    // Find the user by email
     const findUserQuery = 'SELECT * FROM users WHERE email = ?';
     connection.query(findUserQuery, [Email], (err, results) => {
       if (err) {
@@ -242,7 +171,6 @@ router.post('/signin', (req, res) => {
         return res.status(401).json({ error: 'Authentication failed' });
       }
 
-      // Compare passwords
       const user = results[0];
 
       bcrypt.compare(Password, user.Password, (err, isMatch) => {
@@ -254,68 +182,50 @@ router.post('/signin', (req, res) => {
           return res.status(401).json({ error: 'Authentication failed' });
         }
 
-        // Update the login count in the database
         connection.query('UPDATE users SET login_count = login_count + 1 WHERE UserID = ?', [user.UserID], (err, updateResult) => {
           if (err) {
             return res.status(500).json({ error: 'Login count update failed', err });
           }
 
-          // Generate a JWT with user's AccessLevel
           const token = jwt.sign(
             { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
-            enviroment.SECRET_KEY,
-            { expiresIn: '1h' } // Token expires in 1 hour
+            environment.SECRET_KEY,
+            { expiresIn: '1h' }
           );
-
-          // Set the cookie
-          res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
-
-          // Send the response
-          res.status(200).json({
-            
-            user: {
-              UserID: user.UserID,
-              email: user.email,
-              AccessLevel: user.AccessLevel,
-            }
+          res.cookie('Authorization', `Bearer ${token}`,{
+            httpOnly: false,
+            credentials: 'include',
+            maxAge: 15 * 60 * 1000, // 30 minutes in milliseconds
           });
+          res.redirect(`/protected?token=${encodeURIComponent(token)}`);
         });
       });
     });
   }
 });
-//Protected router
-router.get('/protected', (req, res) => {
-  // Get the token from the request headers
-  const token = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ error: 'Authentication required' });
-  }
-
-  jwt.verify(token,config.SECRET_KEY, (err, decoded) => {
-    if (err) {
-      console.log(config.SECRET_KEY);
-      return res.status(401).json({ error: 'Authentication failed' });
-       
-    }
-    console.log(decoded);
-    const { AccessLevel } = decoded;
-    
-    if (AccessLevel === 1) {
-      return res.json({ message: 'Welcome admin' });
-    } else {
-      return res.json({ message: 'Welcome user' });
-    }
-    res.status(200).json({
-  AccessLevel
-  
-    } );
-    
-  });
+router.get('/protected', authenticateToken, (req, res) => {
+  res.json({ message: 'Protected resource accessed' });
 });
 
-// Validation function for email
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = req.query.token || (authHeader && authHeader.split(' ')[1]);
+
+  if (token == null) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+
+    req.user = user;
+    next();
+  });
+}
+
 const validateEmail = (Email) => {
   if (!validator.isEmail(Email)) {
     return false;
@@ -323,84 +233,64 @@ const validateEmail = (Email) => {
   return true;
 };
 
-// Admin Route to update user information
 router.post('/AdminUpdate/:UserID', (req, res) => {
-  const UserID = req.params.UserID; // Extract the userId from the URL
-  const { FirstName, Email, RoleName, IsActive } = req.body; // Additional information from the request body
-
-  // SQL UPDATE query to update user information
+  const UserID = req.params.UserID;
+  const { FirstName, Email, RoleName, IsActive } = req.body;
   const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ?, RoleName = ?, IsActive = ?  WHERE UserID = ?';
 
-  // Execute the SQL query to update user information
   connection.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
     }
 
-    // Check if the user was found and updated
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Send a success response
     res.status(200).json({ message: 'User information updated successfully' });
   });
 });
 
-// User Route to update user information for the currently logged-in user
 router.post('/UserUpdate/:UserID', (req, res) => {
-  const UserID = req.params.UserID; // Extract the userId from the URL
-  const { FirstName, Email } = req.body; // Updated information from the request body
-
-  // SQL UPDATE query to update user information
+  const UserID = req.params.UserID;
+  const { FirstName, Email } = req.body;
   const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ? WHERE UserID = ?';
 
-  // Execute the SQL query to update user information
   connection.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
     }
 
-    // Check if the user was found and updated
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Send a success response
     res.status(200).json({ message: 'User information updated successfully' });
   });
 });
 
-// Route to delete the currently logged-in user
 router.delete('/deleteUser/:UserID', (req, res) => {
-  const UserID = req.params.UserID; // Get the userId from the URL parameter
-
+  const UserID = req.params.UserID;
   const deleteUserQuery = 'DELETE FROM users WHERE UserID = ?';
 
-  // Execute the SQL query to delete the user
   connection.query(deleteUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error deleting user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
     }
 
-    // Check if the user was found and deleted
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found', err });
     }
 
-    // Send a success response
     res.status(200).json({ message: 'User deleted successfully' });
   });
 });
 
-// Route to update user status
 router.put('/updateStatus/:UserID', (req, res) => {
   const UserID = req.params.UserID;
-
-  // Check if the user exists in the database
   const checkUserQuery = 'SELECT * FROM users WHERE UserID = ?';
 
   connection.query(checkUserQuery, [UserID], (err, results) => {
@@ -413,7 +303,6 @@ router.put('/updateStatus/:UserID', (req, res) => {
       const user = results[0];
       const newStatus = user.IsActive === 1 ? 0 : 1;
 
-      // Update user status
       const updateStatusQuery = 'UPDATE users SET IsActive = ? WHERE UserID = ?';
 
       connection.query(updateStatusQuery, [newStatus, UserID], (err, updateResult) => {
@@ -428,4 +317,5 @@ router.put('/updateStatus/:UserID', (req, res) => {
   });
 });
 
+// Export the router
 module.exports = router;

@@ -9,6 +9,9 @@ Content-Type: application/json
 "Password": "12345678"
 
 }
+###
+GET http://localhost:4000/protected?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiI0NSIsIkFjY2Vzc0xldmVsIjpudWxsLCJpYXQiOjE3MDAyMjk5MDgsImV4cCI6MTcwMDIzMzUwOH0.9ISWCAg0on9aRXZDPy16pe-PiUGGGctcfGvPjjtx2aU
+
 
 ###
 
