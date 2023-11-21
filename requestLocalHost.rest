@@ -20,12 +20,12 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyN
 Content-Type: application/json
 
 {
-    "Username": "admin4000",
+    "Username": "admin6000",
     "Password": "12345678",
-    "FirstName": "Ika",
+    "FirstName": "Kingi",
     "MeterDRN": "123456789098",
-    "LastName": "Indongo",
-    "Email": "ika@gmail.com",
+    "LastName": "Etango",
+    "Email": "kinghiholike@gmail.com",
     "IsActive": 1,
     "RoleName": "Engineer",
     "AccessLevel": 1
@@ -34,23 +34,24 @@ Content-Type: application/json
 
 ###
 post http://localhost:4000/forgot-password
+Content-Type: application/json
 
 {
-"Email": "kinghiholike@gmail.com"
-
+"Email": "baru@pulsarelectronic.com"
 }
 
 ###
 post http://localhost:4000/reset-password
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImtpbmdoaWhvbGlrZUBnbWFpbC5jb20iLCJ0ZW1wb3JhcnlQYXNzd29yZCI6ImVqN3NkOTk2IiwiaWF0IjoxNzAwNTAyMzQ4LCJleHAiOjE3MDA1MDU5NDh9.kqemfH5RXTfCHVmmXzJmRkV23Z1kPcfxHTnhr8Cc5-
+Content-Type: application/json
 
 {
+
 "newPassword": "undefined",
 "confirm_password": "undefined"
 
 }
 
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
-Content-Type: application/json
 ###
 
 get http://localhost:4000/protected
@@ -60,7 +61,6 @@ Content-Type: application/json
 get http://localhost:4000/reset-password
 ###
 get http://localhost:4000/profile/1
-
 ###
 get http://localhost:4000/allUsers
 ###

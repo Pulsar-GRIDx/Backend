@@ -30,6 +30,7 @@
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "ssl": "^1.0.0",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "winston": "^3.11.0"
   }
 }

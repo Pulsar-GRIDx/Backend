@@ -38,7 +38,7 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(Password, 10);
 
     connection.query(
-      'INSERT INTO users (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO systemadmins (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
       (err, result) => {
         if (err) {
@@ -95,6 +95,7 @@ router.post('/signin', (req, res) => {
             GuestID: guestUser.GuestID,
             name: guestUser.name,
             role: 'guest',
+            redirect: `/protected?token=${encodeURIComponent(token)}`
           },
         });
       });
@@ -256,5 +257,26 @@ router.put('/updateStatus/:UserID', (req, res) => {
   });
 });
 
+
+// Middleware for handling errors
+router.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
+
+// Global error handler for unhandled exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  // You can perform any necessary cleanup here before exiting
+  process.exit(1);
+});
+
+// Global error handler for unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Promise Rejection:', reason);
+  // You can perform any necessary cleanup here before exiting
+  process.exit(1);
+});
 // Export the router
 module.exports = router;
