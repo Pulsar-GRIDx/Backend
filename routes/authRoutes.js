@@ -156,7 +156,7 @@ function authenticateToken(req, res, next) {
     return res.sendStatus(401);
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+  jwt.verify(token, environment.SECRET_KEY, (err, user) => {
     if (err) {
       return res.sendStatus(403);
     }

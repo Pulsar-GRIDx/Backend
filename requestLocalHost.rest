@@ -10,7 +10,7 @@ Content-Type: application/json
 
 }
 ###
-GET http://localhost:4000/protected?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiI0NSIsIkFjY2Vzc0xldmVsIjpudWxsLCJpYXQiOjE3MDAyMjk5MDgsImV4cCI6MTcwMDIzMzUwOH0.9ISWCAg0on9aRXZDPy16pe-PiUGGGctcfGvPjjtx2aU
+GET http://localhost:4000/protected?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiI0NSIsIkFjY2Vzc0xldmVsIjpudWxsLCJpYXQiOjE3MDA1NjI1MTYsImV4cCI6MTcwMDU2NjExNn0.icuILisRxOWHLDYQVoUCDD5-FoujWncCDvgSO7-onpw
 
 
 ###
@@ -40,7 +40,7 @@ Content-Type: application/json
 "Email": "baru@pulsarelectronic.com"
 }
 
-###
+### 
 post http://localhost:4000/reset-password
 authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImtpbmdoaWhvbGlrZUBnbWFpbC5jb20iLCJ0ZW1wb3JhcnlQYXNzd29yZCI6ImVqN3NkOTk2IiwiaWF0IjoxNzAwNTAyMzQ4LCJleHAiOjE3MDA1MDU5NDh9.kqemfH5RXTfCHVmmXzJmRkV23Z1kPcfxHTnhr8Cc5-
 Content-Type: application/json
