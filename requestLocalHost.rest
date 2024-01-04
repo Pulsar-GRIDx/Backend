@@ -1,28 +1,28 @@
 
 ###
-post http://localhost:4000/signin
+post https://backend2.gridxmeter.com/signin
 Content-Type: application/json
 
 {
 //"GuestID": "1",    
-"Email": "baru@pulsarelectronic.com",
-"Password": "12345678"
+"Email": "admin@pulsar.com",
+"Password": "Admin@123"
 
 }
 
 ###
 
-post http://localhost:4000/signup
+post http://localhost:4000/adminSignup
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
 Content-Type: application/json
 
 {
-    "Username": "admin4000",
-    "Password": "12345678",
-    "FirstName": "Ika",
+    "Username": "admin",
+    "Password": "Admin@123",
+    "FirstName": "Pulsar",
     "MeterDRN": "123456789098",
-    "LastName": "Indongo",
-    "Email": "ika@gmail.com",
+    "LastName": "Gridx",
+    "Email": "admin@pulsar.com",
     "IsActive": 1,
     "RoleName": "Engineer",
     "AccessLevel": 1

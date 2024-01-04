@@ -103,8 +103,8 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-// Sign-Up route
-router.post('/signup', async (req, res) => {
+// Sign-Up route for admins.
+router.post('/adminSignup', async (req, res) => {
   const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
   // Validate inputs
@@ -119,7 +119,7 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(Password, 10);
 
     connection.query(
-      'INSERT INTO users (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO SystemAdmins (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
       (err, result) => {
         if (err) {
@@ -135,7 +135,38 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ error: 'Registration failed', err });
   }
 });
+//signup router for users
 
+router.post('/signup', async (req, res) => {
+  const { Password, FirstName, LastName, Email,DRN} = req.body;
+
+  // Validate inputs
+  if (!Password || !FirstName || !LastName || !Email || DRN || !validateEmail(Email)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  try {
+    console.log('Received registration request with data:');
+    console.log('Request Body:', req.body);
+
+    const hashedPassword = await bcrypt.hash(Password, 10);
+
+    connection.query(
+      'INSERT INTO SystemUsers  Password, FirstName, LastName, Email, DRN) VALUES (?, ?, ?, ?, ?)',
+      [ hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
+      (err, result) => {
+        if (err) {
+          console.error('Registration error:', err);
+          return res.status(500).json({ error: 'Registration failed', err });
+        }
+        console.log('Registration successful');
+        res.status(201).json({ message: 'Registration successful' });
+      }
+    );
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ error: 'Registration failed', err });
+  }});
 // // Sign-In route
 // router.post('/signin', (req, res) => {
 //   const { Email, Password } = req.body;
@@ -232,7 +263,7 @@ router.post('/signin', (req, res) => {
   } else {
     // Regular user sign-in
     // Find the user by email
-    const findUserQuery = 'SELECT * FROM users WHERE email = ?';
+    const findUserQuery = 'SELECT * FROM SystemAdmins WHERE email = ?';
     connection.query(findUserQuery, [Email], (err, results) => {
       if (err) {
         return res.status(500).json({ error: 'Database query failed', err });
@@ -243,9 +274,9 @@ router.post('/signin', (req, res) => {
       }
 
       // Compare passwords
-      const user = results[0];
+      const admin = results[0];
 
-      bcrypt.compare(Password, user.Password, (err, isMatch) => {
+      bcrypt.compare(Password, admin.Password, (err, isMatch) => {
         if (err) {
           return res.status(500).json({ error: 'Password comparison failed', err });
         }
@@ -255,28 +286,28 @@ router.post('/signin', (req, res) => {
         }
 
         // Update the login count in the database
-        connection.query('UPDATE users SET login_count = login_count + 1 WHERE UserID = ?', [user.UserID], (err, updateResult) => {
+        connection.query('UPDATE SystemAdmins SET login_count = login_count + 1 WHERE Admin_ID = ?', [admin.Admin_ID], (err, updateResult) => {
           if (err) {
             return res.status(500).json({ error: 'Login count update failed', err });
           }
 
           // Generate a JWT with user's AccessLevel
           const token = jwt.sign(
-            { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
+            { UserID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
             enviroment.SECRET_KEY,
             { expiresIn: '1h' } // Token expires in 1 hour
           );
 
           // Set the cookie
-          res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
+          res.cookie('token', token, { httpOnly: false, sameSite: 'Lax', secure: false });
 
           // Send the response
           res.status(200).json({
             
-            user: {
-              UserID: user.UserID,
-              email: user.email,
-              AccessLevel: user.AccessLevel,
+            admin: {
+              Admin_ID: admin.adminID,
+              email: admin.email,
+              AccessLevel: admin.AccessLevel,token
             }
           });
         });
