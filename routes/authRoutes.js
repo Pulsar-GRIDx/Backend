@@ -20,88 +20,7 @@ const limiter = rateLimit({
   message: 'Too many requests, please try again later.',
 });
 
-// Generate a random temporary password
-function generateTemporaryPassword() {
-  const tempPassword = Math.random().toString(36).slice(-8); // Generate an 8-character alphanumeric password
-  return tempPassword;
-}
 
-// Send a password reset email 
-function sendResetEmail(Email, tempPassword) {
- 
-  // Send an email to the user's email address with the temporary password
-}
-
-// Temporary storage for reset tokens (you should use a more persistent storage in production)
-const resetTokens = {};
-
-// Forgot Password route
-router.post('/forgot-password', limiter, (req, res) => {
-  const { Email } = req.body;
-
-  // Generate a unique temporary password
-  const temporaryPassword = generateTemporaryPassword();
-
-  // Generate a token with user's email and temporary password
-  const tokenPayload = { Email, temporaryPassword };
-  const token = jwt.sign(tokenPayload, process.env.SECRET_KEY, { expiresIn: '1h' });
-
-  // Store the token and email in the temporary storage
-  resetTokens[token] = Email;
-
-  // Include the token in the reset link
-  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
-
-  // Send the reset link to the user's email
-  sendResetEmail(Email, resetLink, temporaryPassword);
-
-  res.status(200).json({ message: 'Password reset link sent' });
-});
-
-// Reset Password route
-router.post('/reset-password', async (req, res) => {
-  const { token, newPassword, confirm_password } = req.body;
-
-  // Check if the reset token exists and retrieve the associated email
-  const Email = resetTokens[token];
-
-  if (!Email) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
-
-  // Verify the token and get the payload (including temporary password)
-  try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    const { Email: decodedEmail, temporaryPassword } = decoded;
-
-    if (decodedEmail !== Email) {
-      return res.status(401).json({ error: 'Invalid token for this email' });
-    }
-
-    // Check if newPassword and confirm_password match
-    if (newPassword !== confirm_password) {
-      return res.status(400).json({ error: 'Both New Password and Confirm Password Should Match' });
-    }
-
-    // Update the user's password with the new password
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update the user's password in the database using the email
-    const updateUserQuery = 'UPDATE users SET password = ? WHERE email = ?';
-    connection.query(updateUserQuery, [hashedNewPassword, Email], (err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Password reset failed', err });
-      }
-
-      // Remove the used reset token from temporary storage
-      delete resetTokens[token];
-
-      res.status(200).json({ message: 'Password reset successful' });
-    });
-  } catch (err) {
-    return res.status(401).json({ error: 'Token verification failed' });
-  }
-});
 
 // Sign-Up route for admins.
 router.post('/adminSignup', async (req, res) => {
@@ -114,7 +33,7 @@ router.post('/adminSignup', async (req, res) => {
 
   try {
     console.log('Received registration request with data:');
-    console.log('Request Body:', req.body);
+    
 
     const hashedPassword = await bcrypt.hash(Password, 10);
 
@@ -147,7 +66,7 @@ router.post('/signup', async (req, res) => {
 
   try {
     console.log('Received registration request with data:');
-    console.log('Request Body:', req.body);
+    
 
     const hashedPassword = await bcrypt.hash(Password, 10);
 
@@ -167,46 +86,6 @@ router.post('/signup', async (req, res) => {
     console.error('Error during registration:', error);
     res.status(500).json({ error: 'Registration failed', err });
   }});
-// // Sign-In route
-// router.post('/signin', (req, res) => {
-//   const { Email, Password } = req.body;
-
-//   // Find the user by email
-//   const findUserQuery = 'SELECT * FROM users WHERE email = ?';
-//   connection.query(findUserQuery, [Email], (err, results) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Database query failed', err });
-//     }
-
-//     if (results.length === 0) {
-//       return res.status(401).json({ error: 'Authentication failed' ,err});
-//     }
-
-//     // Compare passwords
-//     const user = results[0];
-
-//     bcrypt.compare(Password, user.Password, (err, isMatch) => {
-//       if (err) {
-//         return res.status(500).json({ error: 'Password comparison failed', err });
-//       }
-
-//       if (!isMatch) {
-//         return res.status(401).json({ error: 'Authentication failed',err });
-//       }
-
-//       // Generate a JWT with user's AccessLevel
-//       const token = jwt.sign(
-//         { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
-//         enviroment.SECRET_KEY
-//       );
-//        console.log(enviroment.SECRET_KEY);
-//       res.status(200).json({
-//         token
-        
-//       });
-//     });
-//   });
-// });
 
 
 
@@ -275,8 +154,9 @@ router.post('/signin', (req, res) => {
         res.status(200).json({
           message: 'User signed in successfully',
           token,
-          redirect: (`/protected?token=${encodeURIComponent(token)}`)
+          
         });
+        res.redirect(`/protected?token=${encodeURIComponent(token)}`)
       });
     });
   } else {
@@ -376,13 +256,13 @@ const validateEmail = (Email) => {
 // Admin Route to update user information
 router.post('/AdminUpdate/:UserID', (req, res) => {
   const UserID = req.params.UserID; // Extract the userId from the URL
-  const { FirstName, Email, RoleName, IsActive } = req.body; // Additional information from the request body
+  const { FirstName, Email } = req.body; // Additional information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ?, RoleName = ?, IsActive = ?  WHERE UserID = ?';
+  const updateUserQuery = 'UPDATE SystemUsers SET FirstName = ?, Email = ?, LastName = ?, DRN = ?  WHERE UserID = ?';
 
   // Execute the SQL query to update user information
-  connection.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
+  connection.query(updateUserQuery, [FirstName, Email, LastName, DRN, UserID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -404,10 +284,10 @@ router.post('/UserUpdate/:UserID', (req, res) => {
   const { FirstName, Email } = req.body; // Updated information from the request body
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ? WHERE UserID = ?';
+  const updateUserQuery = 'UPDATE SystemUsers SET FirstName = ?, Email = ?, LastName = ?, DRN = ? WHERE UserID = ?';
 
   // Execute the SQL query to update user information
-  connection.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
+  connection.query(updateUserQuery, [FirstName, Email ,LastName ,DRN], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -427,7 +307,7 @@ router.post('/UserUpdate/:UserID', (req, res) => {
 router.delete('/deleteUser/:UserID', (req, res) => {
   const UserID = req.params.UserID; // Get the userId from the URL parameter
 
-  const deleteUserQuery = 'DELETE FROM users WHERE UserID = ?';
+  const deleteUserQuery = 'DELETE FROM SystemUsers WHERE UserID = ?';
 
   // Execute the SQL query to delete the user
   connection.query(deleteUserQuery, [UserID], (err, results) => {
@@ -451,7 +331,7 @@ router.put('/updateStatus/:UserID', (req, res) => {
   const UserID = req.params.UserID;
 
   // Check if the user exists in the database
-  const checkUserQuery = 'SELECT * FROM users WHERE UserID = ?';
+  const checkUserQuery = 'SELECT * FROM SystemUsers WHERE UserID = ?';
 
   connection.query(checkUserQuery, [UserID], (err, results) => {
     if (err) {

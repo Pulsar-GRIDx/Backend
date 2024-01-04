@@ -32,7 +32,7 @@ router.get('/profile/:UserID', (req, res) => {
   }
 
   // Query the database to retrieve user profile
-  connection.query('SELECT FirstName, Email, RoleName, IsActive FROM users WHERE UserID = ?', [UserID], (err, results) => {
+  connection.query('SELECT FirstName, Email FROM SystemUsers WHERE UserID = ?', [UserID], (err, results) => {
     if (err) {
       console.error('Error retrieving user profile:', err);
       return res.status(500).json({ error: 'Failed to fetch user profile' });
@@ -54,7 +54,7 @@ router.get('/profile/:UserID', (req, res) => {
 // Router to get all the details of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
-  connection.query('SELECT UserID, FirstName, RoleName, IsActive FROM users', (err, results) => {
+  connection.query('SELECT UserID, FirstName,Email,lastName FROM SystemUsers', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
       return res.status(500).json({ error: 'Internal server error' });
