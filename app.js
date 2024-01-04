@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 
 const corsOptions = {
-  origin: '*', 
+  origin: ['https://gridxmeter.com', 'http://gridxmeter.com'], 
   credentials: true,
   optionSuccessStatus: 200,
 };

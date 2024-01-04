@@ -246,8 +246,7 @@ router.post('/signin', (req, res) => {
           { expiresIn: '10m' } // Token expires in 10 minutes
         );
 
-        // Set the cookie
-        res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
+        
 
         // Send the response
         res.status(200).json({
@@ -257,6 +256,26 @@ router.post('/signin', (req, res) => {
             name: guestUser.name,
             role: 'guest',
           },
+        });
+        res.cookie('accessToken', token, {
+          httpOnly: false,
+          secure: true, // Set this to true for HTTPS
+          maxAge: 40 * 60 * 1000,
+          domain: 'admin.gridxmeter.com', // Include the dot before the domain
+          path: '/',
+          sameSite: 'None',
+        });
+        
+  
+        // Set CORS headers
+        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
+        res.header('Access-Control-Allow-Credentials', true);
+  
+        // Send the response with both token and user data
+        res.status(200).json({
+          message: 'User signed in successfully',
+          token,
+          redirect: (`/protected?token=${encodeURIComponent(token)}`)
         });
       });
     });
