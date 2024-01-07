@@ -1,0 +1,7 @@
+post http://localhost:4000/calculateEnergyConsumption
+
+Content-Type: application/json
+
+{
+    "DRN":"0260152877924"
+}
