@@ -2,6 +2,6 @@ const express = require('express');
 const router = express.Router();
 const energyController = require('./meterControllers');
 
-router.get('/energy', energyController.getEnergyByDRN);
+router.post('/energy:DRN', energyController.getEnergyByDRN);
 
 module.exports = router;
