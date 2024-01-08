@@ -1,7 +1,7 @@
 const db = require('../db');
 
 exports.getEnergyByDRN = function(DRN, callback) {
-  const query = `SELECT active_power, date_time FROM MeteringPower WHERE DRN = ? ORDER BY date_time DESC LIMIT 1;
+  const query = `SELECT active_energy , date_time FROM MeterCumulativeEnergyUsage WHERE DRN = ? ORDER BY date_time DESC LIMIT 1;
   `;
 
   db.query(query, [DRN], (err, results) => {
@@ -12,7 +12,7 @@ exports.getEnergyByDRN = function(DRN, callback) {
     if (results.length === 0) {
       return callback(new Error('No results found for the provided DRN'));
     }
-    const active_power = results[0].active_power;
+    const active_energy = results[0].active_energy;
     const date = new Date(results[0].date_time);
 
     const currentWeekStart = new Date(date);
@@ -35,8 +35,8 @@ exports.getEnergyByDRN = function(DRN, callback) {
     const lastWeekHours = (lastWeekEnd - lastWeekStart) / 3600000;
     console.log(lastWeekHours);
 
-    const currentWeekEnergy = active_power * currentWeekHours;
-    const lastWeekEnergy = active_power * lastWeekHours;
+    const currentWeekEnergy = (active_energy * currentWeekHours) / 1000;
+    const lastWeekEnergy = (active_energy * lastWeekHours) / 1000;
 
     callback(null, {
       currentWeekEnergy,
@@ -44,3 +44,37 @@ exports.getEnergyByDRN = function(DRN, callback) {
     });
   });
 };
+
+exports.getCurrentDayEnergyByDRN = function(DRN, callback) {
+  const query = `SELECT active_energy, date_time, units FROM MeterCumulativeEnergyUsage WHERE DRN = ? ORDER BY date_time DESC LIMIT 1`;
+
+  db.query(query, [DRN], (err, results) => {
+    if (err) return callback(err);
+
+    if (results.length === 0) {
+      return callback(new Error('No results found for the provided DRN'));
+    }
+
+    const active_energy = results[0].active_energy;
+    const date = new Date(results[0].date_time);
+    const units = results[0].units;
+
+    const currentDayStart = new Date(date);
+    currentDayStart.setHours(0, 0, 0, 0);
+    const currentDayEnd = new Date(currentDayStart);
+    currentDayEnd.setHours(23, 59, 59, 999);
+
+    const currentDayHours = (currentDayEnd - currentDayStart) / 3600000;
+
+    const currentDayEnergy = (active_energy * currentDayHours) / 1000;
+
+    callback(null, {
+      currentDayEnergy,
+      units,
+      date,
+    });
+  });
+};
+// exports.getMeterDataByDRN = function (DRN, callback){
+//   const query
+// }

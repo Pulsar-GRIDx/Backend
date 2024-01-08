@@ -5,3 +5,12 @@ Content-Type: application/json
 # {
 #     "DRN":"0000039967351"
 # }
+
+###
+post http://localhost:4000/energy_day
+
+Content-Type: application/json
+
+{
+    "DRN":"0000039967351"
+}
