@@ -1,0 +1,91 @@
+
+###
+post http://localhost:4000/signin
+Content-Type: application/json
+
+{
+//"GuestID": "1",    
+"Email": "baru@pulsarelectronic.com",
+"Password": "12345678"
+
+}
+
+###
+
+post http://localhost:4000/signup
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
+Content-Type: application/json
+
+{
+    "Username": "admin4000",
+    "Password": "12345678",
+    "FirstName": "Ika",
+    "MeterDRN": "123456789098",
+    "LastName": "Indongo",
+    "Email": "ika@gmail.com",
+    "IsActive": 1,
+    "RoleName": "Engineer",
+    "AccessLevel": 1
+}
+
+
+###
+post http://localhost:4000/forgot-password
+
+{
+"Email": "admin@pulsarelectronic.com"
+
+}
+
+###
+post http://localhost:4000/reset-password
+
+{
+"newPassword": "undefined",
+"confirm_password": "undefined"
+
+}
+
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+Content-Type: application/json
+###
+
+get http://localhost:4000/protected
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjEsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcwODk1NDd9.e0w2iP1HWpyuztzeDI7LIFsNkL0W71me_Y-xDFr5xEI
+Content-Type: application/json
+###
+get http://localhost:4000/reset-password
+###
+get http://localhost:4000/profile/1
+
+###
+get http://localhost:4000/allUsers
+###
+
+post http://localhost:4000/UserUpdate/1
+
+{
+"FirstName":"Update update",
+"Email":"etangoking90@gmail.com"
+
+}
+###
+
+post http://localhost:4000/AdminUpdate/1
+
+###
+delete http://localhost:4000/deleteUser/3
+
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjMwLCJBY2Nlc3NMZXZlbCI6MSwiaWF0IjoxNjk3MDM4ODkzfQ.ib2Gbym7p6iC_p5gSdY3lNarXeyzsnX_8dWvoMUZbRA
+Content-Type: application/jsonn
+
+
+###
+get http://localhost:4000/protected
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjUsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTgyMzAxMDEsImV4cCI6MTY5ODIzMzcwMX0.f1RkZQuh7UZa_lPE3WelM3wukLcf7DjD0LY9byYnLi0
+
+###
+put http://localhost:4000/updateStatus/5
+
+
+
