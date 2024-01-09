@@ -1,7 +1,7 @@
 const energyService = require('./meterService');
 
 exports.getEnergyByDRN = function(req, res) {
-  const DRN = req.body;
+  const DRN = req.params.DRN;
 
   energyService.getEnergyByDRN(DRN, (err, data) => {
     if (err) {
@@ -15,7 +15,7 @@ exports.getEnergyByDRN = function(req, res) {
 };
 
 exports.getCurrentDayEnergyByDRN = function(req, res) {
-  const DRN = req.body;
+  const DRN = req.params.DRN;
 
   energyService.getCurrentDayEnergyByDRN(DRN, (err, data) => {
     if (err) {

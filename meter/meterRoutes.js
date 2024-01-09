@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const energyController = require('./meterControllers');
 
-router.post('/energy', energyController.getEnergyByDRN);
-router.post('/energy_day', energyController.getCurrentDayEnergyByDRN);
+router.post('/currentAndLastWeekEnergy:DRN', energyController.getEnergyByDRN);
+router.post('/CurrentDayEnergy:DRN', energyController.getCurrentDayEnergyByDRN);
 
 module.exports = router;

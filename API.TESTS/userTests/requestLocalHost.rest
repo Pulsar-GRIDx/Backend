@@ -27,6 +27,20 @@ Content-Type: application/json
     "RoleName": "Engineer",
     "AccessLevel": 1
 }
+###
+post http://localhost:4000/signup
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
+Content-Type: application/json
+
+{
+    
+    "Password": "Admin@123",
+    "FirstName": "Pulsar",
+    "MeterDRN": "123456789098",
+    "LastName": "Gridx",
+    "Email": "admin@pulsar.com",
+    
+}
 
 
 ###

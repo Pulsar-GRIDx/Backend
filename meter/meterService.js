@@ -1,7 +1,7 @@
 const db = require('../db');
 
 exports.getEnergyByDRN = function(DRN, callback) {
-  const query = `SELECT active_energy , date_time FROM MeterCumulativeEnergyUsage WHERE DRN = ? ORDER BY date_time DESC LIMIT 1;
+  const query = `SELECT active_energy , date_time FROM MeterCumulativeEnergyUsage WHERE DRN = ? ORDER BY date_time DESC LIMIT 1
   `;
 
   db.query(query, [DRN], (err, results) => {
@@ -46,13 +46,16 @@ exports.getEnergyByDRN = function(DRN, callback) {
 };
 
 exports.getCurrentDayEnergyByDRN = function(DRN, callback) {
-  const query = `SELECT active_energy, date_time, units FROM MeterCumulativeEnergyUsage WHERE DRN = ? ORDER BY date_time DESC LIMIT 1`;
+  const query = 'SELECT active_energy, date_time, units FROM MeterCumulativeEnergyUsage WHERE DRN = ? ORDER BY date_time DESC LIMIT 1';
 
   db.query(query, [DRN], (err, results) => {
-    if (err) return callback(err);
+    if (err) {
+      console.error('Error querying the database:', err);
+      return callback({ error: 'Database query failed', details: err });
+    }
 
     if (results.length === 0) {
-      return callback(new Error('No results found for the provided DRN'));
+      return callback({ error: 'No results found for the provided DRN' });
     }
 
     const active_energy = results[0].active_energy;
