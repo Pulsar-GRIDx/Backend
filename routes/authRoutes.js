@@ -20,21 +20,10 @@ const limiter = rateLimit({
   message: 'Too many requests, please try again later.',
 });
 
-<<<<<<< HEAD
-// Middleware to parse URL-encoded bodies
-router.use(express.urlencoded({ extended: true }));
-
-
-
-
-// Sign-Up route
-router.post('/signup', async (req, res) => {
-=======
 
 
 // Sign-Up route for admins.
 router.post('/adminSignup', async (req, res) => {
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
   const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
   if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
@@ -42,12 +31,6 @@ router.post('/adminSignup', async (req, res) => {
   }
 
   try {
-<<<<<<< HEAD
-    const hashedPassword = await bcrypt.hash(Password, 10);
-
-    connection.query(
-      'INSERT INTO systemadmins (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-=======
     console.log('Received registration request with data:');
     
 
@@ -55,7 +38,6 @@ router.post('/adminSignup', async (req, res) => {
 
     connection.query(
       'INSERT INTO SystemAdmins (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
       [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
       (err, result) => {
         if (err) {
@@ -73,8 +55,6 @@ router.post('/adminSignup', async (req, res) => {
 });
 //signup router for users
 
-<<<<<<< HEAD
-=======
 router.post('/signup', async (req, res) => {
   const { Password, FirstName, LastName, Email,DRN} = req.body;
 
@@ -108,7 +88,6 @@ router.post('/signup', async (req, res) => {
 
 
 
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
 // Sign-In route for both regular and guest users
 router.post('/signin', (req, res) => {
   const { Email, Password, GuestID } = req.body;
@@ -141,11 +120,7 @@ router.post('/signin', (req, res) => {
           { expiresIn: '10m' }
         );
 
-<<<<<<< HEAD
-        res.cookie('token', token, { httpOnly: true, sameSite: 'Lax', secure: false });
-=======
         
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
 
         res.status(200).json({
           token,
@@ -180,13 +155,9 @@ router.post('/signin', (req, res) => {
       });
     });
   } else {
-<<<<<<< HEAD
-    const findUserQuery = 'SELECT * FROM users WHERE email = ?';
-=======
     // Regular user sign-in
     // Find the user by email
     const findUserQuery = 'SELECT * FROM SystemAdmins WHERE email = ?';
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
     connection.query(findUserQuery, [Email], (err, results) => {
       if (err) {
         return res.status(500).json({ error: 'Database query failed', err });
@@ -196,12 +167,8 @@ router.post('/signin', (req, res) => {
         return res.status(401).json({ error: 'Authentication failed' });
       }
 
-<<<<<<< HEAD
-      const user = results[0];
-=======
       // Compare passwords
       const admin = results[0];
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
 
       bcrypt.compare(Password, admin.Password, (err, isMatch) => {
         if (err) {
@@ -212,27 +179,13 @@ router.post('/signin', (req, res) => {
           return res.status(401).json({ error: 'Authentication failed' });
         }
 
-<<<<<<< HEAD
-        connection.query('UPDATE users SET login_count = login_count + 1 WHERE UserID = ?', [user.UserID], (err, updateResult) => {
-=======
         // Update the login count in the database
         connection.query('UPDATE SystemAdmins SET login_count = login_count + 1 WHERE Admin_ID = ?', [admin.Admin_ID], (err, updateResult) => {
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
           if (err) {
             return res.status(500).json({ error: 'Login count update failed', err });
           }
 
           const token = jwt.sign(
-<<<<<<< HEAD
-            { UserID: user.UserID, email: user.email, AccessLevel: user.AccessLevel },
-            environment.SECRET_KEY,
-            { expiresIn: '1h' }
-          );
-          res.cookie('Authorization', `Bearer ${token}`,{
-            httpOnly: false,
-            credentials: 'include',
-            maxAge: 15 * 60 * 1000, // 30 minutes in milliseconds
-=======
             { UserID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
             enviroment.SECRET_KEY,
             { expiresIn: '1h' } // Token expires in 1 hour
@@ -249,7 +202,6 @@ router.post('/signin', (req, res) => {
               email: admin.email,
               AccessLevel: admin.AccessLevel,token
             }
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
           });
           res.redirect(`/protected?token=${encodeURIComponent(token)}`);
         });
@@ -288,13 +240,6 @@ const validateEmail = (Email) => {
 };
 
 router.post('/AdminUpdate/:UserID', (req, res) => {
-<<<<<<< HEAD
-  const UserID = req.params.UserID;
-  const { FirstName, Email, RoleName, IsActive } = req.body;
-  const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ?, RoleName = ?, IsActive = ?  WHERE UserID = ?';
-
-  connection.query(updateUserQuery, [FirstName, Email, RoleName, IsActive, UserID], (err, results) => {
-=======
   const UserID = req.params.UserID; // Extract the userId from the URL
   const { FirstName, Email } = req.body; // Additional information from the request body
 
@@ -303,7 +248,6 @@ router.post('/AdminUpdate/:UserID', (req, res) => {
 
   // Execute the SQL query to update user information
   connection.query(updateUserQuery, [FirstName, Email, LastName, DRN, UserID], (err, results) => {
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -318,13 +262,6 @@ router.post('/AdminUpdate/:UserID', (req, res) => {
 });
 
 router.post('/UserUpdate/:UserID', (req, res) => {
-<<<<<<< HEAD
-  const UserID = req.params.UserID;
-  const { FirstName, Email } = req.body;
-  const updateUserQuery = 'UPDATE users SET FirstName = ?, Email = ? WHERE UserID = ?';
-
-  connection.query(updateUserQuery, [FirstName, Email, UserID], (err, results) => {
-=======
   const UserID = req.params.UserID; // Extract the userId from the URL
   const { FirstName, Email } = req.body; // Updated information from the request body
 
@@ -333,7 +270,6 @@ router.post('/UserUpdate/:UserID', (req, res) => {
 
   // Execute the SQL query to update user information
   connection.query(updateUserQuery, [FirstName, Email ,LastName ,DRN], (err, results) => {
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
@@ -348,14 +284,9 @@ router.post('/UserUpdate/:UserID', (req, res) => {
 });
 
 router.delete('/deleteUser/:UserID', (req, res) => {
-<<<<<<< HEAD
-  const UserID = req.params.UserID;
-  const deleteUserQuery = 'DELETE FROM users WHERE UserID = ?';
-=======
   const UserID = req.params.UserID; // Get the userId from the URL parameter
 
   const deleteUserQuery = 'DELETE FROM SystemUsers WHERE UserID = ?';
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
 
   connection.query(deleteUserQuery, [UserID], (err, results) => {
     if (err) {
@@ -373,13 +304,9 @@ router.delete('/deleteUser/:UserID', (req, res) => {
 
 router.put('/updateStatus/:UserID', (req, res) => {
   const UserID = req.params.UserID;
-<<<<<<< HEAD
-  const checkUserQuery = 'SELECT * FROM users WHERE UserID = ?';
-=======
 
   // Check if the user exists in the database
   const checkUserQuery = 'SELECT * FROM SystemUsers WHERE UserID = ?';
->>>>>>> 2966415b133f63a36588360d30c329fc537bb412
 
   connection.query(checkUserQuery, [UserID], (err, results) => {
     if (err) {

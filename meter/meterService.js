@@ -78,6 +78,29 @@ exports.getCurrentDayEnergyByDRN = function(DRN, callback) {
     });
   });
 };
-// exports.getMeterDataByDRN = function (DRN, callback){
-//   const query
-// }
+
+exports.getAllActiveAndInactiveMeters = function(callback) {
+  const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable';
+
+  db.query(getAllActiveAndInactiveMeters, (err, results) => {
+    if (err) {
+      console.log('Error Querying the database:', err);
+      return callback({ error: 'Database query failed', details: err });
+    }
+
+    if (results.length === 0) {
+      return callback({ error: 'No data found', details: err });
+    }
+
+    // Count occurrences of '0' and '1' in the 'state' column
+    const inactiveMetersCount = results.filter(row => row.state === '0').length;
+    const activeMetersCount = results.filter(row => row.state === '1').length;
+
+    callback(null,{ inactiveMeters: inactiveMetersCount, activeMeters: activeMetersCount });
+  });
+};
+
+exports.getADailyRevenueAmount = function(callback) {
+  const getADailyRevenueAmount = 'SELECT '
+}
+

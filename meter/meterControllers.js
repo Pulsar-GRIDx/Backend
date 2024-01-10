@@ -27,3 +27,15 @@ exports.getCurrentDayEnergyByDRN = function(req, res) {
     res.json(data);
   });
 };
+
+exports.getAllActiveAndInactiveMeters = function (req, res) {
+  energyService.getAllActiveAndInactiveMeters((err,data) =>{
+    if (err) {
+      console.error('Error querying MySQL:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    res.json(data);
+  });
+  }
