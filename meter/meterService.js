@@ -120,3 +120,20 @@ exports.getTokenAmount = function(currentDate, callback) {
     });
   });
 };
+
+exports.getTokenCount = function(currentDate, callback) {
+  const getCurrentData = "SELECT display_msg FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time = ?";
+  const getPreviousData = "SELECT display_msg FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time < ?";
+  const getStartDate = "SELECT MIN(date_time) as startDate FROM STSTokesInfo";
+
+  db.query(getCurrentData, [currentDate], (err, currentData) => {
+    if (err) return callback(err);
+    db.query(getPreviousData, [currentDate], (err, previousData) => {
+      if (err) return callback(err);
+      db.query(getStartDate, [], (err, result) => {
+        if (err) return callback(err);
+        callback(null, { currentData, previousData, startDate: result[0].startDate });
+      });
+    });
+  });
+};

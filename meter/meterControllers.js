@@ -75,3 +75,28 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
       });
     });
   };
+
+  exports.getTokenCount = function(req, res) {
+    const currentDate = new Date();
+  
+    energyService.getTokenCount(currentDate, (err, data) => {
+      if (err) {
+        console.error('Error querying MySQL:', err);
+        res.status(500).json({ error: 'Database query failed', details: err });
+        return;
+      }
+  
+      const { currentData, previousData, startDate } = data;
+  
+      const currentCount = currentData.length;
+      const previousCount = previousData.length;
+      const allData = [...previousData, ...currentData];
+      const grandTotal = currentCount + previousCount;
+  
+      res.json({
+        allData: allData.map(record => Number(record.display_msg === 'Accept')),
+        startDate,
+        grandTotal
+      });
+    });
+  };
