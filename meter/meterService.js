@@ -100,7 +100,23 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
   });
 };
 
-exports.getADailyRevenueAmount = function(callback) {
-  const getADailyRevenueAmount = 'SELECT '
-}
 
+exports.getTokenAmount = function(currentDate, callback) {
+  // Query for records where display_msg is 'Accept' and date_time is the current date
+  const getCurrentData = "SELECT token_amount FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time = ?";
+  // Query for all previous records
+  const getPreviousData = "SELECT token_amount FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time < ?";
+  // Query for the earliest date_time in the database
+  const getStartDate = "SELECT MIN(date_time) as startDate FROM STSTokesInfo";
+
+  db.query(getCurrentData, [currentDate], (err, currentData) => {
+    if (err) return callback(err);
+    db.query(getPreviousData, [currentDate], (err, previousData) => {
+      if (err) return callback(err);
+      db.query(getStartDate, [], (err, result) => {
+        if (err) return callback(err);
+        callback(null, { currentData, previousData, startDate: result[0].startDate });
+      });
+    });
+  });
+};
