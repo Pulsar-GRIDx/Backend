@@ -4,59 +4,52 @@ const db = require('../db');
 
 router.post('/totalEnergyAmount', (req, res) => {
   // Query for records where display_msg is 'Accept' and date_time is the current date
-  const getCurrentData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
+  const getCurrentData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
   db.query(getCurrentData, (err, currentData) => {
     if (err) {
       console.log('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     }
 
-    // Query for all previous records
-    const getPreviousData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) < CURDATE()";
-    db.query(getPreviousData, (err, previousData) => {
+    // Query for the earliest date_time in the database
+    const getStartDate = "SELECT MIN(DATE(date_time)) as startDate FROM MeterCumulativeEnergyUsage";
+    db.query(getStartDate, (err, startDateResult) => {
       if (err) {
         console.log('Error querying the database:', err);
         return res.status(500).send({ error: 'Database query failed', details: err });
       }
 
-      // Query for the earliest date_time in the database
-      const getStartDate = "SELECT MIN(DATE(date_time)) as startDate FROM MeterCumulativeEnergyUsage";
-      db.query(getStartDate, (err, result) => {
+      // Get the start date from the result
+      const startDate = startDateResult[0].startDate;
+
+      // Query for all records starting from the startDate
+      const getPreviousData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) >= ?";
+      db.query(getPreviousData, [startDate], (err, allData) => {
         if (err) {
           console.log('Error querying the database:', err);
           return res.status(500).send({ error: 'Database query failed', details: err });
         }
 
-        // Get the start date from the result
-        const startDate = result[0].startDate;
-
-        // Calculate the total energy amount for the current date
-        const currentTotal = currentData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
-
-        // Calculate the total energy amount for each previous date
-        const previousTotals = previousData.reduce((totals, record) => {
-          if (record.date_time) {
-            const date = record.date_time;
-            if (!totals[date]) {
-              totals[date] = 0;
-            }
-            totals[date] += Number(record.active_energy) / 1000;
+        // Calculate the total energy amount for each date
+        const totals = allData.reduce((acc, record) => {
+          const date = record.date_time;
+          const energy = Number(record.active_energy) / 1000;
+          if (!acc[date]) {
+            acc[date] = 0;
           }
-          return totals;
+          acc[date] += energy;
+          return acc;
         }, {});
 
-        // Combine totals for each date into an array
-        const allData = Object.entries(previousTotals).map(([date, total]) => ({ date, total }));
-
-        // Add the total energy amount for the current date to allData
-        allData.push({ date: new Date().toISOString().split('T')[0], total: currentTotal });
+        // Convert the totals object to an array
+        const result = Object.values(totals);
 
         // Calculate the grand total
-        const grandTotal = allData.reduce((total, record) => total + record.total, 0);
+        const grandTotal = result.reduce((total, record) => total + record, 0);
 
         // Prepare the response
         const response = {
-          allData: allData,
+          allData: result,
           startDate: startDate,
           grandTotal: grandTotal,
         };
@@ -66,6 +59,8 @@ router.post('/totalEnergyAmount', (req, res) => {
     });
   });
 });
+
+
 
   
 module.exports = router;
