@@ -36,34 +36,41 @@ router.post('/totalEnergyAmount', (req, res) => {
           // Get the start date from the result
           const startDate = result[0].startDate;
   
-          // Calculate the total enrgy amount for the current date
-          const currentTotal = currentData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
-  
-          // Calculate the total token amount for each previous date
-          const previousTotals = previousData.reduce((totals, record) => {
-            if (record.date_time) {
-              const date = record.date_time.toISOString().split('T')[0]; // Convert date to YYYY-MM-DD format
-              if (!totals[date]) {
-                totals[date] = 0;
-              }
-              totals[date] += Number(record.active_energy) / 1000;
-            }
-            return totals;
-          }, {});
-  
-          // Calculate the grand total
-          const allData = [...previousData, ...currentData];
-          const grandTotal = allData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
-  
-          // Prepare the response
-          const response = {
-            allData: allData.map(record => Number(record.active_energy)),
-            startDate: startDate,
-            grandTotal: grandTotal,
-          };
-  
-          // Send the response
-          res.json(response);
+          // Calculate the total energy amount for the current date
+          // Calculate the total energy amount for the current date
+const currentTotal = currentData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+// Calculate the total energy amount for each previous date
+const previousTotals = previousData.reduce((totals, record) => {
+  if (record.date_time) {
+    const date = record.date_time.toISOString().split('T')[0]; // Convert date to YYYY-MM-DD format
+    if (!totals[date]) {
+      totals[date] = 0;
+    }
+    totals[date] += Number(record.active_energy) / 1000;
+  }
+  return totals;
+}, {});
+
+// Combine totals for each date into an array
+const allData = Object.entries(previousTotals).map(([date, total]) => ({ date, total }));
+
+// Add the total energy amount for the current date to allData
+allData.push({ date: currentDate.toISOString().split('T')[0], total: currentTotal });
+
+// Calculate the grand total
+const grandTotal = allData.reduce((total, record) => total + record.total, 0);
+
+// Prepare the response
+const response = {
+  allData: allData,
+  startDate: startDate,
+  grandTotal: grandTotal,
+};
+
+// Send the response
+res.json(response);
+
+
         });
       });
     });
