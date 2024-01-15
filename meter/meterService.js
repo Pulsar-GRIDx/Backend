@@ -113,9 +113,9 @@ exports.getTokenAmount = function(currentDate, callback) {
     if (err) return callback(err);
     db.query(getPreviousData, [currentDate], (err, previousData) => {
       if (err) return callback(err);
-      db.query(getStartDate, [], (err, result) => {
+      db.query(getStartDate, [], (err, startDateResult) => {
         if (err) return callback(err);
-        callback(null, { currentData, previousData, startDate: result[0].startDate });
+        callback(null, { currentData, previousData, startDateResult});
       });
     });
   });
@@ -130,10 +130,55 @@ exports.getTokenCount = function(currentDate, callback) {
     if (err) return callback(err);
     db.query(getPreviousData, [currentDate], (err, previousData) => {
       if (err) return callback(err);
-      db.query(getStartDate, [], (err, result) => {
+      db.query(getStartDate, [], (err, startDateResult) => {
         if (err) return callback(err);
-        callback(null, { currentData, previousData, startDate: result[0].startDate });
+        callback(null, { currentData, previousData, startDateResult});
       });
     });
   });
 };
+
+
+exports.getCurrentData = () => {
+  const getCurrentData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
+  return new Promise((resolve, reject) => {
+    db.query(getCurrentData, (err, currentData) => {
+      if (err) reject(err);
+      else resolve(currentData);
+    });
+  });
+};
+
+exports.getStartDate = () => {
+  const getStartDate = "SELECT MIN(DATE(date_time)) as startDate FROM MeterCumulativeEnergyUsage";
+  return new Promise((resolve, reject) => {
+    db.query(getStartDate, (err, startDateResult) => {
+      if (err) reject(err);
+      else resolve(startDateResult);
+    });
+  });
+};
+
+exports.getPreviousData = (startDateResult) => {
+  const getPreviousData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) >= ?";
+  return new Promise((resolve, reject) => {
+    db.query(getPreviousData, [startDateResult[0].startDate], (err, allData) => {
+      if (err) reject(err);
+      else resolve(allData);
+    });
+  });
+};
+
+exports.calculateTotals = (allData) => {
+  return allData.reduce((acc, record) => {
+    const date = record.date_time;
+    const energy = Number(record.active_energy) / 1000;
+    if (!acc[date]) {
+      acc[date] = 0;
+    }
+    acc[date] += energy;
+    return acc;
+  }, {});
+};
+
+

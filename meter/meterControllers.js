@@ -50,7 +50,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
         return;
       }
   
-      const { currentData, previousData, startDate } = data;
+      const { currentData, previousData, startDateResult } = data;
   
       const currentTotal = currentData.reduce((total, record) => total + Number(record.token_amount), 0);
   
@@ -70,7 +70,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   
       res.json({
         allData: allData.map(record => Number(record.token_amount)),
-        startDate: startDate,
+        startDate: new Date(startDateResult[0].startDate).toISOString().split('T')[0],
         grandTotal: grandTotal
       });
     });
@@ -86,7 +86,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
         return;
       }
   
-      const { currentData, previousData, startDate } = data;
+      const { currentData, previousData, startDateResult } = data;
   
       const currentCount = currentData.length;
       const previousCount = previousData.length;
@@ -95,8 +95,37 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   
       res.json({
         allData: allData.map(record => Number(record.display_msg === 'Accept')),
-        startDate,
+        startDate: new Date(startDateResult[0].startDate).toISOString().split('T')[0],
         grandTotal
       });
     });
   };
+
+
+  exports.getTotalEnergyAmount = (req, res) => {
+    energyService.getCurrentData()
+      .then(currentData => energyService.getStartDate(currentData))
+      .then(startDateResult => {
+        return energyService.getPreviousData(startDateResult)
+          .then(allData => {
+            return { allData, startDateResult };
+          });
+      })
+      .then(({ allData, startDateResult }) => {
+        const totals = energyService.calculateTotals(allData);
+        const result = Object.values(totals);
+        const grandTotal = result.reduce((total, record) => total + record, 0);
+        const response = {
+          allData: result,
+          startDate: new Date(startDateResult[0].startDate).toISOString().split('T')[0],
+          grandTotal: grandTotal,
+        };
+        res.json(response);
+      })
+      .catch(err => {
+        console.log('Error querying the database:', err);
+        return res.status(500).send({ error: 'Database query failed', details: err });
+      });
+  };
+  
+  
