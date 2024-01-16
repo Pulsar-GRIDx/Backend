@@ -79,6 +79,7 @@ exports.getCurrentDayEnergyByDRN = function(DRN, callback) {
   });
 };
 
+///-------------------------------------Active Inactive meters-----------------------------------------------------///
 exports.getAllActiveAndInactiveMeters = function(callback) {
   const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable';
 
@@ -100,7 +101,7 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
   });
 };
 
-
+//-------------------------------------------TokenAmount Api---------------------------------------//
 exports.getTokenAmount = function(currentDate, callback) {
   // Query for records where display_msg is 'Accept' and date_time is the current date
   const getCurrentData = "SELECT token_amount FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time = ?";
@@ -120,7 +121,7 @@ exports.getTokenAmount = function(currentDate, callback) {
     });
   });
 };
-
+//-------------------------------------------------TokenCount Api-------------------------------------//
 exports.getTokenCount = function(currentDate, callback) {
   const getCurrentData = "SELECT display_msg FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time = ?";
   const getPreviousData = "SELECT display_msg FROM STSTokesInfo WHERE display_msg = 'Accept' AND date_time < ?";
@@ -138,7 +139,7 @@ exports.getTokenCount = function(currentDate, callback) {
   });
 };
 
-
+//-------------------------------------------------Total Energy Consumption-----------------------------//
 exports.getCurrentData = () => {
   const getCurrentData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
   return new Promise((resolve, reject) => {
@@ -177,6 +178,50 @@ exports.calculateTotals = (allData) => {
       acc[date] = 0;
     }
     acc[date] += energy;
+    return acc;
+  }, {});
+};
+
+
+//-------------------------------------------------Current And last Week API-------------------------------------//
+exports.getWeeklyData = (week) => {
+  const getWeeklyData = `SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE YEARWEEK(date_time) = YEARWEEK(CURDATE() ${week === 'last' ? '- INTERVAL 1 WEEK' : ''})`;
+  return new Promise((resolve, reject) => {
+    db.query(getWeeklyData, (err, weeklyData) => {
+      if (err) reject(err);
+      else resolve(weeklyData);
+    });
+  });
+};
+exports.calculateTotals = (allData) => {
+  return allData.reduce((acc, record) => {
+    const date = record.date_time.toISOString().split('T')[0];
+    const energy = Number(record.active_energy) / 1000;
+    acc[date] = (acc[date] || 0) + energy;
+    return acc;
+  }, {});
+};
+
+
+
+exports.getVoltageAndCurrent =() =>{
+  const getVoltageAndCurrent = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE()";
+  return  new Promise((resolve,reject)=>{
+    db.query(getVoltageAndCurrent , (err,voltage,current)=>{
+      if (err) reject(err);
+      else resolve(voltage,current);
+    });
+  });
+};
+
+//Calculate voltage and current
+exports.calculateVoltageAndCurrent = (readings) =>{
+  return readings.reduce((acc, record)=>{
+    const voltage = Number(record.voltage);
+    const current = Number(record.current);
+   // Accumulate voltage and current separately
+   acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
+   acc.totalCurrent = (acc.totalCurrent || 0) + current;
     return acc;
   }, {});
 };

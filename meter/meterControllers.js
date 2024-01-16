@@ -128,4 +128,45 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
       });
   };
   
-  
+
+
+exports.getEnergyAmount = (req, res) => {
+  Promise.all([energyService.getWeeklyData('current'), energyService.getWeeklyData('last'),energyService.getVoltageAndCurrent('voltage', 'current')])
+    .then(([currentData, lastData,Totalcurrent,Totalvoltage]) => {
+      const currentTotals = energyService.calculateTotals(currentData);
+      const currentATotals = energyService.calculateVoltageAndCurrent(Totalcurrent);
+      const currentVoltage = energyService.calculateVoltageAndCurrent(Totalvoltage);
+      const lastTotals = energyService.calculateTotals(lastData);
+      const currentResult = Object.values(currentTotals);
+      const lastResult = Object.values(lastTotals);
+      const currentCurrentResult = Object.values(currentATotals);
+      const currentVoltageResult = Object.values(currentVoltage);
+     
+      const currentWeekTotal = currentResult.reduce((total, energy) => total + energy, 0);
+      const lastweekTotal = lastResult.reduce((total, energy) => total + energy, 0);
+      const currentweekCurrentTotal = currentCurrentResult.reduce((total, current) => total + current, 0);
+      const currentweekVoltageTotal = currentVoltageResult.reduce((total, voltage) => total + voltage, 0);
+      const response = {
+        // currentWeek: {
+        //   // allData: currentResult,
+        //   currentWeekTotal,
+        // },
+        // lastWeek: {
+        //   // allData: lastResult,
+        //   grandTotal: lastweekTotal,
+        // },
+
+        
+          currentWeekTotal,
+          lastweekTotal,
+          currentweekCurrentTotal,
+          currentweekVoltageTotal
+        
+      };
+      res.json(response);
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
