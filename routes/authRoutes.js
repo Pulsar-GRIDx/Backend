@@ -1,19 +1,19 @@
-// Import necessary modules
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
+const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../db");
-const dotenv = require('dotenv');
 
-// Configure dotenv
+
 dotenv.config();
 const config = process.env;
-const environment = process.env;
+const enviroment = process.env;
 
-// Rate limiter middleware
+// Rate limiter
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 5,
@@ -93,10 +93,12 @@ router.post('/signin', (req, res) => {
   const { Email, Password, GuestID } = req.body;
 
   if (!GuestID && (!Email || !Password)) {
+    // If no GuestID is provided and either Email or Password is missing, reject the request.
     return res.status(400).json({ error: 'Invalid request' });
   }
 
   if (GuestID) {
+    // Guest user sign-in
     const findGuestQuery = 'SELECT * FROM guest_users WHERE GuestID = ?';
     connection.query(findGuestQuery, [GuestID], (err, results) => {
       if (err) {
@@ -109,26 +111,28 @@ router.post('/signin', (req, res) => {
 
       const guestUser = results[0];
 
+      // Update the login count in the database
       connection.query('UPDATE guest_users SET login_count = login_count + 1 WHERE GuestID = ?', [GuestID], (err, updateResult) => {
         if (err) {
           return res.status(500).json({ error: 'Login count update failed', err });
         }
 
+        // Generate a JWT with a 10-minute expiration for the guest user
         const token = jwt.sign(
           { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
           environment.SECRET_KEY,
-          { expiresIn: '10m' }
+          { expiresIn: '10m' } // Token expires in 10 minutes
         );
 
         
 
+        // Send the response
         res.status(200).json({
           token,
           user: {
             GuestID: guestUser.GuestID,
             name: guestUser.name,
             role: 'guest',
-            redirect: `/protected?token=${encodeURIComponent(token)}`
           },
         });
         res.cookie('accessToken', token, {
@@ -185,6 +189,7 @@ router.post('/signin', (req, res) => {
             return res.status(500).json({ error: 'Login count update failed', err });
           }
 
+          // Generate a JWT with user's AccessLevel
           const token = jwt.sign(
             { UserID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
             enviroment.SECRET_KEY,
@@ -210,6 +215,7 @@ router.post('/signin', (req, res) => {
   }
 });
 
+//Protected router
 router.get('/protected', authenticateToken, (req, res) => {
   res.json({ message: 'Protected resource accessed' });
 });
@@ -239,28 +245,32 @@ const validateEmail = (Email) => {
   return true;
 };
 
-router.post('/AdminUpdate/:UserID', (req, res) => {
-  const UserID = req.params.UserID; // Extract the userId from the URL
-  const { FirstName, Email } = req.body; // Additional information from the request body
+// Admin Route to update user information
+router.post('/AdminUpdate/:Admin_ID', (req, res) => {
+  const Admin_ID = req.params.Admin_ID; 
+  const { FirstName, Email, LastName, AccessLevel, Username } = req.body;
 
   // SQL UPDATE query to update user information
-  const updateUserQuery = 'UPDATE SystemUsers SET FirstName = ?, Email = ?, LastName = ?, DRN = ?  WHERE UserID = ?';
+  const updateUserQuery = 'UPDATE SystemAdmins SET FirstName = ?, Email = ?, LastName = ?, AccessLevel = ?, Username = ? WHERE Admin_ID = ?';
 
   // Execute the SQL query to update user information
-  connection.query(updateUserQuery, [FirstName, Email, LastName, DRN, UserID], (err, results) => {
+  connection.query(updateUserQuery, [FirstName, Email, LastName, AccessLevel, Username, Admin_ID], (err, results) => {
     if (err) {
       console.error('Error updating user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
     }
 
+    // Check if the user was found and updated
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    // Send a success response
     res.status(200).json({ message: 'User information updated successfully' });
   });
 });
 
+// User Route to update user information for the currently logged-in user
 router.post('/UserUpdate/:UserID', (req, res) => {
   const UserID = req.params.UserID; // Extract the userId from the URL
   const { FirstName, Email } = req.body; // Updated information from the request body
@@ -275,40 +285,46 @@ router.post('/UserUpdate/:UserID', (req, res) => {
       return res.status(500).json({ error: 'Internal server error', err });
     }
 
+    // Check if the user was found and updated
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    // Send a success response
     res.status(200).json({ message: 'User information updated successfully' });
   });
 });
 
+// Route to delete the currently logged-in user
 router.delete('/deleteUser/:UserID', (req, res) => {
   const UserID = req.params.UserID; // Get the userId from the URL parameter
 
   const deleteUserQuery = 'DELETE FROM SystemUsers WHERE UserID = ?';
 
+  // Execute the SQL query to delete the user
   connection.query(deleteUserQuery, [UserID], (err, results) => {
     if (err) {
       console.error('Error deleting user:', err);
       return res.status(500).json({ error: 'Internal server error', err });
     }
 
+    // Check if the user was found and deleted
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found', err });
     }
 
+    // Send a success response
     res.status(200).json({ message: 'User deleted successfully' });
   });
 });
 
-router.put('/updateStatus/:UserID', (req, res) => {
-  const UserID = req.params.UserID;
+// Route to update Admin status
+router.post('/updateStatus/:Admin_ID', (req, res) => {
+  const Admin_ID = req.params.Admin_ID;
+   // Check if the user exists in the database
+  const checkUserQuery = 'SELECT * FROM SystemAdmins WHERE Admin_ID = ?';
 
-  // Check if the user exists in the database
-  const checkUserQuery = 'SELECT * FROM SystemUsers WHERE UserID = ?';
-
-  connection.query(checkUserQuery, [UserID], (err, results) => {
+  connection.query(checkUserQuery, [Admin_ID], (err, results) => {
     if (err) {
       console.error('Error checking user:', err);
       res.status(500).json({ message: 'Internal Server Error', err });
@@ -318,9 +334,10 @@ router.put('/updateStatus/:UserID', (req, res) => {
       const user = results[0];
       const newStatus = user.IsActive === 1 ? 0 : 1;
 
-      const updateStatusQuery = 'UPDATE users SET IsActive = ? WHERE UserID = ?';
+      // Update user status
+      const updateStatusQuery = 'UPDATE SystemAdmins SET IsActive = ? WHERE Admin_ID = ?';
 
-      connection.query(updateStatusQuery, [newStatus, UserID], (err, updateResult) => {
+      connection.query(updateStatusQuery, [newStatus, Admin_ID], (err, updateResult) => {
         if (err) {
           console.error('Error updating user status:', err);
           res.status(500).json({ message: 'Internal Server Error', err });
@@ -332,6 +349,61 @@ router.put('/updateStatus/:UserID', (req, res) => {
   });
 });
 
+router.post('/resetPassword/:Admin_ID', (req, res) => {
+  const Admin_ID = req.params.Admin_ID;
+  const { Password } = req.body;
+
+  // Check if the provided password is empty
+  if (!Password) {
+    return res.status(400).json({ message: 'Please enter a new password' });
+  }
+
+  // Check if the new password is the same as the current password
+  const checkPasswordQuery = 'SELECT Password FROM SystemAdmins WHERE Admin_ID = ?';
+  connection.query(checkPasswordQuery, [Admin_ID], (err, results) => {
+    if (err) {
+      console.error('Error checking password:', err);
+      return res.status(500).json({ message: 'Internal Server Error', err });
+    }
+
+    if (results.length > 0) {
+      const currentPassword = results[0].Password;
+
+      bcrypt.compare(Password, currentPassword, (err, isMatch) => {
+        if (err) {
+          console.error('Error comparing passwords:', err);
+          return res.status(500).json({ message: 'Internal Server Error', err });
+        }
+
+        if (isMatch) {
+          return res.status(400).json({ message: 'Please choose a different password' });
+        }
+
+        // If the new password is different, proceed with updating the password
+        // Hash the new password before storing it in the database
+        bcrypt.hash(Password, 10, (err, hashedPassword) => {
+          if (err) {
+            console.error('Error hashing password:', err);
+            return res.status(500).json({ message: 'Internal Server Error', err });
+          }
+
+          // Update the password in the database
+          const updatePasswordQuery = 'UPDATE SystemAdmins SET Password = ? WHERE Admin_ID = ?';
+          connection.query(updatePasswordQuery, [hashedPassword, Admin_ID], (err, updateResult) => {
+            if (err) {
+              console.error('Error updating password:', err);
+              return res.status(500).json({ message: 'Internal Server Error', err });
+            }
+
+            res.status(200).json({ message: 'Password updated successfully' });
+          });
+        });
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  });
+});
 
 // Middleware for handling errors
 router.use((err, req, res, next) => {
@@ -353,5 +425,5 @@ process.on('unhandledRejection', (reason, promise) => {
   // You can perform any necessary cleanup here before exiting
   process.exit(1);
 });
-// Export the router
+
 module.exports = router;

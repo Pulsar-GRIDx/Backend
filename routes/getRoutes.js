@@ -71,7 +71,7 @@ router.get('/profile/:UserID', (req, res) => {
     const userProfile = results[0];
     res.status(200).json({userProfile ,
       redirect: `/protected?token=${encodeURIComponent(token)}`});
-  });
+});
 });
 
 
@@ -92,6 +92,18 @@ router.get('/allUsers', (req, res) => {
   });
 });
 
+router.get('/allAdmins', (req, res) => {
+  // Query the database to get the users
+  connection.query('SELECT Admin_ID, Username ,FirstName, LastName, Password, Email, IsActive, AccessLevel FROM SystemAdmins', (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Send the list of users as a JSON response
+    res.status(200).json({ users: results });
+  });
+});
 
 // Middleware for handling errors
 router.use((err, req, res, next) => {
@@ -100,4 +112,5 @@ router.use((err, req, res, next) => {
 });
 
 
+  
   module.exports = router;
