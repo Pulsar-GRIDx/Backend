@@ -149,8 +149,8 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
         const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
   
         const response = {
-          currentWeekTotal: currentResult.reduce((total, energy) => total + energy, 0),
-          lastweekTotal: lastResult.reduce((total, energy) => total + energy, 0),
+          currentWeekTotal: currentResult.reduce((total, energy) => total + energy, 0) / 1000,
+          lastweekTotal: lastResult.reduce((total, energy) => total + energy, 0) / 1000,
           currentweekVoltageTotal,
           currentweekCurrentTotal,
         };
@@ -162,6 +162,15 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
         return res.status(500).send({ error: 'Database query failed', details: err });
       });
   };
-  
-  
-  
+///------------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------//
+exports.getCurrentDayEnergy = (req, res) => {
+  energyService.getCurrentDayData()
+    .then(currentDayData => {
+      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+      res.json({ totalEnergy });
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};

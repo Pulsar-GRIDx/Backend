@@ -9,4 +9,5 @@ router.get('/tokenAmount', energyController.getTokenAmount);
 router.get('/totalTokensBought', energyController.getTokenCount);
 router.get('/totalEnergyAmount', energyController.getTotalEnergyAmount);
 router.get('/weeklyDataAmount', energyController.getEnergyAmount);
+router.get('/currentDayEnergy', energyController.getCurrentDayEnergy);
 module.exports = router;

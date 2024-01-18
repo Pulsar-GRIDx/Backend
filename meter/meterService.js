@@ -238,6 +238,14 @@ exports.calculateVoltageAndCurrent = (readings) => {
 };
 
 
+//------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------------------------//
 
-
-
+exports.getCurrentDayData = () => {
+  const getCurrentDayData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
+  return new Promise((resolve, reject) => {
+    db.query(getCurrentDayData, (err, currentDayData) => {
+      if (err) reject(err);
+      else resolve(currentDayData);
+    });
+  });
+};
