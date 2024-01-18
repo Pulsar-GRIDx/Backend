@@ -174,3 +174,14 @@ exports.getCurrentDayEnergy = (req, res) => {
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
+//--------------------------------------------------------InsertMeterData----------------------------------------------------------//
+exports.insertData = (req, res) => {
+  const data = req.body; // Assuming the data is sent in the request body
+  energyService.insertIntoMeterRealInfo(data)
+    .then(() => dataService.insertIntoAnotherTable(data))
+    .then(() => res.status(200).json({ message: 'Data inserted successfully into both tables' }))
+    .catch(err => {
+      console.error('Error inserting into the database:', err);
+      return res.status(500).json({ error: 'Database insertion failed', details: err });
+    });
+};

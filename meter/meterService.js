@@ -249,3 +249,39 @@ exports.getCurrentDayData = () => {
     });
   });
 };
+//----------------------------------------------InsertMeterData---------------------------------------------------------------------------//
+exports.insertIntoMeterRealInfo = (data) => {
+  const meterRealInfoData = {
+    DRN: data.DRN,
+    Surname: data.Surname,
+    Name: data.Name,
+    Suburb: data.Suburb,
+    City: data.City,
+    Streetname: data.Streetname,
+    Housenumber: data.Housenumber,
+    Simnumber: data.Simnumber,
+    Usercategory: data.Usercategory,
+  };
+  return new Promise((resolve, reject) => {
+    db.query('INSERT INTO MeterRealInfo SET ?', meterRealInfoData, (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+};
+
+exports.insertIntoAnotherTable = (data) => {
+  const anotherTableData = {
+    Meterlng: data.Meterlng,
+    Meterlat: data.Meterlat,
+    Transformerlng: data.Transformerlng,
+    Transformerlat: data.Transformerlat,
+    TransformerDRN: data.TransformerDRN,
+  };
+  return new Promise((resolve, reject) => {
+    db.query('INSERT INTO AnotherTable SET ?', anotherTableData, (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+};

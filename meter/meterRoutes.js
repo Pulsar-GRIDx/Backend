@@ -10,4 +10,5 @@ router.get('/totalTokensBought', energyController.getTokenCount);
 router.get('/totalEnergyAmount', energyController.getTotalEnergyAmount);
 router.get('/weeklyDataAmount', energyController.getEnergyAmount);
 router.get('/currentDayEnergy', energyController.getCurrentDayEnergy);
+router.post('/insertMeterData', energyController.insertData);
 module.exports = router;
