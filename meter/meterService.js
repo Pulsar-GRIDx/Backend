@@ -285,3 +285,24 @@ exports.insertIntoAnotherTable = (data) => {
     });
   });
 };
+
+//------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
+exports.getDRNInSuburb = () => {
+  const getDRNInSuburb = "SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ()";
+  return new Promise((resolve, reject) => {
+    db.query(getDRNInSuburb, (err, DATA) => {
+      if (err) reject(err);
+      else resolve(DATA);
+    });
+  });
+};
+
+exports.getActiveEnergyByDRN = (DATA) => {
+  const getActiveEnergyByDRN = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = (DATA)";
+  return new Promise((resolve, reject) => {
+    db.query(getActiveEnergyByDRN, (err, drnData) => {
+      if (err) reject(err);
+      else resolve(drnData);
+    });
+  });
+};

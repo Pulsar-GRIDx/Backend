@@ -185,3 +185,6 @@ exports.insertData = (req, res) => {
       return res.status(500).json({ error: 'Database insertion failed', details: err });
     });
 };
+
+//------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
+
