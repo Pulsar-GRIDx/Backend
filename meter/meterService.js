@@ -204,26 +204,40 @@ exports.calculateTotals = (allData) => {
 
 
 
-exports.getVoltageAndCurrent =() =>{
-  const getVoltageAndCurrent = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE()";
-  return  new Promise((resolve,reject)=>{
-    db.query(getVoltageAndCurrent , (err,voltage,current)=>{
+exports.getVoltageAndCurrent = () => {
+  const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE()";
+  return new Promise((resolve, reject) => {
+    db.query(getVoltageAndCurrentQuery, (err, current , voltage) => {
       if (err) reject(err);
-      else resolve(voltage,current);
+      else resolve(current , voltage);
     });
   });
 };
 
-//Calculate voltage and current
-exports.calculateVoltageAndCurrent = (readings) =>{
-  return readings.reduce((acc, record)=>{
-    const voltage = Number(record.voltage);
-    const current = Number(record.current);
-   // Accumulate voltage and current separately
-   acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-   acc.totalCurrent = (acc.totalCurrent || 0) + current;
+exports.calculateVoltageAndCurrent = (readings) => {
+  if (!readings || !Array.isArray(readings) || readings.length === 0) {
+    throw new Error("Invalid or empty readings data");
+  }
+
+  // Initialize separate accumulators for voltage and current
+  const result = readings.reduce((acc, record) => {
+    const voltage = Number(record.voltage) || 0;
+    const current = Number(record.current) || 0;
+
+    // Accumulate voltage and current separately
+    acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
+    acc.totalCurrent = (acc.totalCurrent || 0) + current;
+
     return acc;
   }, {});
+
+  return {
+    totalVoltage: result.totalVoltage,
+    totalCurrent: result.totalCurrent,
+  };
 };
+
+
+
 
 

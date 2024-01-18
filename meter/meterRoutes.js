@@ -8,5 +8,5 @@ router.get('/activeInactiveMeters' , energyController.getAllActiveAndInactiveMet
 router.get('/tokenAmount', energyController.getTokenAmount);
 router.get('/totalTokensBought', energyController.getTokenCount);
 router.get('/totalEnergyAmount', energyController.getTotalEnergyAmount);
-router.get('/energyAmount', energyController.getEnergyAmount);
+router.get('/weeklyDataAmount', energyController.getEnergyAmount);
 module.exports = router;
