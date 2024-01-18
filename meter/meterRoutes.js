@@ -11,4 +11,6 @@ router.get('/totalEnergyAmount', energyController.getTotalEnergyAmount);
 router.get('/weeklyDataAmount', energyController.getEnergyAmount);
 router.get('/currentDayEnergy', energyController.getCurrentDayEnergy);
 router.post('/insertMeterData', energyController.insertData);
+router.get('/suburbEnergy', energyController.getSuburbEnergy);
+
 module.exports = router;

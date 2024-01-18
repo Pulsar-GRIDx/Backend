@@ -287,22 +287,23 @@ exports.insertIntoAnotherTable = (data) => {
 };
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
-exports.getDRNInSuburb = () => {
-  const getDRNInSuburb = "SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ()";
+exports.getDrnsBySuburb = (LocationName) => {
+  const getDrnsBySuburb = 'SELECT DRN FROM TransformerInformation WHERE LocationName = ?';
   return new Promise((resolve, reject) => {
-    db.query(getDRNInSuburb, (err, DATA) => {
+    db.query(getDrnsBySuburb, [LocationName], (err, drnData) => {
       if (err) reject(err);
-      else resolve(DATA);
+      else resolve(drnData.map(record => record.DRN));
+      console.log(drnData);
     });
   });
 };
 
-exports.getActiveEnergyByDRN = (DATA) => {
-  const getActiveEnergyByDRN = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = (DATA)";
+exports.getEnergyByDrn = (drn) => {
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = CURDATE()';
   return new Promise((resolve, reject) => {
-    db.query(getActiveEnergyByDRN, (err, drnData) => {
+    db.query(getEnergyByDrn, [drn], (err, energyData) => {
       if (err) reject(err);
-      else resolve(drnData);
+      else resolve(energyData);
     });
   });
 };
