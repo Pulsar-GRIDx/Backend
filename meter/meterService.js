@@ -279,7 +279,7 @@ exports.insertIntoAnotherTable = (data) => {
     TransformerDRN: data.TransformerDRN,
   };
   return new Promise((resolve, reject) => {
-    db.query('INSERT INTO AnotherTable SET ?', anotherTableData, (err) => {
+    db.query('INSERT INTO MeterLocationInfoTable SET ?', anotherTableData, (err) => {
       if (err) reject(err);
       else resolve();
     });
