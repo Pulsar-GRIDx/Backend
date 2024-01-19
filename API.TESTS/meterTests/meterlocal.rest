@@ -26,5 +26,90 @@ get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
 
 ###
-post http://localhost:4000/tokenAmount
+get http://localhost:4000/tokenAmount
 Content-Type: application/json
+###
+get http://localhost:4000/totalTokensBought
+Content-Type: application/json
+
+###
+get http://localhost:4000/totalEnergyAmount
+Content-Type: application/json
+###
+get http://localhost:4000/weeklyDataAmount
+Content-Type: application/json
+
+###
+get http://localhost:4000/currentDayEnergy
+Content-Type: application/json
+
+###
+post http://localhost:4000/insertMeterData
+Content-Type: application/json
+
+{
+ "data":{
+     "DRN": "025006654179",
+    "Surname": "Hiholike",
+    "Name": "King",
+    "Suburb": "Wanaheda",
+    "City": "Wndhoek",
+    "Streetname": "Tugela Steet",
+    "Housenumber": "2000",
+    "Simnumber": "0812221609",
+    "Usercategory": "Home",
+    "Meterlng": "-22.521021538121865",
+    "Meterlat": "17.032487486262127",
+    "Transformerlng": "-22.520825802746423",
+    "Transformerlat": "17.033259962460754",
+    "TransformerDRN": "0260000000051"
+ }
+}
+###
+get http://localhost:4000/suburbEnergy
+Content-Type: application/json
+
+{ 
+    "suburbs": [
+     "Academia" ,
+      "Auasblick" ,
+      "Avis" ,
+     "Cimbebasia" ,
+      "Dorado Park" ,
+      "Donkerhoek" ,
+     "Elisenheim" ,
+      "Eros" ,
+     "Eros Park" ,
+     "Freedom Land" ,
+     "Goreangab" ,
+      "Groot Aub" ,
+      "Greenwell" ,
+     "Hakahana" ,
+      "Havana" ,
+       "Hochland Park" ,
+       "Katutura" ,
+       "Khomasdal" ,
+     "Kleine Kuppe" ,
+      "Klein Windhoek" ,
+     "Lafrenz" ,
+       "Ludwigsdorf" ,
+       "Luxury Hill" ,
+       "Maxuilili" ,
+        "Northern Industrial " ,
+       "Okuryangava" ,
+        "Olympia" ,
+       "Ombili" ,
+       "Otjomuise" ,
+       "Pionierspark" ,
+        "Prosperita" ,
+      "Rocky Crest" ,
+     "Southern Industria" ,
+      "Suiderhof" ,
+     "Tauben Glen" ,
+      "Wanaheda" ,
+        "Windhoek Central" ,
+        "Windhoek North" ,
+       "Windhoek West" 
+  ]
+}
+

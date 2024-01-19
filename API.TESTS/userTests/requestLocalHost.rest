@@ -1,13 +1,14 @@
 
 ###
-post http://localhost:4000/signin
-Content-Type: application/json
+post https://backend2.gridxmeter.com/signin 
+Content-Type: application/json   
 
 {
-//"GuestID": "1",    
-"Email": "baru@pulsarelectronic.com",
-"Password": "12345678"
-
+    "Email": "admin@pulsar.com",
+    "Password": "Admin@123"
+    
+    
+    
 }
 
 ###
