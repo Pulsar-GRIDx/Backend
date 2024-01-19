@@ -304,11 +304,13 @@ exports.getDrnsBySuburb = (LocationName) => {
 };
 
 exports.getEnergyByDrn = (drn) => {
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = CURDATE()';
+  const getEnergyByDrn = 'SELECT CAST(active_energy AS DECIMAL(10,2)) AS active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = CURDATE()';
   return new Promise((resolve, reject) => {
     db.query(getEnergyByDrn, [drn], (err, energyData) => {
       if (err) reject(err);
-      else resolve(energyData);
+      else resolve(energyData.map(record => record.active_energy)); // Resolve with the first record directly
+      console.log(energyData);
     });
   });
 };
+

@@ -192,15 +192,14 @@ exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
   Promise.all(suburbs.map(LocationName => {
     return energyService.getDrnsBySuburb(LocationName)
-      .then(drns => Promise.all(drns.map(drn => energyService.getEnergyByDrn(drn))))
-      .then(energyData => {
-        const totalEnergy = energyData.reduce((total, record) => total + Number(record.active_energy), 0);
+      .then(drns => Promise.allSettled(drns.map(drn => energyService.getEnergyByDrn(drn))))
+      .then(results => {
+        const energyData = results.filter(result => result.status === 'fulfilled').flatMap(result => result.value);
+        let totalEnergy = 0;
+        if (energyData.length > 0) {
+          totalEnergy = energyData.reduce((total, record) => total + Number(record.active_energy), 0);
+        }
         return { LocationName, totalEnergy };
       });
   }))
-    .then(results => res.json(results))
-    .catch(err => {
-      console.log('Error querying the database:', err);
-      return res.status(500).send({ error: 'Database query failed', details: err });
-    });
-};
+};  
