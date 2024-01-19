@@ -272,11 +272,11 @@ exports.insertIntoMeterRealInfo = (data) => {
 
 exports.insertIntoAnotherTable = (data) => {
   const anotherTableData = {
-    Meterlng: data.Meterlng,
-    Meterlat: data.Meterlat,
-    Transformerlng: data.Transformerlng,
-    Transformerlat: data.Transformerlat,
-    TransformerDRN: data.TransformerDRN,
+    Longitude: data.Meterlng,
+    Lat: data.Meterlat,
+    pLng: data.Transformerlng,
+    pLat: data.Transformerlat,
+    PowerSupply: data.TransformerDRN,
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO MeterLocationInfoTable SET ?', anotherTableData, (err) => {

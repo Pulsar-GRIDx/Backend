@@ -49,20 +49,20 @@ Content-Type: application/json
 
 {
  "data":{
-     "DRN": "",
-    "Surname": "",
-    "Name": "",
-    "Suburb": "",
-    "City": "",
-    "Streetname": "",
-    "Housenumber": "",
-    "Simnumber": "",
-    "Usercategory": "",
-    "Meterlng": "",
-    "Meterlat": "",
-    "Transformerlng": "",
-    "Transformerlat": "",
-    "TransformerDRN": ""
+     "DRN": "025006654179",
+    "Surname": "Hiholike",
+    "Name": "King",
+    "Suburb": "Wanaheda",
+    "City": "Wndhoek",
+    "Streetname": "Tugela Steet",
+    "Housenumber": "2000",
+    "Simnumber": "0812221609",
+    "Usercategory": "Home",
+    "Meterlng": "-22.521021538121865",
+    "Meterlat": "17.032487486262127",
+    "Transformerlng": "-22.520825802746423",
+    "Transformerlat": "17.033259962460754",
+    "TransformerDRN": "0260000000051"
  }
 }
 ###
