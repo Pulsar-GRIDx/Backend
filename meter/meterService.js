@@ -252,18 +252,18 @@ exports.getCurrentDayData = () => {
 //----------------------------------------------InsertMeterData---------------------------------------------------------------------------//
 exports.insertIntoMeterRealInfo = (data) => {
   const meterRealInfoData = {
-    DRN: data.DRN,
-    Surname: data.Surname,
-    Name: data.Name,
-    Suburb: data.Suburb,
-    City: data.City,
-    Streetname: data.Streetname,
-    Housenumber: data.Housenumber,
-    Simnumber: data.Simnumber,
-    Usercategory: data.Usercategory,
+    DRN: data.data.DRN,
+    Surname: data.data.Surname,
+    Name: data.data.Name,
+    City: data.data.City,
+    Streetname: data.data.Streetname,
+    Housenumber: data.data.Housenumber,
+    Simnumber: data.data.Simnumber,
+    Usercategory: data.data.Usercategory,
+    
   };
   return new Promise((resolve, reject) => {
-    db.query('INSERT INTO MeterRealInfo SET ?', meterRealInfoData, (err) => {
+    db.query('INSERT INTO MeterProfileReal SET ?', meterRealInfoData, (err) => {
       if (err) reject(err);
       else resolve();
     });
@@ -272,11 +272,14 @@ exports.insertIntoMeterRealInfo = (data) => {
 
 exports.insertIntoAnotherTable = (data) => {
   const anotherTableData = {
-    Longitude: data.Meterlng,
-    Lat: data.Meterlat,
-    pLng: data.Transformerlng,
-    pLat: data.Transformerlat,
-    PowerSupply: data.TransformerDRN,
+    DRN: data.data.DRN,
+    Longitude: data.data.Meterlng,
+    Lat: data.data.Meterlat,
+    pLng: data.data.Transformerlng,
+    pLat: data.data.Transformerlat,
+    PowerSupply: data.data.TransformerDRN,
+    Type: data.data.Usercategory,
+    Suburb: data.data.Suburb,
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO MeterLocationInfoTable SET ?', anotherTableData, (err) => {
@@ -285,6 +288,8 @@ exports.insertIntoAnotherTable = (data) => {
     });
   });
 };
+
+
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 exports.getDrnsBySuburb = (LocationName) => {

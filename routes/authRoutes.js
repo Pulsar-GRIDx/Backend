@@ -349,8 +349,6 @@ router.post('/updateStatus/:Admin_ID', (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-=======
 // Admin Route to update user information
 router.post('/AdminUpdate/:Admin_ID', (req, res) => {
   const Admin_ID = req.params.Admin_ID; 
@@ -407,7 +405,6 @@ router.post('/updateStatus/:Admin_ID', (req, res) => {
   });
 });
 
->>>>>>> b19a728d30f302788f19fadbe2c80b76593ef89c
 router.post('/resetPassword/:Admin_ID', (req, res) => {
   const Admin_ID = req.params.Admin_ID;
   const { Password } = req.body;

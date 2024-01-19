@@ -49,7 +49,7 @@ Content-Type: application/json
 
 {
  "data":{
-     "DRN": "025006654179",
+     "DRN": "0260077546169",
     "Surname": "Hiholike",
     "Name": "King",
     "Suburb": "Wanaheda",
@@ -57,12 +57,12 @@ Content-Type: application/json
     "Streetname": "Tugela Steet",
     "Housenumber": "2000",
     "Simnumber": "0812221609",
-    "Usercategory": "Home",
-    "Meterlng": "-22.521021538121865",
-    "Meterlat": "17.032487486262127",
-    "Transformerlng": "-22.520825802746423",
-    "Transformerlat": "17.033259962460754",
-    "TransformerDRN": "0260000000051"
+    "Usercategory": "meter",
+    "Meterlng": "-22.521021538121866",
+    "Meterlat": "17.032487486262128",
+    "Transformerlng": "-22.520825802746433",
+    "Transformerlat": "17.033259962460744",
+    "TransformerDRN": "0260000000061"
  }
 }
 ###
