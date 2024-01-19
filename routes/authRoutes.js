@@ -332,6 +332,117 @@ router.put('/updateStatus/:UserID', (req, res) => {
   });
 });
 
+// Admin Route to update user information
+router.post('/AdminUpdate/:Admin_ID', (req, res) => {
+  const Admin_ID = req.params.Admin_ID; 
+  const { FirstName, Email, LastName, AccessLevel, Username } = req.body;
+
+  // SQL UPDATE query to update user information
+  const updateUserQuery = 'UPDATE SystemAdmins SET FirstName = ?, Email = ?, LastName = ?, AccessLevel = ?, Username = ? WHERE Admin_ID = ?';
+
+  // Execute the SQL query to update user information
+  connection.query(updateUserQuery, [FirstName, Email, LastName, AccessLevel, Username, Admin_ID], (err, results) => {
+    if (err) {
+      console.error('Error updating user:', err);
+      return res.status(500).json({ error: 'Internal server error', err });
+    }
+
+    // Check if the user was found and updated
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Send a success response
+    res.status(200).json({ message: 'User information updated successfully' });
+  });
+});
+
+// Route to update Admin status
+router.post('/updateStatus/:Admin_ID', (req, res) => {
+  const Admin_ID = req.params.Admin_ID;
+   // Check if the user exists in the database
+  const checkUserQuery = 'SELECT * FROM SystemAdmins WHERE Admin_ID = ?';
+
+  connection.query(checkUserQuery, [Admin_ID], (err, results) => {
+    if (err) {
+      console.error('Error checking user:', err);
+      res.status(500).json({ message: 'Internal Server Error', err });
+    } else if (results.length === 0) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      const user = results[0];
+      const newStatus = user.IsActive === 1 ? 0 : 1;
+
+      // Update user status
+      const updateStatusQuery = 'UPDATE SystemAdmins SET IsActive = ? WHERE Admin_ID = ?';
+
+      connection.query(updateStatusQuery, [newStatus, Admin_ID], (err, updateResult) => {
+        if (err) {
+          console.error('Error updating user status:', err);
+          res.status(500).json({ message: 'Internal Server Error', err });
+        } else {
+          res.status(200).json({ message: 'User status updated successfully', newStatus });
+        }
+      });
+    }
+  });
+});
+
+router.post('/resetPassword/:Admin_ID', (req, res) => {
+  const Admin_ID = req.params.Admin_ID;
+  const { Password } = req.body;
+
+  // Check if the provided password is empty
+  if (!Password) {
+    return res.status(400).json({ message: 'Please enter a new password' });
+  }
+
+  // Check if the new password is the same as the current password
+  const checkPasswordQuery = 'SELECT Password FROM SystemAdmins WHERE Admin_ID = ?';
+  connection.query(checkPasswordQuery, [Admin_ID], (err, results) => {
+    if (err) {
+      console.error('Error checking password:', err);
+      return res.status(500).json({ message: 'Internal Server Error', err });
+    }
+
+    if (results.length > 0) {
+      const currentPassword = results[0].Password;
+
+      bcrypt.compare(Password, currentPassword, (err, isMatch) => {
+        if (err) {
+          console.error('Error comparing passwords:', err);
+          return res.status(500).json({ message: 'Internal Server Error', err });
+        }
+
+        if (isMatch) {
+          return res.status(400).json({ message: 'Please choose a different password' });
+        }
+
+        // If the new password is different, proceed with updating the password
+        // Hash the new password before storing it in the database
+        bcrypt.hash(Password, 10, (err, hashedPassword) => {
+          if (err) {
+            console.error('Error hashing password:', err);
+            return res.status(500).json({ message: 'Internal Server Error', err });
+          }
+
+          // Update the password in the database
+          const updatePasswordQuery = 'UPDATE SystemAdmins SET Password = ? WHERE Admin_ID = ?';
+          connection.query(updatePasswordQuery, [hashedPassword, Admin_ID], (err, updateResult) => {
+            if (err) {
+              console.error('Error updating password:', err);
+              return res.status(500).json({ message: 'Internal Server Error', err });
+            }
+
+            res.status(200).json({ message: 'Password updated successfully' });
+          });
+        });
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  });
+});
 
 // Middleware for handling errors
 router.use((err, req, res, next) => {
