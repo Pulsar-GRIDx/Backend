@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
-  origin: 'http://localhost:4000', 
+  origin: ['https://gridxmeter.com', 'http://gridxmeter.com'],
   credentials: true,
   optionSuccessStatus: 200,
 };

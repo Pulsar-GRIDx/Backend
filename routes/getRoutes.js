@@ -92,6 +92,18 @@ router.get('/allUsers', (req, res) => {
   });
 });
 
+router.get('/allAdmins', (req, res) => {
+  // Query the database to get the users
+  connection.query('SELECT Admin_ID, Username ,FirstName, LastName, Password, Email, IsActive, AccessLevel FROM SystemAdmins', (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Send the list of users as a JSON response
+    res.status(200).json({ users: results });
+  });
+});
 
 // Middleware for handling errors
 router.use((err, req, res, next) => {
