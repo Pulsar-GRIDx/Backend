@@ -81,7 +81,7 @@ exports.getCurrentDayEnergyByDRN = function(DRN, callback) {
 
 ///-------------------------------------Active Inactive meters-----------------------------------------------------///
 exports.getAllActiveAndInactiveMeters = function(callback) {
-  const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable';
+  const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable WHERE DATE(date_time) = CURDATE()';
 
   db.query(getAllActiveAndInactiveMeters, (err, results) => {
     if (err) {
