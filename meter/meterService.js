@@ -288,7 +288,7 @@ exports.insertIntoAnotherTable = (data) => {
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 exports.getDrnsBySuburb = (LocationName) => {
-  const getDrnsBySuburb = 'SELECT DRN FROM TransformerInformation WHERE LocationName = ?';
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
   return new Promise((resolve, reject) => {
     db.query(getDrnsBySuburb, [LocationName], (err, drnData) => {
       if (err) reject(err);

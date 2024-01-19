@@ -189,7 +189,7 @@ exports.insertData = (req, res) => {
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 
 exports.getSuburbEnergy = (req, res) => {
-  const suburbs = req.body.LocationName; // Assuming the suburbs are sent in the request body as an array
+  const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
   Promise.all(suburbs.map(LocationName => {
     return energyService.getDrnsBySuburb(LocationName)
       .then(drns => Promise.all(drns.map(drn => energyService.getEnergyByDrn(drn))))
