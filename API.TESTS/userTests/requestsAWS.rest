@@ -1,12 +1,12 @@
 
 ### 
-post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/signin 
+post https://backend2.gridxmeter.com/signin 
 Content-Type: application/json
 
 { "Email": "adrian@pulsarelectronic.com", "Password": "12345678" }
 ###
 
-post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/signup
+post https://backend2.gridxmeter.com/signup
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
 Content-Type: application/json
 
@@ -33,7 +33,7 @@ Content-Type: application/json
 
 
 ###
-post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/forgot-password
+post https://backend2.gridxmeter.com/forgot-password
 
 {
 "Email": "admin@pulsarelectronic.com"
@@ -41,7 +41,7 @@ post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/forgot-password
 }
 
 ###
-post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/reset-password
+post https://backend2.gridxmeter.com/reset-password
 
 {
 "newPassword": "undefined",
@@ -53,19 +53,19 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd
 Content-Type: application/json
 ###
 
-get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/protected
+get https://backend2.gridxmeter.com/protected
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjQsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcyMjgzMDN9.9OFU8z-W3ijupu1b-qCkThdVr6P5xyA85SxrDi5hWnw
 Content-Type: application/json
 ###
-get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/reset-password
+get https://backend2.gridxmeter.com/reset-password
 ###
-get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/profile/1
+get https://backend2.gridxmeter.com/profile/1
 
 ###
-get https://backend2.gridxmeter.com/allUsers
+get https://backend2.gridxmeter.com/allAdmins
 ###
 
-post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/UserUpdate/1
+post https://backend2.gridxmeter.com/UserUpdate/1
 
 {
 "FirstName":"Update update",
@@ -74,10 +74,10 @@ post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/UserUpdate/1
 }
 ###
 
-post http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/AdminUpdate/1
+post https://backend2.gridxmeter.com/AdminUpdate/1
 
 ###
-delete http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/deleteUser/3
+delete https://backend2.gridxmeter.com/deleteUser/3
 
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
 Content-Type: application/jsonn
@@ -85,7 +85,7 @@ Content-Type: application/jsonn
 
 ###
 
-get http://ec2-52-22-177-145.compute-1.amazonaws.com:4000/protected
+get https://backend2.gridxmeter.com/protected
 
 authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
 Content-Type: application/json

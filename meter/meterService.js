@@ -81,7 +81,7 @@ exports.getCurrentDayEnergyByDRN = function(DRN, callback) {
 
 ///-------------------------------------Active Inactive meters-----------------------------------------------------///
 exports.getAllActiveAndInactiveMeters = function(callback) {
-  const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable';
+  const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable WHERE DATE(date_time) = CURDATE()';
 
   db.query(getAllActiveAndInactiveMeters, (err, results) => {
     if (err) {
@@ -279,7 +279,7 @@ exports.insertIntoAnotherTable = (data) => {
     TransformerDRN: data.TransformerDRN,
   };
   return new Promise((resolve, reject) => {
-    db.query('INSERT INTO AnotherTable SET ?', anotherTableData, (err) => {
+    db.query('INSERT INTO MeterLocationInfoTable SET ?', anotherTableData, (err) => {
       if (err) reject(err);
       else resolve();
     });
@@ -288,7 +288,7 @@ exports.insertIntoAnotherTable = (data) => {
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 exports.getDrnsBySuburb = (LocationName) => {
-  const getDrnsBySuburb = 'SELECT DRN FROM TransformerInformation WHERE LocationName = ?';
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
   return new Promise((resolve, reject) => {
     db.query(getDrnsBySuburb, [LocationName], (err, drnData) => {
       if (err) reject(err);
