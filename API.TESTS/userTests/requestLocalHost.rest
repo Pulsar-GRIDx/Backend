@@ -88,5 +88,14 @@ Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjUsIkFjY2Vzc0x
 ###
 put http://localhost:4000/updateStatus/5
 
+###
+get http://localhost:4000/meter_change
 
+###
+get http://localhost:4000/meter_change
 
+###
+get http://localhost:4000/active_state_count
+
+###
+get http://localhost:4000/inactive_state_count
