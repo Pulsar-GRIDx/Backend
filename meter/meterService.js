@@ -267,6 +267,7 @@ exports.insertIntoMeterRealInfo = (data) => {
       if (err) reject(err);
       else resolve();
     });
+    console.log(meterRealInfoData);
   });
 };
 
@@ -283,6 +284,7 @@ exports.insertIntoAnotherTable = (data) => {
       if (err) reject(err);
       else resolve();
     });
+    console.log(anotherTableData);
   });
 };
 
