@@ -190,13 +190,32 @@ exports.insertData = (req, res) => {
 
 exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
-  Promise.all(suburbs.map(LocationName => {
-    return energyService.getDrnsBySuburb(LocationName)
-      .then(drns => Promise.all(drns.map(drn => energyService.getEnergyByDrn(drn))))
-      .then(energyData => {
-        const totalEnergy = energyData.reduce((total, record) => total + Number(record.active_energy), 0);
-        return { LocationName, totalEnergy };
-      });
+  Promise.all(suburbs.map(suburbs => {
+    return energyService.getDrnsBySuburb(suburbs)
+    .then(energyData => {
+      console.log('Energy data for suburb', suburbs, ':', energyData);
+      const totalEnergy = energyData.reduce((total, record) => {
+        const activeEnergy = record.active_energy;
+        console.log('Active Energy:', activeEnergy);
+        
+        if (activeEnergy !== null && activeEnergy !== undefined && typeof activeEnergy === 'string') {
+          const energyValue = parseFloat(activeEnergy.replace(',', ''));
+          console.log('Parsed Energy Value:', energyValue);
+          
+          if (!isNaN(energyValue)) {
+            return total + energyValue;
+          }
+        }
+        return total;
+      }, 0);
+      
+      
+      
+      
+    
+      return { suburbs, totalEnergy };
+    });
+    
   }))
     .then(results => res.json(results))
     .catch(err => {

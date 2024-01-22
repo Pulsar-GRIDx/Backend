@@ -287,23 +287,31 @@ exports.insertIntoAnotherTable = (data) => {
 };
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
-exports.getDrnsBySuburb = (LocationName) => {
+exports.getDrnsBySuburb = (suburbs) => {
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
   return new Promise((resolve, reject) => {
-    db.query(getDrnsBySuburb, [LocationName], (err, drnData) => {
+    db.query(getDrnsBySuburb, [suburbs], (err, DRN) => {
       if (err) reject(err);
-      else resolve(drnData.map(record => record.DRN));
-      console.log(drnData);
+      else resolve(DRN.map(record => record.DRN));
+      console.log({DRN});
     });
   });
 };
 
-exports.getEnergyByDrn = (drn) => {
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = CURDATE()';
+exports.getEnergyByDrn = (suburb, drn) => {
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
   return new Promise((resolve, reject) => {
     db.query(getEnergyByDrn, [drn], (err, energyData) => {
       if (err) reject(err);
-      else resolve(energyData);
+      else {
+        console.log(`Query results for DRN ${drn} in suburb ${suburb}:`, energyData);
+        if (energyData.length > 0) {
+          console.log('active_energy:', energyData[0].active_energy);
+        }
+        resolve(energyData);
+      }
     });
   });
 };
+
+

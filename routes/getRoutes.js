@@ -5,7 +5,7 @@ const winston = require('winston');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../db");
-
+const db = require('../db');
 
 dotenv.config();
 const config = process.env;
@@ -307,5 +307,42 @@ router.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
+router.post('/getSuburbEnergy', (req, res) => {
+  const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
 
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
+
+  Promise.all(suburbs.map(suburb => {
+    return new Promise((resolve, reject) => {
+      db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
+        if (err) reject(err);
+        else resolve(drnData.map(record => record.DRN));
+      });
+    })
+    .then(drns => Promise.all(drns.map(drn => {
+      return new Promise((resolve, reject) => {
+        db.query(getEnergyByDrn, [drn], (err, energyData) => {
+          if (err) reject(err);
+          else resolve(energyData);
+        });
+      });
+    })))
+    .then(energyData => {
+      const totalEnergy = energyData.reduce((total, record) => {
+        if (record.active_energy !== null) {
+          return total + Number(record.active_energy);
+        } else {
+          return total;
+        }
+      }, 0);
+      return { suburb, totalEnergy };
+    });
+  }))
+  .then(results => res.json(results))
+  .catch(err => {
+    console.log('Error querying the database:', err);
+    return res.status(500).send({ error: 'Database query failed', details: err });
+  });
+});
   module.exports = router;
