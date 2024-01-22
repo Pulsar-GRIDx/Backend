@@ -155,6 +155,7 @@ exports.getStartDate = () => {
   return new Promise((resolve, reject) => {
     db.query(getStartDate, (err, startDateResult) => {
       if (err) reject(err);
+      
       else resolve(startDateResult);
     });
   });
@@ -170,7 +171,7 @@ exports.getPreviousData = (startDateResult) => {
   });
 };
 
-exports.calculateTotals = (allData) => {
+exports.calculateTotalss = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date_time;
     const energy = Number(record.active_energy) / 1000;
