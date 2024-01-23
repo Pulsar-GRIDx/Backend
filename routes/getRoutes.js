@@ -313,28 +313,45 @@ router.use((err, req, res, next) => {
 // Create a new cache instance
 const myCache = new NodeCache({ stdTTL: 3600, checkperiod: 6 });
 
-router.post('/getSuburbEnergy', (req, res) => {
-  const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
+// Simple in-memory cache
+const cache = {};
+
+router.post('/getSuburbEnergy', async (req, res) => {
+  const suburbs = req.body.suburbs;
+
+  const getCachedResult = (suburb) => cache[suburb];
+
+  const setCachedResult = (suburb, result) => {
+    cache[suburb] = result;
+  };
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';
   const getEnergyByDrn = 'SELECT active_energy FROM MeterEnergyUsageSummary WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
 
-  Promise.all(suburbs.map(suburb => {
-    return new Promise((resolve, reject) => {
-      db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
-        if (err) reject(err);
-        else resolve(drnData.map(record => record.DRN));
-      });
-    })
-    .then(drns => Promise.all(drns.map(drn => {
-      return new Promise((resolve, reject) => {
-        db.query(getEnergyByDrn, [drn], (err, energyData) => {
+  try {
+    const results = await Promise.all(suburbs.map(async (suburb) => {
+      // Check if result is already cached
+      const cachedResult = getCachedResult(suburb);
+      if (cachedResult) {
+        return cachedResult;
+      }
+
+      const drns = await new Promise((resolve, reject) => {
+        db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
           if (err) reject(err);
-          else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+          else resolve(drnData.map((record) => record.DRN));
         });
       });
-    })))
-    .then(energyData => {
+
+      const energyData = await Promise.all(drns.map(async (drn) => {
+        return new Promise((resolve, reject) => {
+          db.query(getEnergyByDrn, [drn], (err, energyData) => {
+            if (err) reject(err);
+            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+          });
+        });
+      }));
+
       const totalEnergy = energyData.reduce((total, record) => {
         if (record.active_energy !== null) {
           return total + Number(record.active_energy);
@@ -342,16 +359,20 @@ router.post('/getSuburbEnergy', (req, res) => {
           return total;
         }
       }, 0);
-      let result = {};
-      result[suburb] = totalEnergy;
+
+      const result = { [suburb]: totalEnergy };
+
+      // Cache the result for future use
+      setCachedResult(suburb, result);
+
       return result;
-    });
-  }))
-  .then(results => res.json(Object.assign({}, ...results)))
-  .catch(err => {
+    }));
+
+    res.json(Object.assign({}, ...results));
+  } catch (err) {
     console.log('Error querying the database:', err);
     return res.status(500).send({ error: 'Database query failed', details: err });
-  });
+  }
 });
 
 
