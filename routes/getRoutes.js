@@ -303,26 +303,20 @@ function inactivePercent(previousValue, currentValue) {
   }
 }
 
-// Middleware for handling errors
-router.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+
 
 
 // Create a new cache instance
-const myCache = new NodeCache({ stdTTL: 3600, checkperiod: 6 });
+const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
-// Simple in-memory cache
-const cache = {};
 
 router.post('/getSuburbEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
 
-  const getCachedResult = (suburb) => cache[suburb];
+  const getCachedResult = (suburb) => cache.get(suburb);
 
   const setCachedResult = (suburb, result) => {
-    cache[suburb] = result;
+    cache.set(suburb, result);
   };
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';

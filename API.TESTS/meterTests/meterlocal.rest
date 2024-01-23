@@ -46,8 +46,8 @@ Content-Type: application/json
 post http://localhost:4000/insertMeterData
 Content-Type: application/json
 
-
- "data":{
+{
+ "data":[
      "DRN": "0260694812784",
     "Surname": "Jose",
     "Name": "Dino",
@@ -62,8 +62,8 @@ Content-Type: application/json
     "Transformerlng": "-22.5208258027464",
     "Transformerlat": "17.033259962460",
     "TransformerDRN": "0260000000090"
- }
-
+ ]
+}
 ###
 post http://localhost:4000/getSuburbEnergy
 Content-Type: application/json

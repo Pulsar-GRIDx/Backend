@@ -35,6 +35,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
+// Middleware for handling errors
+app.use((err, req, res, next) => {
+ 
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
 
 db.connect((err) => {
