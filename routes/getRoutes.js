@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const winston = require('winston');
 const jwt = require('jsonwebtoken');
+const NodeCache = require('node-cache');
+
 const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../db");
 const db = require('../db');
@@ -307,7 +309,11 @@ router.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-router.post('/Suburb', (req, res) => {
+
+// Create a new cache instance
+const myCache = new NodeCache({ stdTTL: 3600, checkperiod: 6 });
+
+router.post('/getSuburbEnergy', (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';
@@ -336,14 +342,19 @@ router.post('/Suburb', (req, res) => {
           return total;
         }
       }, 0);
-      return { suburb, totalEnergy };
+      let result = {};
+      result[suburb] = totalEnergy;
+      return result;
     });
   }))
-  .then(results => res.json(results))
+  .then(results => res.json(Object.assign({}, ...results)))
   .catch(err => {
     console.log('Error querying the database:', err);
     return res.status(500).send({ error: 'Database query failed', details: err });
   });
 });
 
-  module.exports = router;
+
+
+
+module.exports = router;
