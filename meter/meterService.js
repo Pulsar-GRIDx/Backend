@@ -291,7 +291,7 @@ exports.insertIntoAnotherTable = (data) => {
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 exports.getDrnsBySuburb = (suburbs) => {
-  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';
   return new Promise((resolve, reject) => {
     db.query(getDrnsBySuburb, [suburbs], (err, DRN) => {
       if (err) reject(err);
@@ -302,7 +302,7 @@ exports.getDrnsBySuburb = (suburbs) => {
 };
 
 exports.getEnergyByDrn = (suburb, drn) => {
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterEnergyUsageSummary WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
   return new Promise((resolve, reject) => {
     db.query(getEnergyByDrn, [drn], (err, energyData) => {
       if (err) reject(err);

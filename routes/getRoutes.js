@@ -307,11 +307,11 @@ router.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-router.post('/getSuburbEnergy', (req, res) => {
+router.post('/Suburb', (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
 
-  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterEnergyUsageSummary WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
 
   Promise.all(suburbs.map(suburb => {
     return new Promise((resolve, reject) => {
@@ -324,7 +324,7 @@ router.post('/getSuburbEnergy', (req, res) => {
       return new Promise((resolve, reject) => {
         db.query(getEnergyByDrn, [drn], (err, energyData) => {
           if (err) reject(err);
-          else resolve(energyData);
+          else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
         });
       });
     })))
@@ -345,4 +345,5 @@ router.post('/getSuburbEnergy', (req, res) => {
     return res.status(500).send({ error: 'Database query failed', details: err });
   });
 });
+
   module.exports = router;
