@@ -19,25 +19,25 @@ get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
 
 ###
-get http://localhost:4000/tokenAmount
+get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
 ###
-get http://localhost:4000/totalTokensBought
-Content-Type: application/json
-
-###
-get http://localhost:4000/totalEnergyAmount
-Content-Type: application/json
-###
-get http://localhost:4000/weeklyDataAmount
+get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
 
 ###
-get http://localhost:4000/currentDayEnergy
+get https://backend2.gridxmeter.com/totalEnergyAmount
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 
 ###
-post http://localhost:4000/insertMeterData
+get https://backend2.gridxmeter.com/currentDayEnergy
+Content-Type: application/json
+
+###
+post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
 
 {
@@ -59,7 +59,7 @@ Content-Type: application/json
  ]
 }
 ###
-post http://localhost:4000/getSuburbEnergy
+post https://backend2.gridxmeter.com/getSuburbEnergy
 Content-Type: application/json
 
 { 
@@ -108,10 +108,10 @@ Content-Type: application/json
 
 
 ###
-get http://localhost:4000/meter_change
+get https://backend2.gridxmeter.com/meter_change
 
 ###
-get http://localhost:4000/active_state_count
+get https://backend2.gridxmeter.com/active_state_count
 
 ###
-get http://localhost:4000/inactive_state_count
+get https://backend2.gridxmeter.com/inactive_state_count
