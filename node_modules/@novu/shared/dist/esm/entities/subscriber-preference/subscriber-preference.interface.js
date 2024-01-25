@@ -1,0 +1,6 @@
+import { PreferenceOverrideSourceEnum } from '../../types';
+export var PreferenceLevelEnum;
+(function (PreferenceLevelEnum) {
+    PreferenceLevelEnum["GLOBAL"] = "global";
+    PreferenceLevelEnum["TEMPLATE"] = "template";
+})(PreferenceLevelEnum || (PreferenceLevelEnum = {}));

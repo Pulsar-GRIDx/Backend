@@ -1,0 +1,9 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PreferenceLevelEnum = void 0;
+const types_1 = require("../../types");
+var PreferenceLevelEnum;
+(function (PreferenceLevelEnum) {
+    PreferenceLevelEnum["GLOBAL"] = "global";
+    PreferenceLevelEnum["TEMPLATE"] = "template";
+})(PreferenceLevelEnum = exports.PreferenceLevelEnum || (exports.PreferenceLevelEnum = {}));

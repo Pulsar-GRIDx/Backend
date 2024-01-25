@@ -1,0 +1,1 @@
+{"version":3,"file":"shared.d.ts","sourceRoot":"","sources":["../../../../src/dto/workflow-override/shared.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,mBAAmB,EAAE,MAAM,sCAAsC,CAAC;AAE3E,MAAM,WAAW,2BAA2B;IAC1C,MAAM,CAAC,EAAE,OAAO,CAAC;IAEjB,kBAAkB,CAAC,EAAE,mBAAmB,CAAC;CAC1C"}

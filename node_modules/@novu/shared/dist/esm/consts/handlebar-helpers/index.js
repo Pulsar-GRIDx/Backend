@@ -1,0 +1,6 @@
+export * from './handlebarHelpers';
+export * from './getTemplateVariables';
+export const novuReservedVariableNames = ['body'];
+export function isReservedVariableName(variableName) {
+    return novuReservedVariableNames.includes(variableName);
+}

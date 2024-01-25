@@ -1,0 +1,6 @@
+export var WebSocketEventEnum;
+(function (WebSocketEventEnum) {
+    WebSocketEventEnum["RECEIVED"] = "notification_received";
+    WebSocketEventEnum["UNREAD"] = "unread_count_changed";
+    WebSocketEventEnum["UNSEEN"] = "unseen_count_changed";
+})(WebSocketEventEnum || (WebSocketEventEnum = {}));

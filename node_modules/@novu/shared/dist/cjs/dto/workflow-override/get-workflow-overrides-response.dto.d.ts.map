@@ -1,0 +1,1 @@
+{"version":3,"file":"get-workflow-overrides-response.dto.d.ts","sourceRoot":"","sources":["../../../../src/dto/workflow-override/get-workflow-overrides-response.dto.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,+BAA+B,EAAE,MAAM,sCAAsC,CAAC;AAEvF,MAAM,WAAW,gCAAgC;IAC/C,OAAO,EAAE,OAAO,CAAC;IAEjB,IAAI,EAAE,+BAA+B,EAAE,CAAC;IAExC,QAAQ,EAAE,MAAM,CAAC;IAEjB,IAAI,EAAE,MAAM,CAAC;CACd"}

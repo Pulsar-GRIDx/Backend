@@ -1,0 +1,1 @@
+{"version":3,"file":"config.types.d.ts","sourceRoot":"","sources":["../../../../src/types/rate-limiting/config.types.ts"],"names":[],"mappings":"AAGA,MAAM,MAAM,2BAA2B,GAAG,gBAAgB,CAAC;AAK3D,oBAAY,sBAAsB;IAChC,SAAS,cAAc;IACvB,IAAI,SAAS;IACb,OAAO,YAAY;CACpB"}

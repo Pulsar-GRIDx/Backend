@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ExecutionDetailsStatusEnum = exports.ExecutionDetailsSourceEnum = void 0;
+var ExecutionDetailsSourceEnum;
+(function (ExecutionDetailsSourceEnum) {
+    ExecutionDetailsSourceEnum["CREDENTIALS"] = "Credentials";
+    ExecutionDetailsSourceEnum["INTERNAL"] = "Internal";
+    ExecutionDetailsSourceEnum["PAYLOAD"] = "Payload";
+    ExecutionDetailsSourceEnum["WEBHOOK"] = "Webhook";
+})(ExecutionDetailsSourceEnum = exports.ExecutionDetailsSourceEnum || (exports.ExecutionDetailsSourceEnum = {}));
+var ExecutionDetailsStatusEnum;
+(function (ExecutionDetailsStatusEnum) {
+    ExecutionDetailsStatusEnum["SUCCESS"] = "Success";
+    ExecutionDetailsStatusEnum["WARNING"] = "Warning";
+    ExecutionDetailsStatusEnum["FAILED"] = "Failed";
+    ExecutionDetailsStatusEnum["PENDING"] = "Pending";
+    ExecutionDetailsStatusEnum["QUEUED"] = "Queued";
+    ExecutionDetailsStatusEnum["READ_CONFIRMATION"] = "ReadConfirmation";
+})(ExecutionDetailsStatusEnum = exports.ExecutionDetailsStatusEnum || (exports.ExecutionDetailsStatusEnum = {}));

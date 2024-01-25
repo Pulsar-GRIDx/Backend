@@ -1,9 +1,3 @@
-post http://localhost:4000/energy0260152877924
-Content-Type: application/json
-
-# {
-#     "DRN":"0000039967351"
-# }
 
 ###
 post http://localhost:4000/currentAndLastWeekEnergy0260152877924
@@ -112,3 +106,12 @@ Content-Type: application/json
   ]
 }
 
+
+###
+get http://localhost:4000/meter_change
+
+###
+get http://localhost:4000/active_state_count
+
+###
+get http://localhost:4000/inactive_state_count
