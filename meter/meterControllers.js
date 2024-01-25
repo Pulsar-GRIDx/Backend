@@ -123,7 +123,7 @@ exports.getTotalEnergyAmount = (req, res) => {
 
       const response = {
         allData: result,
-        // startDate: startDate ? new Date(startDate).toISOString().split('T')[0] : null,
+        startDate,
         grandTotal: grandTotal,
       };
       res.json(response);
