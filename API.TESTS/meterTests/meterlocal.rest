@@ -15,7 +15,7 @@ Content-Type: application/json
 # }
 ###
 
-get http://localhost:4000/activeInactiveMeters
+get https://backend2.gridxmeter.com/activeInactiveMeters
 Content-Type: application/json
 
 ###
@@ -59,7 +59,7 @@ Content-Type: application/json
  ]
 }
 ###
-post https://backend2.gridxmeter.com/getSuburbEnergy
+post http://localhost:4000/getSuburbEnergy
 Content-Type: application/json
 
 { 

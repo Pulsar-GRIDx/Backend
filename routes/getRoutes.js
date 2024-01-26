@@ -319,8 +319,8 @@ router.post('/getSuburbEnergy', async (req, res) => {
     cache.set(suburb, result);
   };
 
-  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterEnergyUsageSummary WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
 
   try {
     const results = await Promise.all(suburbs.map(async (suburb) => {
@@ -334,6 +334,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
         db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
           if (err) reject(err);
           else resolve(drnData.map((record) => record.DRN));
+          console.log(drnData);
         });
       });
 
@@ -342,6 +343,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
           db.query(getEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
             else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            console.log(energyData);
           });
         });
       }));
@@ -368,8 +370,5 @@ router.post('/getSuburbEnergy', async (req, res) => {
     return res.status(500).send({ error: 'Database query failed', details: err });
   }
 });
-
-
-
 
 module.exports = router;
