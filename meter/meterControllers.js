@@ -102,31 +102,40 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   };
 //-----------------------------TotalEnergyConsumptionOnTheSystem-----------------------------------//
 
-  exports.getTotalEnergyAmount = (req, res) => {
-    energyService.getCurrentData()
-      .then(currentData => energyService.getStartDate(currentData))
-      .then(startDateResult => {
-        return energyService.getPreviousData(startDateResult)
-          .then(allData => {
-            return { allData, startDateResult };
-          });
-      })
-      .then(({ allData, startDateResult }) => {
-        const totals = energyService.calculateTotals(allData);
-        const result = Object.values(totals);
-        const grandTotal = result.reduce((total, record) => total + record, 0);
-        const response = {
-          allData: result,
-          startDate: new Date(startDateResult[0].startDate).toISOString().split('T')[0],
-          grandTotal: grandTotal,
-        };
-        res.json(response);
-      })
-      .catch(err => {
-        console.log('Error querying the database:', err);
-        return res.status(500).send({ error: 'Database query failed', details: err });
-      });
-  };
+exports.getTotalEnergyAmount = (req, res) => {
+  energyService.getCurrentData()
+    .then(currentData => energyService.getStartDate(currentData))
+    .then(startDateResult => {
+      console.log('startDateResult:', startDateResult); // For debugging
+
+      // Extract startDate from the results
+      const startDate = startDateResult && startDateResult[0] && startDateResult[0].startDate;
+
+      return energyService.getPreviousData(startDate)
+        .then(allData => {
+          return { allData, startDate };
+        });
+    })
+    .then(({ allData, startDate }) => {
+      const totals = energyService.calculateTotalss(allData);
+      const result = Object.values(totals);
+      const grandTotal = result.reduce((total, record) => total + record, 0);
+
+      const response = {
+        allData: result,
+        startDate,
+        grandTotal: grandTotal,
+      };
+      res.json(response);
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+
+
+
   
 ///------------------------------CurrentWeekTotals-------------------------------------------//
 
@@ -183,20 +192,41 @@ exports.insertData = (req, res) => {
     .catch(err => {
       console.error('Error inserting into the database:', err);
       return res.status(500).json({ error: 'Database insertion failed', details: err });
+      // console.log(data);
     });
+    console.log(data);
 };
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 
 exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
-  Promise.all(suburbs.map(LocationName => {
-    return energyService.getDrnsBySuburb(LocationName)
-      .then(drns => Promise.all(drns.map(drn => energyService.getEnergyByDrn(drn))))
-      .then(energyData => {
-        const totalEnergy = energyData.reduce((total, record) => total + Number(record.active_energy), 0);
-        return { LocationName, totalEnergy };
-      });
+  Promise.all(suburbs.map(suburbs => {
+    return energyService.getDrnsBySuburb(suburbs)
+    .then(energyData => {
+      console.log('Energy data for suburb', suburbs, ':', energyData);
+      const totalEnergy = energyData.reduce((total, record) => {
+        const activeEnergy = record.active_energy;
+        console.log('Active Energy:', activeEnergy);
+        
+        if (activeEnergy !== null && activeEnergy !== undefined && typeof activeEnergy === 'string') {
+          const energyValue = parseFloat(activeEnergy.replace(',', ''));
+          console.log('Parsed Energy Value:', energyValue);
+          
+          if (!isNaN(energyValue)) {
+            return total + energyValue;
+          }
+        }
+        return total;
+      }, 0);
+      
+      
+      
+      
+    
+      return { suburbs, totalEnergy };
+    });
+    
   }))
     .then(results => res.json(results))
     .catch(err => {

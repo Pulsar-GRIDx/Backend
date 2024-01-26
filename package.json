@@ -14,9 +14,11 @@
   "author": "Pulsar_Software_Team",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.5",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
@@ -28,9 +30,11 @@
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.6.1",
+    "node-cache": "^5.1.2",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "ssl": "^1.0.0",
+    "uuid": "^9.0.1",
     "validator": "^13.11.0",
     "winston": "^3.11.0"
   }

@@ -3,9 +3,11 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const winston = require('winston');
 const jwt = require('jsonwebtoken');
+const NodeCache = require('node-cache');
+
 const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../db");
-
+const db = require('../db');
 
 dotenv.config();
 const config = process.env;
@@ -301,11 +303,72 @@ function inactivePercent(previousValue, currentValue) {
   }
 }
 
-// Middleware for handling errors
-router.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+
+
+
+// Create a new cache instance
+const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
+
+
+router.post('/getSuburbEnergy', async (req, res) => {
+  const suburbs = req.body.suburbs;
+
+  const getCachedResult = (suburb) => cache.get(suburb);
+
+  const setCachedResult = (suburb, result) => {
+    cache.set(suburb, result);
+  };
+
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
+
+  try {
+    const results = await Promise.all(suburbs.map(async (suburb) => {
+      // Check if result is already cached
+      const cachedResult = getCachedResult(suburb);
+      if (cachedResult) {
+        return cachedResult;
+      }
+
+      const drns = await new Promise((resolve, reject) => {
+        db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
+          if (err) reject(err);
+          else resolve(drnData.map((record) => record.DRN));
+          console.log(drnData);
+        });
+      });
+
+      const energyData = await Promise.all(drns.map(async (drn) => {
+        return new Promise((resolve, reject) => {
+          db.query(getEnergyByDrn, [drn], (err, energyData) => {
+            if (err) reject(err);
+            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            console.log(energyData);
+          });
+        });
+      }));
+
+      const totalEnergy = energyData.reduce((total, record) => {
+        if (record.active_energy !== null) {
+          return total + Number(record.active_energy);
+        } else {
+          return total;
+        }
+      }, 0);
+
+      const result = { [suburb]: totalEnergy };
+
+      // Cache the result for future use
+      setCachedResult(suburb, result);
+
+      return result;
+    }));
+
+    res.json(Object.assign({}, ...results));
+  } catch (err) {
+    console.log('Error querying the database:', err);
+    return res.status(500).send({ error: 'Database query failed', details: err });
+  }
 });
 
-
-  module.exports = router;
+module.exports = router;

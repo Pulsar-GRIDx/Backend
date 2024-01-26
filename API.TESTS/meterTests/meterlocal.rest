@@ -1,10 +1,3 @@
-post http://localhost:4000/energy0260152877924
-
-Content-Type: application/json
-
-# {
-#     "DRN":"0000039967351"
-# }
 
 ###
 post http://localhost:4000/currentAndLastWeekEnergy0260152877924
@@ -22,51 +15,51 @@ Content-Type: application/json
 # }
 ###
 
-get http://localhost:4000/activeInactiveMeters
+get https://backend2.gridxmeter.com/activeInactiveMeters
 Content-Type: application/json
 
 ###
-get http://localhost:4000/tokenAmount
+get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
 ###
-get http://localhost:4000/totalTokensBought
-Content-Type: application/json
-
-###
-get http://localhost:4000/totalEnergyAmount
-Content-Type: application/json
-###
-get http://localhost:4000/weeklyDataAmount
+get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
 
 ###
-get http://localhost:4000/currentDayEnergy
+get https://backend2.gridxmeter.com/totalEnergyAmount
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 
 ###
-post http://localhost:4000/insertMeterData
+get https://backend2.gridxmeter.com/currentDayEnergy
+Content-Type: application/json
+
+###
+post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
 
 {
- "data":{
-     "DRN": "025006654179",
-    "Surname": "Hiholike",
-    "Name": "King",
-    "Suburb": "Wanaheda",
+ "data":[
+     "DRN": "0260694812784",
+    "Surname": "Jose",
+    "Name": "Dino",
+    "Suburb": "Havana",
     "City": "Wndhoek",
     "Streetname": "Tugela Steet",
-    "Housenumber": "2000",
-    "Simnumber": "0812221609",
+    "Housenumber": "20",
+    "Simnumber": "0811234567",
     "Usercategory": "Home",
-    "Meterlng": "-22.521021538121865",
-    "Meterlat": "17.032487486262127",
-    "Transformerlng": "-22.520825802746423",
-    "Transformerlat": "17.033259962460754",
-    "TransformerDRN": "0260000000051"
- }
+    "Meterlng": "-22.521021538121",
+    "Meterlat": "17.0324874862621",
+    "Transformerlng": "-22.5208258027464",
+    "Transformerlat": "17.033259962460",
+    "TransformerDRN": "0260000000090"
+ ]
 }
 ###
-get http://localhost:4000/suburbEnergy
+post http://localhost:4000/getSuburbEnergy
 Content-Type: application/json
 
 { 
@@ -113,3 +106,12 @@ Content-Type: application/json
   ]
 }
 
+
+###
+get https://backend2.gridxmeter.com/meter_change
+
+###
+get https://backend2.gridxmeter.com/active_state_count
+
+###
+get https://backend2.gridxmeter.com/inactive_state_count

@@ -4,13 +4,13 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
-  origin: ['https://gridxmeter.com', 'http://gridxmeter.com'],
+  origin: ['https://gridxmeter.com', 'http://gridxmeter.com','http://localhost:3000/'],
   credentials: true,
-  optionSuccessStatus: 200,
+  optionSuccessStatus: 20000,
 };
 // Rate limiter middleware
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
+  windowMs: 1 * 60 * 5,
   max: 5,
   message: 'Too many requests, please try again later.',
 });
@@ -35,6 +35,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
+// Middleware for handling errors
+app.use((err, req, res, next) => {
+ 
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
 
 db.connect((err) => {
