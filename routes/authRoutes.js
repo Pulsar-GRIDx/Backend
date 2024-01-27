@@ -191,8 +191,17 @@ router.post('/signin', (req, res) => {
             { expiresIn: '1h' } // Token expires in 1 hour
           );
 
-          // Set the cookie
-          res.cookie('token', token, { httpOnly: false, sameSite: 'Lax', secure: false });
+          res.cookie('accessToken', token, {
+            httpOnly: false,
+            secure: true, // Set this to true for HTTPS
+            maxAge: 40 * 60 * 1000,
+            domain: 'admin.gridxmeter.com', // Include the dot before the domain
+            path: '/',
+            sameSite: 'None',
+          });
+           // Set CORS headers
+        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
+        res.header('Access-Control-Allow-Credentials', true);
 
           // Send the response
           res.status(200).json({

@@ -4,9 +4,9 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
-  origin: ['https://gridxmeter.com', 'http://gridxmeter.com','http://localhost:3000/'],
+  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com'],
   credentials: true,
-  optionSuccessStatus: 20000,
+  optionSuccessStatus: 200,
 };
 // Rate limiter middleware
 const limiter = rateLimit({
