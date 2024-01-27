@@ -187,7 +187,7 @@ router.post('/signin', (req, res) => {
 
           const token = jwt.sign(
             { UserID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
-            enviroment.SECRET_KEY,
+            environment.SECRET_KEY,
             { expiresIn: '1h' } // Token expires in 1 hour
           );
 
@@ -203,16 +203,13 @@ router.post('/signin', (req, res) => {
         res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
         res.header('Access-Control-Allow-Credentials', true);
 
-          // Send the response
-          res.status(200).json({
-            
-            admin: {
-              Admin_ID: admin.adminID,
-              email: admin.email,
-              AccessLevel: admin.AccessLevel,token
-            }
-          });
-          res.redirect(`/protected?token=${encodeURIComponent(token)}`);
+          // Send the response with both token and user data
+      res.status(200).json({
+        message: 'Admin signed in successfully',
+        token,
+        redirect: (`/protected?token=${encodeURIComponent(token)}`)
+      });
+          
         });
       });
     });
