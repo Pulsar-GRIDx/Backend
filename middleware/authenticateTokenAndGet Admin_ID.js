@@ -38,7 +38,7 @@ const { AccessLevel } = tokenPayload;
     }
   
     // // Check if the admin has the required AccessLevel (1) to proceed
-    if (AccessLevel !== "1") {
+    if (AccessLevel != 1) {
         console.log('Admin AccessLevel not authorized:', AccessLevel);
         return res.status(403).json({ error: 'Forbidden: Admin not authorized to perform this action' });
       }

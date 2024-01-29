@@ -79,7 +79,7 @@ router.get('/profile/:UserID', (req, res) => {
 
 
 
-router.use(authenticateTokenAndGetAdmin_ID);
+// router.use(authenticateTokenAndGetAdmin_ID);
 // Router to get all the details of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
@@ -95,7 +95,7 @@ router.get('/allUsers', (req, res) => {
   });
 });
 
-router.get('/allAdmins', (req, res) => {
+router.get('/allAdmins',authenticateTokenAndGetAdmin_ID, (req, res) => {
   // Query the database to get the users
   connection.query('SELECT Admin_ID, Username ,FirstName, LastName, Password, Email, IsActive, AccessLevel FROM SystemAdmins', (err, results) => {
     if (err) {
