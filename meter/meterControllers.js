@@ -121,7 +121,7 @@ exports.getEnergyAmount = (req, res) => {
     energyService.getWeekMonthlyData('last'),
     energyService.getWeekMonthlyData('currentMonth'),
     energyService.getWeekMonthlyData('lastMonth'),
-    energyService.getVoltageAndCurrent(DRN),
+    energyService.getVoltageAndCurrent(),
   ])
   .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
     try {
