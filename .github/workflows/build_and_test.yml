@@ -1,0 +1,20 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - king
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t backend_test:latest .
+
+    - name: Test Docker image
+      run: docker run -e CI=true backend_test npm test
