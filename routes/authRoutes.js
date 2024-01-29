@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
+const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 const connection = require("../db");
 const dotenv = require('dotenv');
 
@@ -23,7 +24,7 @@ const limiter = rateLimit({
 
 
 // Sign-Up route for admins.
-router.post('/adminSignup', async (req, res) => {
+router.post('/adminSignup', authenticateTokenAndGetAdmin_ID , async (req, res) => {
   const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
   if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
@@ -31,7 +32,7 @@ router.post('/adminSignup', async (req, res) => {
   }
 
   try {
-    console.log('Received registration request with data:');
+  
     
 
     const hashedPassword = await bcrypt.hash(Password, 10);
@@ -186,7 +187,7 @@ router.post('/signin', (req, res) => {
           }
 
           const token = jwt.sign(
-            { UserID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
+            { Admin_ID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
             environment.SECRET_KEY,
             { expiresIn: '1h' } // Token expires in 1 hour
           );

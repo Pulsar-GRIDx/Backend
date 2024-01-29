@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const winston = require('winston');
 const jwt = require('jsonwebtoken');
+const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 const NodeCache = require('node-cache');
 
 const dotenv = require('dotenv'); // Import dotenv
@@ -78,7 +79,7 @@ router.get('/profile/:UserID', (req, res) => {
 
 
 
-
+router.use(authenticateTokenAndGetAdmin_ID);
 // Router to get all the details of the users from the database
 router.get('/allUsers', (req, res) => {
   // Query the database to get the users
