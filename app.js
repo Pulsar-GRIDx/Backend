@@ -26,7 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.get('/', (req, res) => {
   res.render('index');
 });
-const db = require('./db'); 
+
 
 
 app.use(cors(corsOptions));
@@ -40,7 +40,7 @@ app.use((err, req, res, next) => {
  
   res.status(500).json({ error: 'Something went wrong!' });
 });
-
+const db = require("./db");
 
 db.connect((err) => {
   if (err) {
@@ -53,6 +53,7 @@ db.connect((err) => {
   });
 });
 
+
 // Use your authRoutes and getRoutes as before
 app.use('/', authRoutes);
 app.use('/', getRoutes);
@@ -60,6 +61,9 @@ app.use('/',forgotPasswordRoutes);
 app.use('/',meterRoutes);
 app.use('/', getAll);
 
+
+
+module.exports = app ;
 
 
 //AIzaSyAqaUc4pBP_ZfHAgN8dHk8TS_5NM8otvPg:216 
