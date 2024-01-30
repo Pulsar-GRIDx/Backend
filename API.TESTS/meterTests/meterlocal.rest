@@ -1,4 +1,5 @@
 
+get http://localhost:4000/meterDataByDRN0260066545641
 ###
 get http://localhost:4000/meterWeekAndMonthData0260066545641
 Content-Type: application/json
@@ -6,14 +7,9 @@ Content-Type: application/json
 # {
 #     "DRN":"0260066545641"
 # }
-####
-get http://localhost:4000/metercurrentDayEnergy0260066545641
-Content-Type: application/json
 
-# {
-#     "DRN":"0260066545641"
-# }
-# #
+
+####
 
 get https://backend2.gridxmeter.com/activeInactiveMeters
 Content-Type: application/json
@@ -33,7 +29,7 @@ get http://localhost:4000/weeklyDataAmount
 Content-Type: application/json
 
 ###
-get https://backend2.gridxmeter.com/currentDayEnergy
+get http://localhost:4000/currentDayEnergy
 Content-Type: application/json
 
 ###

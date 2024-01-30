@@ -188,7 +188,7 @@ exports.calculateVoltageAndCurrent = (readings) => {
     console.log(current,voltage);
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current;
+    acc.totalCurrent = (acc.totalCurrent || 0) + current / 100000;
     
 
     return acc;
@@ -206,11 +206,11 @@ exports.calculateVoltageAndCurrent = (readings) => {
 
 //------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------------------------//
 
-exports.getCurrentDayData = (DRN) => {
+exports.getCurrentDayData = () => {
   const getCurrentDayData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData,
-      [DRN], (err, currentDayData) => {
+       (err, currentDayData) => {
       if (err) reject(err);
       else resolve(currentDayData);
     });
@@ -371,11 +371,11 @@ exports.calculateMeterVoltageAndCurrent = (readings) => {
   // Initialize separate accumulators for voltage and current
   const result = readings.reduce((acc, record) => {
     const voltage = Number(record.voltage) || 0;
-    const current = Number(record.current) || 0;
+    const current = Number(record.current) || 0 ;
     console.log(current,voltage);
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current / 3360;
+    acc.totalCurrent = (acc.totalCurrent || 0) + current / 100000;
     
 
     return acc;
@@ -391,14 +391,14 @@ exports.calculateMeterVoltageAndCurrent = (readings) => {
 };
 
 
-exports.getMeterCurrentDayData = (DRN) => {
-  const getCurrentDayData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
-  return new Promise((resolve, reject) => {
-    db.query(getCurrentDayData,[DRN], (err, currentDayData) => {
-      if (err) reject(err);
-      else resolve(currentDayData);
-      
-    });
+exports.getDailyMeterEnergy  = (DRN) => {
+  const getMetaData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE() AND DRN = ? ORDER BY date_time DESC LIMIT 1";
+ return new Promise ((resolve ,reject) =>{
+  db.query(getMetaData ,[DRN],(err,meterData) => {
+    if (err) reject(err);
+    else resolve(meterData);
+    console.log({DRN});
   });
+ });
+ 
 };
-

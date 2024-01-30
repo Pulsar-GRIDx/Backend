@@ -3,7 +3,7 @@ const router = express.Router();
 const energyController = require('./meterControllers');
 
 router.get('/meterWeekAndMonthData:DRN', energyController.getMeterWeeklyAndMonthlyDataByDRN);
-router.get('/metercurrentDayEnergy:DRN', energyController.getMeterCurrentDayEnergyByDRN);
+router.get('/meterDataByDRN:DRN' , energyController.getDailyMeterEnergy);
 router.get('/activeInactiveMeters' , energyController.getAllActiveAndInactiveMeters);
 router.get('/tokenAmount', energyController.getTokenAmount);
 router.get('/totalTokensBought', energyController.getTokenCount);

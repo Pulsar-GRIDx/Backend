@@ -273,15 +273,24 @@ exports.getMeterWeeklyAndMonthlyDataByDRN = (req, res) => {
   });
 };
 
-exports.getMeterCurrentDayEnergyByDRN = (req, res) => {
+
+
+
+
+exports.getDailyMeterEnergy =(req,res)=>{
   const DRN = req.params.DRN;
-  energyService.getMeterCurrentDayData(DRN)
-    .then(currentDayData => {
-      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
-      res.json({ totalEnergy });
-    })
-    .catch(err => {
-      console.log('Error querying the database:', err);
-      return res.status(500).send({ error: 'Database query failed', details: err });
-    });
+
+  Promise.all([
+    energyService.getDailyMeterEnergy(DRN)
+  ])
+  .then(([meterData])=>{
+    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+    res.json({ dailyTotalEnergy });
+  })
+  .catch((err) =>{
+    console.log('Error quring the database:' , err.message);
+    res.status(500).json({error: 'DataBase query failed', details: err.message});
+  });
 };
+
+///-----------------------------------------------------------------------------------------------------------------------------///
