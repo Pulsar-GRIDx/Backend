@@ -311,18 +311,20 @@ exports.getMeterWeekMonthlyData = (week,month, DRN) => {
                 reject(err);
               } else {
                 resolve(weeklyData);
+                
               }
-              console.log(DRN);
+              
             });
           }),
           new Promise((resolve, reject) => {
             db.query(getMonthData,[DRN], (err, monthlyData) => {
+              
               if (err) {
                 reject(err);
               } else {
                 resolve(monthlyData);
               }
-              console.log(DRN);
+              
             });
           })
         ])
@@ -345,12 +347,18 @@ exports.calculateMeterMonthWeekTotals = (allData) => {
 
 
 exports.getMeterVoltageAndCurrent = (DRN) => {
-  const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE() AND DRN = ?";
+  console.log(DRN);
+  const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DRN = ? ORDER BY date_time DESC LIMIT 3360";
   return new Promise((resolve, reject) => {
-    db.query(getVoltageAndCurrentQuery,[DRN], (err, current , voltage) => {
-      if (err) reject(err);
-      else resolve(current , voltage);
-      console.log(DRN);
+    db.query(getVoltageAndCurrentQuery, [DRN], (err, current,voltage) => {
+      if (err) {
+        reject(err);
+      } else {
+        // Assuming the result is an array, you may need to adjust this based on the actual structure of the result
+        // const [current, voltage] = results;
+        resolve( current,voltage );
+        
+      }
     });
   });
 };
@@ -367,7 +375,7 @@ exports.calculateMeterVoltageAndCurrent = (readings) => {
     console.log(current,voltage);
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current;
+    acc.totalCurrent = (acc.totalCurrent || 0) + current / 3360;
     
 
     return acc;
@@ -384,12 +392,12 @@ exports.calculateMeterVoltageAndCurrent = (readings) => {
 
 
 exports.getMeterCurrentDayData = (DRN) => {
-  const getCurrentDayData = "SELECT voltage, current, DATE(date_time) as date_time FROM  GridxMeterSampledb.MeteringPower WHERE DATE(date_time) = CURDATE() AND DRN =  ?ORDER BY date_time DESC LIMIT 1 ";
+  const getCurrentDayData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData,[DRN], (err, currentDayData) => {
       if (err) reject(err);
       else resolve(currentDayData);
-      console.log(DRN);
+      
     });
   });
 };
