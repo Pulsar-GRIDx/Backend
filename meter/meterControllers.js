@@ -1,32 +1,6 @@
 const energyService = require('./meterService');
 
-exports.getEnergyByDRN = function(req, res) {
-  const DRN = req.params.DRN;
-
-  energyService.getEnergyByDRN(DRN, (err, data) => {
-    if (err) {
-      console.error('Error querying MySQL:', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
-    res.json(data);
-  });
-};
-
-exports.getCurrentDayEnergyByDRN = function(req, res) {
-  const DRN = req.params.DRN;
-
-  energyService.getCurrentDayEnergyByDRN(DRN, (err, data) => {
-    if (err) {
-      console.error('Error querying MySQL:', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
-    res.json(data);
-  });
-};
+//ActiveAndIncativeMeters
 
 exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
@@ -102,68 +76,92 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   };
 //-----------------------------TotalEnergyConsumptionOnTheSystem-----------------------------------//
 
-  exports.getTotalEnergyAmount = (req, res) => {
-    energyService.getCurrentData()
-      .then(currentData => energyService.getStartDate(currentData))
-      .then(startDateResult => {
-        return energyService.getPreviousData(startDateResult)
-          .then(allData => {
-            return { allData, startDateResult };
-          });
-      })
-      .then(({ allData, startDateResult }) => {
-        const totals = energyService.calculateTotals(allData);
-        const result = Object.values(totals);
-        const grandTotal = result.reduce((total, record) => total + record, 0);
-        const response = {
-          allData: result,
-          startDate: new Date(startDateResult[0].startDate).toISOString().split('T')[0],
-          grandTotal: grandTotal,
-        };
-        res.json(response);
-      })
-      .catch(err => {
-        console.log('Error querying the database:', err);
-        return res.status(500).send({ error: 'Database query failed', details: err });
-      });
-  };
+exports.getTotalEnergyAmount = (req, res) => {
+  energyService.getCurrentData()
+    .then(currentData => energyService.getStartDate(currentData))
+    .then(startDateResult => {
+      
+
+      // Extract startDate without the time component
+      const startDate = startDateResult[0] ? startDateResult[0].startDate.toISOString().split('T')[0] : null;
+     
+
+      return energyService.getPreviousData(startDate)
+        .then(allData => {
+          return { allData, startDate };
+        });
+    })
+    .then(({ allData, startDate }) => {
+      const totals = energyService.calculateTotalss(allData);
+      const result = Object.values(totals);
+      const grandTotal = result.reduce((total, record) => total + record, 0);
+
+      const response = {
+        allData: result,
+        startDate,
+        grandTotal: grandTotal,
+      };
+      res.json(response);
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+
+
+
   
 ///------------------------------CurrentWeekTotals-------------------------------------------//
 
-  exports.getEnergyAmount = (req, res) => {
-    Promise.all([
-      energyService.getWeeklyData('current'),
-      energyService.getWeeklyData('last'),
-      energyService.getVoltageAndCurrent(),
-    ])
-      .then(([currentData, lastData, voltageAndCurrentData]) => {
-        const currentTotals = energyService.calculateTotals(currentData);
-        const lastTotals = energyService.calculateTotals(lastData);
-        const voltageAndCurrentTotals = energyService.calculateVoltageAndCurrent(voltageAndCurrentData);
+exports.getEnergyAmount = (req, res) => {
   
-        const currentResult = Object.values(currentTotals);
-        const lastResult = Object.values(lastTotals);
-        
-        // Access totalVoltage and totalCurrent directly
-        const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
-        const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
-  
-        const response = {
-          currentWeekTotal: currentResult.reduce((total, energy) => total + energy, 0) / 1000,
-          lastweekTotal: lastResult.reduce((total, energy) => total + energy, 0) / 1000,
-          currentweekVoltageTotal,
-          currentweekCurrentTotal,
-        };
-  
-        res.json(response);
-      })
-      .catch(err => {
-        console.log('Error querying the database:', err);
-        return res.status(500).send({ error: 'Database query failed', details: err });
-      });
-  };
+  Promise.all([
+    energyService.getWeekMonthlyData('current'),
+    energyService.getWeekMonthlyData('last'),
+    energyService.getWeekMonthlyData('currentMonth'),
+    energyService.getWeekMonthlyData('lastMonth'),
+    energyService.getVoltageAndCurrent(),
+  ])
+  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
+    try {
+      const currentTotals = energyService.calculateMonthWeekTotals(currentData.weeklyData);
+      const lastTotals = energyService.calculateMonthWeekTotals(lastData.weeklyData);
+      const lastMonthTotals = energyService.calculateMonthWeekTotals(lastMonthData.monthlyData);
+      const currentMonthTotals = energyService.calculateMonthWeekTotals(currentMonthData.monthlyData);
+      const voltageAndCurrentTotals = energyService.calculateVoltageAndCurrent(voltageAndCurrentData);
+
+      const currentWeekResult = Object.values(currentTotals);
+      const lastWeekResult = Object.values(lastTotals);
+      const lastMonthResult = Object.values(lastMonthTotals);
+      const currentMonthResult = Object.values(currentMonthTotals);
+
+      const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
+      const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
+
+      const response = {
+        currentWeekResult,
+        lastWeekResult,
+        lastMonthResult,
+        currentMonthResult,
+        currentweekVoltageTotal,
+        currentweekCurrentTotal,
+      };
+
+      res.json(response);
+    } catch (err) {
+      console.log('Error processing the data:', err);
+      return res.status(500).send({ error: 'Data processing failed', details: err });
+    }
+  })
+  .catch(err => {
+    console.log('Error querying the database:', err);
+    return res.status(500).send({ error: 'Database query failed', details: err });
+  });
+};
 ///------------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------//
 exports.getCurrentDayEnergy = (req, res) => {
+  
   energyService.getCurrentDayData()
     .then(currentDayData => {
       const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
@@ -183,23 +181,130 @@ exports.insertData = (req, res) => {
     .catch(err => {
       console.error('Error inserting into the database:', err);
       return res.status(500).json({ error: 'Database insertion failed', details: err });
+      // console.log(data);
     });
+    console.log(data);
 };
 
 //------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
 
 exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
-  Promise.all(suburbs.map(LocationName => {
-    return energyService.getDrnsBySuburb(LocationName)
-      .then(drns => Promise.allSettled(drns.map(drn => energyService.getEnergyByDrn(drn))))
-      .then(results => {
-        const energyData = results.filter(result => result.status === 'fulfilled').flatMap(result => result.value);
-        let totalEnergy = 0;
-        if (energyData.length > 0) {
-          totalEnergy = energyData.reduce((total, record) => total + Number(record.active_energy), 0);
+  Promise.all(suburbs.map(suburbs => {
+    return energyService.getDrnsBySuburb(suburbs)
+    .then(energyData => {
+      console.log('Energy data for suburb', suburbs, ':', energyData);
+      const totalEnergy = energyData.reduce((total, record) => {
+        const activeEnergy = record.active_energy;
+        console.log('Active Energy:', activeEnergy);
+        
+        if (activeEnergy !== null && activeEnergy !== undefined && typeof activeEnergy === 'string') {
+          const energyValue = parseFloat(activeEnergy.replace(',', ''));
+          console.log('Parsed Energy Value:', energyValue);
+          
+          if (!isNaN(energyValue)) {
+            return total + energyValue;
+          }
         }
-        return { LocationName, totalEnergy };
-      });
+        return total;
+      }, 0);
+      
+      
+      
+      
+    
+      return { suburbs, totalEnergy };
+    });
+    
   }))
-};  
+    .then(results => res.json(results))
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+
+//-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
+
+
+exports.getMeterWeeklyAndMonthlyDataByDRN = (req, res) => {
+  const DRN = req.params.DRN;
+  Promise.all([
+    energyService.getMeterWeekMonthlyData('current',DRN),
+    energyService.getMeterWeekMonthlyData('last',DRN),
+    energyService.getMeterWeekMonthlyData('currentMonth',DRN),
+    energyService.getMeterWeekMonthlyData('lastMonth',DRN),
+    energyService.getMeterVoltageAndCurrent(DRN),
+  ])
+  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
+    try {
+      const currentTotals = energyService.calculateMeterMonthWeekTotals(currentData.weeklyData);
+      const lastTotals = energyService.calculateMeterMonthWeekTotals(lastData.weeklyData);
+      const lastMonthTotals = energyService.calculateMeterMonthWeekTotals(lastMonthData.monthlyData);
+      const currentMonthTotals = energyService.calculateMeterMonthWeekTotals(currentMonthData.monthlyData);
+      const voltageAndCurrentTotals = energyService.calculateMeterVoltageAndCurrent(voltageAndCurrentData);
+
+      const currentWeekResult = Object.values(currentTotals);
+      const lastWeekResult = Object.values(lastTotals);
+      const lastMonthResult = Object.values(lastMonthTotals);
+      const currentMonthResult = Object.values(currentMonthTotals);
+
+      const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
+      const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
+
+      const response = {
+        currentWeekResult,
+        lastWeekResult,
+        lastMonthResult,
+        currentMonthResult,
+        currentweekVoltageTotal,
+        currentweekCurrentTotal,
+      };
+
+      res.json(response);
+    } catch (err) {
+      console.log('Error processing the data:', err);
+      return res.status(500).send({ error: 'Data processing failed', details: err });
+    }
+  })
+  .catch(err => {
+    console.log('Error querying the database:', err);
+    return res.status(500).send({ error: 'Database query failed', details: err });
+  });
+};
+
+
+
+
+
+exports.getDailyMeterEnergy =(req,res)=>{
+  const DRN = req.params.DRN;
+
+  Promise.all([
+    energyService.getDailyMeterEnergy(DRN)
+  ])
+  .then(([meterData])=>{
+    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+    res.json({ dailyTotalEnergy });
+  })
+  .catch((err) =>{
+    console.log('Error quring the database:' , err.message);
+    res.status(500).json({error: 'DataBase query failed', details: err.message});
+  });
+};
+
+///-----------------------------------------------------GetAllProcessedTokensByDRN------------------------------------------------------------------------///
+
+exports.getAllProcessedTokens =(req,res) =>{
+  const DRN = req.params.DRN;
+  Promise.all([
+    energyService.getAllProcessedTokens(DRN)
+  ])
+  .then(([processedTokens])=>{
+    
+  })
+  .catch((err)=>{
+    console.log('Error quering the database:' , err.message);
+    res.status(500).json({error: 'DataBase query failed try again' , details: err.message});
+  });
+};

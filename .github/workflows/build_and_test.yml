@@ -12,16 +12,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        node-version: '20'
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
 
     - name: Build Docker image
-      run: docker build -t your-image-name:latest .
+      run: docker build -t backend_test:latest .
 
     - name: Test Docker image
-      run: docker run -e CI=true your-image-name npm test
+      run: docker run -e CI=true backend_test npm test

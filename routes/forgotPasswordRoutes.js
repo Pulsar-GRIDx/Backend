@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
 const router = express.Router();
 
-const connection = require("../db");
+const connection = require("../config/db");
 const dotenv = require('dotenv');
 
 // Configure dotenv

@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
-const dotenv = require('dotenv'); // Import dotenv
-const connection = require("../db");
-
+const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
+const connection = require("../config/db");
+const dotenv = require('dotenv');
 
 dotenv.config();
 const config = process.env;
@@ -23,7 +23,7 @@ const limiter = rateLimit({
 
 
 // Sign-Up route for admins.
-router.post('/adminSignup', async (req, res) => {
+router.post('/adminSignup', authenticateTokenAndGetAdmin_ID , async (req, res) => {
   const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
   if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
@@ -31,7 +31,7 @@ router.post('/adminSignup', async (req, res) => {
   }
 
   try {
-    console.log('Received registration request with data:');
+  
     
 
     const hashedPassword = await bcrypt.hash(Password, 10);
@@ -191,24 +191,30 @@ router.post('/signin', (req, res) => {
 
           // Generate a JWT with user's AccessLevel
           const token = jwt.sign(
-            { UserID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
-            enviroment.SECRET_KEY,
+            { Admin_ID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
+            environment.SECRET_KEY,
             { expiresIn: '1h' } // Token expires in 1 hour
           );
 
-          // Set the cookie
-          res.cookie('token', token, { httpOnly: false, sameSite: 'Lax', secure: false });
-
-          // Send the response
-          res.status(200).json({
-            
-            admin: {
-              Admin_ID: admin.adminID,
-              email: admin.email,
-              AccessLevel: admin.AccessLevel,token
-            }
+          res.cookie('accessToken', token, {
+            httpOnly: false,
+            secure: true, // Set this to true for HTTPS
+            maxAge: 40 * 60 * 1000,
+            domain: 'admin.gridxmeter.com', // Include the dot before the domain
+            path: '/',
+            sameSite: 'None',
           });
-          res.redirect(`/protected?token=${encodeURIComponent(token)}`);
+           // Set CORS headers
+        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
+        res.header('Access-Control-Allow-Credentials', true);
+
+          // Send the response with both token and user data
+      res.status(200).json({
+        message: 'Admin signed in successfully',
+        token,
+        redirect: (`/protected?token=${encodeURIComponent(token)}`)
+      });
+          
         });
       });
     });

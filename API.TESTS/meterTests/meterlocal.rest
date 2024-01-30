@@ -1,35 +1,17 @@
-post http://localhost:4000/energy0260152877924
 
-Content-Type: application/json
-
-# {
-#     "DRN":"0000039967351"
-# }
-
+get http://localhost:4000/meterDataByDRN0260066545641
 ###
-post http://localhost:4000/currentAndLastWeekEnergy0260152877924
+get http://localhost:4000/meterWeekAndMonthData0260066545641
 Content-Type: application/json
-
-# {
-#     "DRN":"0000039967351"
-# }
-####
-post http://localhost:4000/CurrentDayEnergy0260152877924
-Content-Type: application/json
-
-# {
-#     "DRN":"0000039967351"
-# }
-###
 
 get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
 
 ###
-get http://localhost:4000/tokenAmount
+get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
 ###
-get http://localhost:4000/totalTokensBought
+get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
 
 ###
@@ -44,29 +26,29 @@ get http://localhost:4000/currentDayEnergy
 Content-Type: application/json
 
 ###
-post http://localhost:4000/insertMeterData
+post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
 
 {
- "data":{
-     "DRN": "0260077546169",
-    "Surname": "Hiholike",
-    "Name": "King",
-    "Suburb": "Wanaheda",
+ "data":[
+     "DRN": "0260694812784",
+    "Surname": "Jose",
+    "Name": "Dino",
+    "Suburb": "Havana",
     "City": "Wndhoek",
     "Streetname": "Tugela Steet",
-    "Housenumber": "2000",
-    "Simnumber": "0812221609",
-    "Usercategory": "meter",
-    "Meterlng": "-22.521021538121866",
-    "Meterlat": "17.032487486262128",
-    "Transformerlng": "-22.520825802746433",
-    "Transformerlat": "17.033259962460744",
-    "TransformerDRN": "0260000000061"
- }
+    "Housenumber": "20",
+    "Simnumber": "0811234567",
+    "Usercategory": "Home",
+    "Meterlng": "-22.521021538121",
+    "Meterlat": "17.0324874862621",
+    "Transformerlng": "-22.5208258027464",
+    "Transformerlat": "17.033259962460",
+    "TransformerDRN": "0260000000090"
+ ]
 }
 ###
-get http://localhost:4000/suburbEnergy
+post https://backend2.gridxmeter.com/getSuburbEnergy
 Content-Type: application/json
 
 { 
@@ -113,3 +95,11 @@ Content-Type: application/json
   ]
 }
 
+###
+get https://backend2.gridxmeter.com/meter_change
+
+###
+get https://backend2.gridxmeter.com/active_state_count
+
+###
+get https://backend2.gridxmeter.com/inactive_state_count
