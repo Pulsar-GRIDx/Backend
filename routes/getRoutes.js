@@ -7,12 +7,12 @@ const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateToken
 const NodeCache = require('node-cache');
 
 const dotenv = require('dotenv'); // Import dotenv
-const connection = require("../db");
-const db = require('../db');
+const connection = require("../config/db");
+const db = require("../config/db");
 
 dotenv.config();
-const config = process.env;
-const enviroment = process.env;
+// const config = process.env;
+// const enviroment = process.env;
 // Set up Winston logger with console and file transports
 
 // Set up Winston logger with console and file transports

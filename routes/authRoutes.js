@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
-const connection = require("../db");
+const connection = require("../config/db");
 const dotenv = require('dotenv');
 
 // Configure dotenv

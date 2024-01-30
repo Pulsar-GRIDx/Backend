@@ -4,14 +4,7 @@ get http://localhost:4000/meterDataByDRN0260066545641
 get http://localhost:4000/meterWeekAndMonthData0260066545641
 Content-Type: application/json
 
-# {
-#     "DRN":"0260066545641"
-# }
-
-
-####
-
-get https://backend2.gridxmeter.com/activeInactiveMeters
+get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
 
 ###
@@ -101,7 +94,6 @@ Content-Type: application/json
        "Windhoek West" 
   ]
 }
-
 
 ###
 get https://backend2.gridxmeter.com/meter_change

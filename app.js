@@ -40,7 +40,7 @@ app.use((err, req, res, next) => {
  
   res.status(500).json({ error: 'Something went wrong!' });
 });
-const db = require("./db");
+const db = require("./config/db");
 
 db.connect((err) => {
   if (err) {

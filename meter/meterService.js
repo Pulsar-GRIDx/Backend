@@ -1,10 +1,10 @@
-const db = require('../db');
+const db = require('../config/db');
 
 
 
 ///-------------------------------------Active Inactive meters-----------------------------------------------------///
 exports.getAllActiveAndInactiveMeters = function(callback) {
-  const getAllActiveAndInactiveMeters = 'SELECT state FROM MeterMainsStateTable WHERE DATE(date_time) = CURDATE()';
+  const getAllActiveAndInactiveMeters = 'SELECT mains_state FROM MeterLoadControl WHERE DATE(date_time) = CURDATE() ORDER BY date_time DESC LIMIT 1';
 
   db.query(getAllActiveAndInactiveMeters, (err, results) => {
     if (err) {
@@ -110,7 +110,24 @@ exports.calculateTotalss = (allData) => {
 
 
 //-------------------------------------------------Current And last Week API-------------------------------------//
-exports.getWeekMonthlyData = (week,month) => {
+exports.getWeekMonthlyData = () => {
+  const getCurrentWeek = () => {
+    const today = new Date();
+    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+    const days = Math.floor((today - firstDayOfYear) / (24 * 60 * 60 * 1000));
+    const week = Math.ceil((days + firstDayOfYear.getDay() + 1) / 7);
+    return week;
+  };
+  
+  // Function to get the current month
+  const getCurrentMonth = () => {
+    const today = new Date();
+    return today.getMonth() + 1; // Months are zero-based, so add 1
+  };
+    const week = getCurrentWeek();
+    const month = getCurrentMonth();
+    console.log(week,month);
+  
   const getWeeklyData = `
     SELECT active_energy, DATE(date_time) as date_time
     FROM MeterCumulativeEnergyUsage
@@ -185,10 +202,10 @@ exports.calculateVoltageAndCurrent = (readings) => {
   const result = readings.reduce((acc, record) => {
     const voltage = Number(record.voltage) || 0;
     const current = Number(record.current) || 0;
-    console.log(current,voltage);
+   
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current / 100000;
+    acc.totalCurrent = (acc.totalCurrent || 0) + current / 1000;
     
 
     return acc;
@@ -286,27 +303,50 @@ exports.getEnergyByDrn = (suburb, drn) => {
 
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
 
-exports.getMeterWeekMonthlyData = (week,month, DRN) => {
-  const getWeeklyData = `
-    SELECT active_energy, DATE(date_time) as date_time
-    FROM MeterCumulativeEnergyUsage
-    WHERE
-      (date_time >= CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 7) DAY
-      AND date_time < CURDATE() + INTERVAL 1 DAY)
-      ${week === 'last' ? 'OR (date_time >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 7 DAY AND date_time < CURDATE() - INTERVAL WEEKDAY(CURDATE()) - 1 DAY)' : ''}
-       AND DRN =  ?`;
-  const getMonthData = `
-      SELECT active_energy, DATE(date_time) as date_time
-      FROM MeterCumulativeEnergyUsage
-      WHERE
-        (YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE()))
-        ${month === 'lastMonth' ? 'OR (YEAR(date_time) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH))' : ''}
-        AND DRN  =  ?`;
+exports.getMeterWeekMonthlyData = ( DRN) => {
+  // Function to get the current week
+const getCurrentWeek = () => {
+  const today = new Date();
+  const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+  const days = Math.floor((today - firstDayOfYear) / (24 * 60 * 60 * 1000));
+  const week = Math.ceil((days + firstDayOfYear.getDay() + 1) / 7);
+  return week;
+};
+
+// Function to get the current month
+const getCurrentMonth = () => {
+  const today = new Date();
+  return today.getMonth() + 1; 
+};
+  const week = getCurrentWeek();
+  const month = getCurrentMonth();
+  
+  // ...
+
+const getWeeklyData = `
+SELECT active_energy, DATE(date_time) as date_time
+FROM MeterCumulativeEnergyUsage
+WHERE
+  (date_time >= CURRENT_DATE() - INTERVAL (WEEKDAY(CURRENT_DATE()) + 7) DAY
+  AND date_time < CURRENT_DATE() + INTERVAL 1 DAY)
+  ${week === 'last' ? 'OR (date_time >= CURRENT_DATE() - INTERVAL (WEEKDAY(CURRENT_DATE()) + 14) DAY AND date_time < CURRENT_DATE() - INTERVAL (WEEKDAY(CURRENT_DATE()) + 7) DAY)' : ''}
+   AND DRN =  ?`;
+
+const getMonthData = `
+SELECT active_energy, DATE(date_time) as date_time
+FROM MeterCumulativeEnergyUsage
+WHERE
+  (YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE()))
+  ${month === 'lastMonth' ? 'OR (YEAR(date_time) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH))' : ''}
+  AND DRN =  ?`;
+
+// ...
+
 
        return new Promise((resolve, reject) => {
         Promise.all([
           new Promise((resolve, reject) => {
-            db.query(getWeeklyData, [DRN],(err, weeklyData) => {
+            db.query(getWeeklyData, [DRN,week],(err, weeklyData) => {
               if (err) {
                 reject(err);
               } else {
@@ -317,7 +357,7 @@ exports.getMeterWeekMonthlyData = (week,month, DRN) => {
             });
           }),
           new Promise((resolve, reject) => {
-            db.query(getMonthData,[DRN], (err, monthlyData) => {
+            db.query(getMonthData,[DRN,month], (err, monthlyData) => {
               
               if (err) {
                 reject(err);
@@ -372,10 +412,10 @@ exports.calculateMeterVoltageAndCurrent = (readings) => {
   const result = readings.reduce((acc, record) => {
     const voltage = Number(record.voltage) || 0;
     const current = Number(record.current) || 0 ;
-    console.log(current,voltage);
+    
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current / 100000;
+    acc.totalCurrent = (acc.totalCurrent || 0) + current / 1000;
     
 
     return acc;
@@ -397,8 +437,21 @@ exports.getDailyMeterEnergy  = (DRN) => {
   db.query(getMetaData ,[DRN],(err,meterData) => {
     if (err) reject(err);
     else resolve(meterData);
-    console.log({DRN});
+    
   });
  });
  
+};
+
+
+///-------------------------------------GetAllProcessedTokensByDRN-----------------------------//
+exports.getAllProcessedTokens =(DRN) =>{
+  const getAllProcessedTokens = "SELECT token_id ,date_time ,token_amount FROM STSTokesInfo WHERE DRN  = ?";
+  return new Promise((resolve ,reject) =>{
+    db.query(getAllProcessedTokens, [DRN],(err,processedTokens)=>{
+      if(err) reject(err);
+      else resolve(processedTokens);
+
+    });
+  });
 };

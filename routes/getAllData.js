@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const db = require("../config/db");
 
 // router.get('/totalEnergyAmount', (req, res) => {
 //   // Query for records where display_msg is 'Accept' and date_time is the current date

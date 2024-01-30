@@ -293,4 +293,18 @@ exports.getDailyMeterEnergy =(req,res)=>{
   });
 };
 
-///-----------------------------------------------------------------------------------------------------------------------------///
+///-----------------------------------------------------GetAllProcessedTokensByDRN------------------------------------------------------------------------///
+
+exports.getAllProcessedTokens =(req,res) =>{
+  const DRN = req.params.DRN;
+  Promise.all([
+    energyService.getAllProcessedTokens(DRN)
+  ])
+  .then(([processedTokens])=>{
+    
+  })
+  .catch((err)=>{
+    console.log('Error quering the database:' , err.message);
+    res.status(500).json({error: 'DataBase query failed try again' , details: err.message});
+  });
+};
