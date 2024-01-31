@@ -63,35 +63,49 @@ exports.getTokenCount = function(currentDate, callback) {
 };
 
 //-------------------------------------------------Total Energy Consumption-----------------------------//
-exports.getCurrentData = (currentDate) => {
+exports.getCurrentData = () => {
+  function getCurrentDate() {
+    const currentDate = new Date();
+    return currentDate;
+  }
+  
+  // Example usage:
+  const currentDate = getCurrentDate();
+  
+  
   const getCurrentData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
   return new Promise((resolve, reject) => {
     db.query(getCurrentData, [currentDate],(err, currentData) => {
       if (err) reject(err);
       else resolve(currentData);
+      // console.log(currentData);
     });
   });
 };
 
 exports.getStartDate = () => {
-  const getStartDate = "SELECT MIN(DATE(date_time)) as startDate FROM MeterCumulativeEnergyUsage";
+  const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage";
   
   return new Promise((resolve, reject) => {
     db.query(getStartDate, (err, startDateResult) => {
       if (err) reject(err);
       
       else resolve(startDateResult);
+      
+    
    
     });
   });
 };
 
 exports.getPreviousData = (startDateResult) => {
+  
   const getPreviousData = "SELECT active_energy, DATE(date_time) as date_time FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) >= ?";
   return new Promise((resolve, reject) => {
-    db.query(getPreviousData, [startDateResult[0].startDate], (err, allData) => {
+    db.query(getPreviousData, [startDateResult], (err, allData) => {
       if (err) reject(err);
       else resolve(allData);
+      console.log(allData);
     });
   });
 };
@@ -322,7 +336,7 @@ const getCurrentMonth = () => {
   const month = getCurrentMonth();
   
   // ...
-
+console.log(week,month);
 const getWeeklyData = `
 SELECT active_energy, DATE(date_time) as date_time
 FROM MeterCumulativeEnergyUsage

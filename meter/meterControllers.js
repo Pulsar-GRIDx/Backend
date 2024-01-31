@@ -186,7 +186,7 @@ exports.insertData = (req, res) => {
     console.log(data);
 };
 
-//------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
+//------------------------------------------------------totalEnergyPerSuburb--------------------------------------------------------//
 
 exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
