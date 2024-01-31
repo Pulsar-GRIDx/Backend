@@ -226,39 +226,30 @@ exports.getSuburbEnergy = (req, res) => {
 
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
 
-
 exports.getMeterWeeklyAndMonthlyDataByDRN = (req, res) => {
   const DRN = req.params.DRN;
   Promise.all([
-    energyService.getMeterWeekMonthlyData('current',DRN),
-    energyService.getMeterWeekMonthlyData('last',DRN),
-    energyService.getMeterWeekMonthlyData('currentMonth',DRN),
-    energyService.getMeterWeekMonthlyData('lastMonth',DRN),
+    energyService.getWeeklyData(DRN),
+    energyService.getWeeklyData(DRN), // Assuming this should fetch data for the last week
+    energyService.getMonthlyData(DRN),
+    energyService.getMonthlyData(DRN), // Assuming this should fetch data for the last month
     energyService.getMeterVoltageAndCurrent(DRN),
   ])
-  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
+  .then(([currentWeekData, lastWeekData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
     try {
-      const currentTotals = energyService.calculateMeterMonthWeekTotals(currentData.weeklyData);
-      const lastTotals = energyService.calculateMeterMonthWeekTotals(lastData.weeklyData);
-      const lastMonthTotals = energyService.calculateMeterMonthWeekTotals(lastMonthData.monthlyData);
-      const currentMonthTotals = energyService.calculateMeterMonthWeekTotals(currentMonthData.monthlyData);
+      const currentWeekTotals = energyService.calculateTotals(currentWeekData);
+      const lastWeekTotals = energyService.calculateTotals(lastWeekData);
+      const currentMonthTotals = energyService.calculateTotals(currentMonthData);
+      const lastMonthTotals = energyService.calculateTotals(lastMonthData);
       const voltageAndCurrentTotals = energyService.calculateMeterVoltageAndCurrent(voltageAndCurrentData);
 
-      const currentWeekResult = Object.values(currentTotals);
-      const lastWeekResult = Object.values(lastTotals);
-      const lastMonthResult = Object.values(lastMonthTotals);
-      const currentMonthResult = Object.values(currentMonthTotals);
-
-      const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
-      const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
-
       const response = {
-        currentWeekResult,
-        lastWeekResult,
-        lastMonthResult,
-        currentMonthResult,
-        currentweekVoltageTotal,
-        currentweekCurrentTotal,
+        currentWeekResult: Object.values(currentWeekTotals),
+        lastWeekResult: Object.values(lastWeekTotals),
+        currentMonthResult: Object.values(currentMonthTotals),
+        lastMonthResult: Object.values(lastMonthTotals),
+        currentweekVoltageTotal: voltageAndCurrentTotals.totalVoltage,
+        currentweekCurrentTotal: voltageAndCurrentTotals.totalCurrent,
       };
 
       res.json(response);

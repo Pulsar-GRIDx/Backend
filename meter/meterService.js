@@ -317,75 +317,57 @@ exports.getEnergyByDrn = (suburb, drn) => {
 
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
 
-exports.getMeterWeekMonthlyData = ( DRN) => {
-  // Function to get the current week
-const getCurrentWeek = () => {
-  const today = new Date();
-  const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
-  const days = Math.floor((today - firstDayOfYear) / (24 * 60 * 60 * 1000));
-  const week = Math.ceil((days + firstDayOfYear.getDay() + 1) / 7);
-  return week;
+// Function to get weekly data
+exports.getWeeklyData = (DRN) => {
+  const query = `
+    SELECT active_energy, DATE(date_time) as date_time
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+      ((date_time >= CURDATE() AND date_time < CURDATE() + INTERVAL 1 DAY)
+      OR (date_time >= CURDATE() - INTERVAL 7 DAY AND date_time < CURDATE()))
+      AND DRN = ?`;
+
+  return new Promise((resolve, reject) => {
+    db.query(query, [DRN], (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
 };
 
-// Function to get the current month
-const getCurrentMonth = () => {
-  const today = new Date();
-  return today.getMonth() + 1; 
+// Function to get monthly data
+exports.getMonthlyData = (DRN) => {
+  const query = `
+    SELECT active_energy, DATE(date_time) as date_time
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+      ((YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE()) AND DAY(date_time) >= DAY(CURRENT_DATE()))
+      OR (YEAR(date_time) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)))
+      AND DRN = ?`;
+
+  return new Promise((resolve, reject) => {
+    db.query(query, [DRN], (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
 };
-  const week = getCurrentWeek();
-  const month = getCurrentMonth();
-  
-  // ...
-console.log(week,month);
-const getWeeklyData = `
-SELECT active_energy, DATE(date_time) as date_time
-FROM MeterCumulativeEnergyUsage
-WHERE
-  (date_time >= CURRENT_DATE() - INTERVAL (WEEKDAY(CURRENT_DATE()) + 7) DAY
-  AND date_time < CURRENT_DATE() + INTERVAL 1 DAY)
-  ${week === 'last' ? 'OR (date_time >= CURRENT_DATE() - INTERVAL (WEEKDAY(CURRENT_DATE()) + 14) DAY AND date_time < CURRENT_DATE() - INTERVAL (WEEKDAY(CURRENT_DATE()) + 7) DAY)' : ''}
-   AND DRN =  ?`;
 
-const getMonthData = `
-SELECT active_energy, DATE(date_time) as date_time
-FROM MeterCumulativeEnergyUsage
-WHERE
-  (YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE()))
-  ${month === 'lastMonth' ? 'OR (YEAR(date_time) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH))' : ''}
-  AND DRN =  ?`;
-
-// ...
-
-
-       return new Promise((resolve, reject) => {
-        Promise.all([
-          new Promise((resolve, reject) => {
-            db.query(getWeeklyData, [DRN,week],(err, weeklyData) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(weeklyData);
-                
-              }
-              
-            });
-          }),
-          new Promise((resolve, reject) => {
-            db.query(getMonthData,[DRN,month], (err, monthlyData) => {
-              
-              if (err) {
-                reject(err);
-              } else {
-                resolve(monthlyData);
-              }
-              
-            });
-          })
-        ])
-        .then(([weeklyData, monthlyData]) => resolve({weeklyData, monthlyData}))
-        .catch(err => reject(err));
-      });
-    };
+// Function to calculate totals
+exports.calculateTotals = (data) => {
+  return data.reduce((acc, record) => {
+    const date = record.date_time.toISOString().split('T')[0];
+    const energy = Number(record.active_energy) / 1000;
+    acc[date] = (acc[date] || 0) + energy;
+    return acc;
+  }, {});
+};
 
 
 
