@@ -354,6 +354,7 @@ exports.getMonthlyData = (DRN) => {
         reject(err);
       } else {
         resolve(data);
+        console.log(data);
       }
     });
   });
@@ -371,14 +372,14 @@ exports.calculateTotals = (data) => {
 
 
 
-exports.calculateMeterMonthWeekTotals = (allData) => {
-  return allData.reduce((acc, record) => {
-    const date = record.date_time.toISOString().split('T')[0];
-    const energy = Number(record.active_energy) / 1000;
-    acc[date] = (acc[date] || 0) + energy;
-    return acc;
-  }, {});
-};
+// exports.calculateMeterMonthWeekTotals = (allData) => {
+//   return allData.reduce((acc, record) => {
+//     const date = record.date_time.toISOString().split('T')[0];
+//     const energy = Number(record.active_energy) / 1000;
+//     acc[date] = (acc[date] || 0) + energy;
+//     return acc;
+//   }, {});
+// };
 
 
 
