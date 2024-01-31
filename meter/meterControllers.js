@@ -309,7 +309,7 @@ exports.getAllProcessedTokens = (req, res) => {
       const kwkData = processedTokens.map((token) => ({
         token_id: token.token_id,
         date_time: token.date_time,
-        token_amount: token.token_amount,
+        token_amount: parseFloat(token.token_amount),
         kwk: parseFloat(token.token_amount) / 2.5,
       }));
 
