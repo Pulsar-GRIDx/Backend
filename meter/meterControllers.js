@@ -1,6 +1,6 @@
 const energyService = require('./meterService');
 
-//ActiveAndIncativeMeters
+//ActiveAndInactiveMeters
 
 exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
@@ -224,7 +224,7 @@ exports.getSuburbEnergy = (req, res) => {
     });
 };
 
-//-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
+//-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyDataByDRN------------------------------------------------//
 
 exports.getMeterWeeklyAndMonthlyDataByDRN = (req, res) => {
   const DRN = req.params.DRN;

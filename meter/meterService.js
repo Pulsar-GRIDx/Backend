@@ -334,6 +334,7 @@ exports.getWeeklyData = (DRN) => {
       } else {
         resolve(data);
       }
+      console.log(data);
     });
   });
 };
@@ -364,8 +365,8 @@ exports.getMonthlyData = (DRN) => {
 exports.calculateTotals = (data) => {
   return data.reduce((acc, record) => {
     const date = record.date_time.toISOString().split('T')[0];
-    const energy = Number(record.active_energy) / 1000;
-    acc[date] = (acc[date] || 0) + energy;
+    const active_energy = Number(record.active_energy) / 1000;
+    acc[date] = (acc[date] || 0) + active_energy;
     return acc;
   }, {});
 };

@@ -12,12 +12,19 @@ router.get('/getAllProcessedTokensByDRN:DRN' , energyController.getAllProcessedT
 router.get('/meterDataByDRN:DRN' , energyController.getDailyMeterEnergy);
 //Getting all active and inactive meters/// 
 router.get('/activeInactiveMeters' , energyController.getAllActiveAndInactiveMeters);
+//Getting the token amount in the system//
 router.get('/tokenAmount', energyController.getTokenAmount);
+//Getting the total tokens bought in the system//
 router.get('/totalTokensBought', energyController.getTokenCount);
+//Getting the whole energyConsumption in the system//
 router.get('/totalEnergyAmount', energyController.getTotalEnergyAmount);
+//Getting the Weeky and Monthly energyConsumption in the system//
 router.get('/weeklyDataAmount', energyController.getEnergyAmount);
+//Getting the current day energyConsumption in the system//
 router.get('/currentDayEnergy', energyController.getCurrentDayEnergy);
+//Creating a new meter //
 router.post('/insertMeterData', energyController.insertData);
+//Getting the energyConsumption in the system perSuburb//
 router.get('/suburbEnergy', energyController.getSuburbEnergy);
 
 module.exports = router;
