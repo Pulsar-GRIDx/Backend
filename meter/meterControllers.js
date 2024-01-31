@@ -295,16 +295,28 @@ exports.getDailyMeterEnergy =(req,res)=>{
 
 ///-----------------------------------------------------GetAllProcessedTokensByDRN------------------------------------------------------------------------///
 
-exports.getAllProcessedTokens =(req,res) =>{
+exports.getAllProcessedTokens = (req, res) => {
   const DRN = req.params.DRN;
-  Promise.all([
-    energyService.getAllProcessedTokens(DRN)
-  ])
-  .then(([processedTokens])=>{
-    
-  })
-  .catch((err)=>{
-    console.log('Error quering the database:' , err.message);
-    res.status(500).json({error: 'DataBase query failed try again' , details: err.message});
-  });
+
+  Promise.all([energyService.getAllProcessedTokens(DRN)])
+    .then(([processedTokens]) => {
+      if (!processedTokens || !processedTokens || !Array.isArray(processedTokens)) {
+        // Handle the case where processedTokens, data, or data array is null or not present
+        return res.status(404).json({ error: 'Processed tokens not found' });
+      }
+
+      // Calculate kWh for each token
+      const kwkData = processedTokens.map((token) => ({
+        token_id: token.token_id,
+        date_time: token.date_time,
+        token_amount: token.token_amount,
+        kwk: parseFloat(token.token_amount) / 2.5,
+      }));
+
+      res.json( kwkData );
+    })
+    .catch((err) => {
+      console.log('Error querying the database:', err.message);
+      res.status(500).json({ error: 'Database query failed, try again', details: err.message });
+    });
 };

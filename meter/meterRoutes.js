@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const energyController = require('./meterControllers');
 
-
+//Get all ProcessedTokens By DRN//
+router.get('/allProcessedTokensByDRN:DRN', energyController.getAllProcessedTokens);
 //Weekly and Monthly data for the entire system//
 router.get('/meterWeekAndMonthData:DRN', energyController.getMeterWeeklyAndMonthlyDataByDRN);
 //Getting all processed Tokens for a specific DRN//

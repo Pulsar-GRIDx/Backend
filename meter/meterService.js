@@ -17,8 +17,8 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
     }
 
     // Count occurrences of '0' and '1' in the 'state' column
-    const inactiveMetersCount = results.filter(row => row.state === '0').length;
-    const activeMetersCount = results.filter(row => row.state === '1').length;
+    const inactiveMetersCount = results.filter(row => row.mains_state === '0').length;
+    const activeMetersCount = results.filter(row => row.mains_state === '1').length;
 
     callback(null,{ inactiveMeters: inactiveMetersCount, activeMeters: activeMetersCount });
   });
@@ -446,11 +446,12 @@ exports.getDailyMeterEnergy  = (DRN) => {
 
 ///-------------------------------------GetAllProcessedTokensByDRN-----------------------------//
 exports.getAllProcessedTokens =(DRN) =>{
-  const getAllProcessedTokens = "SELECT token_id ,date_time ,token_amount FROM STSTokesInfo WHERE DRN  = ?";
+  const getAllProcessedTokens = "SELECT token_id ,date_time ,token_amount FROM STSTokesInfo WHERE DRN  = ? AND display_msg = 'Accept' ";
   return new Promise((resolve ,reject) =>{
     db.query(getAllProcessedTokens, [DRN],(err,processedTokens)=>{
       if(err) reject(err);
       else resolve(processedTokens);
+      // console.log(processedTokens);
 
     });
   });
