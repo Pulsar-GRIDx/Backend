@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const energyController = require('./meterControllers');
+const energyController = require('../meter/meterControllers');
 
 //Get all ProcessedTokens By DRN//
 router.get('/allProcessedTokensByDRN:DRN', energyController.getAllProcessedTokens);

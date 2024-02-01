@@ -17,7 +17,7 @@ const limiter = rateLimit({
 const authRoutes = require('./routes/authRoutes');
 const getRoutes = require('./routes/getRoutes');
 const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const meterRoutes = require('./meter/meterRoutes');
+const meterRoutes = require('./routes/meterRoutes');
 const getAll = require('./routes/getAllData');
 const app = express();
 app.set('view engine', 'ejs');
