@@ -14,7 +14,7 @@ Content-Type: application/json
 ###
 
 post http://localhost:4000/adminSignup
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDY3NzMzNjAsImV4cCI6MTcwNjc3Njk2MH0.j54Y04zEpCAgwvXTU1vpnQUG78Tq8cpYBLY3TWbiXdU
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDY3ODA1NDEsImV4cCI6MTcwNjc4NDE0MX0.wlGbY4aAVhtT48nHHuCzOgOKI1_xQgfgLAfQPwxMmVQ
 Content-Type: application/json
 
 {

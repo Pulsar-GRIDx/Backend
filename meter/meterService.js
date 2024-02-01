@@ -140,7 +140,7 @@ exports.getWeekMonthlyData = () => {
   };
     const week = getCurrentWeek();
     const month = getCurrentMonth();
-    console.log(week,month);
+    
   
   const getWeeklyData = `
     SELECT active_energy, DATE(date_time) as date_time
@@ -209,7 +209,7 @@ exports.getVoltageAndCurrent = () => {
 
 exports.calculateVoltageAndCurrent = (readings) => {
   if (!readings || !Array.isArray(readings) || readings.length === 0) {
-    throw new Error("Invalid or empty readings data");
+    return new Error("Invalid or empty readings data");
   }
 
   // Initialize separate accumulators for voltage and current
@@ -282,7 +282,7 @@ exports.insertIntoAnotherTable = (data) => {
       if (err) reject(err);
       else resolve();
     });
-    console.log(anotherTableData);
+    
   });
 };
 
@@ -293,7 +293,7 @@ exports.getDrnsBySuburb = (suburbs) => {
     db.query(getDrnsBySuburb, [suburbs], (err, DRN) => {
       if (err) reject(err);
       else resolve(DRN.map(record => record.DRN));
-      console.log({DRN});
+     
     });
   });
 };
@@ -334,7 +334,7 @@ exports.getWeeklyData = (DRN) => {
       } else {
         resolve(data);
       }
-      console.log(data);
+     
     });
   });
 };
@@ -355,7 +355,7 @@ exports.getMonthlyData = (DRN) => {
         reject(err);
       } else {
         resolve(data);
-        console.log(data);
+       
       }
     });
   });

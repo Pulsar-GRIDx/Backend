@@ -320,5 +320,5 @@ exports.insertTransformerData = (req, res) => {
       console.error('Error inserting into the database:', err);
       return res.status(500).json({ error: 'Database insertion failed', details: err });
     });
-    console.log(TransformerData);
+    
 };

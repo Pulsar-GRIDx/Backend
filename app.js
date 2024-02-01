@@ -19,6 +19,8 @@ const getRoutes = require('./routes/getRoutes');
 const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
 const meterRoutes = require('./routes/meterRoutes');
 const getAll = require('./routes/getAllData');
+const adminAuthRoutes = require('./routes/adminAuthRoutes');
+
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -60,6 +62,8 @@ app.use('/', getRoutes);
 app.use('/',forgotPasswordRoutes);
 app.use('/',meterRoutes);
 app.use('/', getAll);
+app.use('/', adminAuthRoutes);
+
 
 
 
