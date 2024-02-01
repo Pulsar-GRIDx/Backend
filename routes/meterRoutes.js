@@ -26,5 +26,7 @@ router.get('/currentDayEnergy', energyController.getCurrentDayEnergy);
 router.post('/insertMeterData', energyController.insertData);
 //Getting the energyConsumption in the system perSuburb//
 router.get('/suburbEnergy', energyController.getSuburbEnergy);
+///Inserting a new Transformer//
+router.post('/insertTransformer', energyController.insertTransformerData);
 
 module.exports = router;

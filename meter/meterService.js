@@ -454,3 +454,26 @@ exports.getAllProcessedTokens =(DRN) =>{
     });
   });
 };
+
+
+//-------------------------------------Inserting New Transformer --------------------------------//
+exports.insertIntoTransformerRealInfo = (TransformerData) => {
+  const transformerRealInfoData = {
+    DRN:TransformerData.DRN,
+    LocationName:TransformerData.LocationName,
+    Name:TransformerData.Name,
+    Type:TransformerData.Type,
+    pLat:TransformerData.pLat,
+    pLng:TransformerData.pLng,
+    Status:TransformerData.Status,
+    PowerSupply:TransformerData.PowerSupply,
+    powerRating:TransformerData.powerRating,
+  };
+  return new Promise((resolve, reject) => {
+    db.query('INSERT INTO TransformerInformation SET ?', transformerRealInfoData, (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+    
+  });
+};

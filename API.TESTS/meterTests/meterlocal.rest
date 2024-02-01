@@ -106,3 +106,25 @@ get https://backend2.gridxmeter.com/meter_change
 get https://backend2.gridxmeter.com/active_state_count
 ###
 get https://backend2.gridxmeter.com/inactive_state_count
+###
+
+
+
+post http://localhost:4000/insertTransformer
+Content-Type: application/json
+
+{
+  "TransformerData": {
+    "DRN":"0260000000009",
+    "LocationName":"Wanahenda",
+    "Name":"Tugena 4",
+    "Type":"Big Tranformer",
+    "pLat":"-22.538236805338208",
+    "pLng":"17.050350565314446",
+    "Status":"1",
+    "PowerSupply":"0260000000003",
+    "powerRating":"1000kVA"
+  }
+}
+
+

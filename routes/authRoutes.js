@@ -27,9 +27,6 @@ const limiter = rateLimit({
 router.post('/adminSignup', authenticateTokenAndGetAdmin_ID , async (req, res) => {
   const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
-  if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
-    return res.status(400).json({ error: 'Invalid input data' });
-  }
 
   try {
   

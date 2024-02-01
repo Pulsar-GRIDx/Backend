@@ -1,5 +1,12 @@
-const express = require('express');
-const router = express.Router();
+// const express = require('express');
+// const router = express.Router();
+// const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
+// const adminController = require('../admin/adminControllers');
 
 
-module.exports = router;
+
+// router.post('/adminSignup', authenticateTokenAndGetAdmin_ID, adminController.adminSignup);
+
+
+
+// // module.exports = router;
