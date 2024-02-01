@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const energyController = require('../meter/meterControllers');
+const db = require('../config/db');
 
 //Get all ProcessedTokens By DRN//
 router.get('/allProcessedTokensByDRN:DRN', energyController.getAllProcessedTokens);
@@ -28,5 +29,8 @@ router.post('/insertMeterData', energyController.insertData);
 router.get('/suburbEnergy', energyController.getSuburbEnergy);
 ///Inserting a new Transformer//
 router.post('/insertTransformer', energyController.insertTransformerData);
+
+
+
 
 module.exports = router;

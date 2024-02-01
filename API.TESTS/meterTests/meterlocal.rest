@@ -114,7 +114,7 @@ post http://localhost:4000/insertTransformer
 Content-Type: application/json
 
 {
-  "TransformerData": {
+  "TransformerData":{
     "DRN":"0260000000009",
     "LocationName":"Wanahenda",
     "Name":"Tugena 4",
@@ -127,4 +127,6 @@ Content-Type: application/json
   }
 }
 
-
+###
+get http://localhost:4000/energy-stats
+Content-Type: application/json

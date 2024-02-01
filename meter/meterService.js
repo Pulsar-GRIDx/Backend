@@ -127,36 +127,34 @@ exports.calculateTotalss = (allData) => {
 exports.getWeekMonthlyData = () => {
   const getCurrentWeek = () => {
     const today = new Date();
-    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
-    const days = Math.floor((today - firstDayOfYear) / (24 * 60 * 60 * 1000));
-    const week = Math.ceil((days + firstDayOfYear.getDay() + 1) / 7);
-    return week;
+    const days = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (24 * 60 * 60 * 1000));
+    return Math.ceil((days + 1) / 7);
   };
   
-  // Function to get the current month
   const getCurrentMonth = () => {
-    const today = new Date();
-    return today.getMonth() + 1; // Months are zero-based, so add 1
+    return new Date().getMonth() + 1; // Months are zero-based, so add 1
   };
-    const week = getCurrentWeek();
-    const month = getCurrentMonth();
-    
+  
+  const currentWeek = getCurrentWeek();
+  const currentMonth = getCurrentMonth();
   
   const getWeeklyData = `
     SELECT active_energy, DATE(date_time) as date_time
     FROM MeterCumulativeEnergyUsage
     WHERE
-      (date_time >= CURDATE() - INTERVAL (WEEKDAY(CURDATE()) + 7) DAY
-      AND date_time < CURDATE() + INTERVAL 1 DAY)
-      ${week === 'last' ? 'OR (date_time >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) + 7 DAY AND date_time < CURDATE() - INTERVAL WEEKDAY(CURDATE()) - 1 DAY)' : ''}
-      `;
+      (YEARWEEK(date_time, 1) = YEARWEEK(CURDATE(), 1))
+      ${currentWeek === 1 ? 'OR (YEARWEEK(date_time, 1) = YEARWEEK(CURDATE() - INTERVAL 1 WEEK, 1))' : ''}
+  `;
+  
   const getMonthData = `
-      SELECT active_energy, DATE(date_time) as date_time
-      FROM MeterCumulativeEnergyUsage
-      WHERE
-        (YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE()))
-        ${month === 'lastMonth' ? 'OR (YEAR(date_time) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH))' : ''}
-       `;
+    SELECT active_energy, DATE(date_time) as date_time
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+      (YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE()))
+      ${currentMonth === 1 ? 'OR (YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH))' : ''}
+  `;
+
+  
 
        return new Promise((resolve, reject) => {
         Promise.all([
@@ -208,9 +206,9 @@ exports.getVoltageAndCurrent = () => {
 };
 
 exports.calculateVoltageAndCurrent = (readings) => {
-  if (!readings || !Array.isArray(readings) || readings.length === 0) {
-    return new Error("Invalid or empty readings data");
-  }
+  // if (!readings || !Array.isArray(readings) || readings.length === 0) {
+  //   return new Error("Invalid or empty readings data");
+  // }
 
   // Initialize separate accumulators for voltage and current
   const result = readings.reduce((acc, record) => {
