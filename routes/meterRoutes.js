@@ -6,7 +6,7 @@ const db = require('../config/db');
 //Get all ProcessedTokens By DRN//
 router.get('/allProcessedTokensByDRN:DRN', energyController.getAllProcessedTokens);
 //Weekly and Monthly data for the entire system//
-router.get('/meterWeekAndMonthData:DRN', energyController.getMeterWeeklyAndMonthlyDataByDRN);
+router.get('/meterWeekAndMonthData:DRN', energyController.getDRNDATA);
 //Getting all processed Tokens for a specific DRN//
 router.get('/getAllProcessedTokensByDRN:DRN' , energyController.getAllProcessedTokens);
 //Getting the daily energy consumption for a specific meter///

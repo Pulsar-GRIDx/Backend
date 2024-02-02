@@ -125,34 +125,35 @@ exports.calculateTotalss = (allData) => {
 
 //-------------------------------------------------Current And last Week API-------------------------------------//
 exports.getWeekMonthlyData = () => {
-  const getCurrentWeek = () => {
-    const today = new Date();
-    const days = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (24 * 60 * 60 * 1000));
-    return Math.ceil((days + 1) / 7);
-  };
+  // const getCurrentWeek = () => {
+  //   const today = new Date();
+  //   const days = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (24 * 60 * 60 * 1000));
+  //   return Math.ceil((days + 1) / 7);
+  // };
   
-  const getCurrentMonth = () => {
-    return new Date().getMonth() + 1; // Months are zero-based, so add 1
-  };
+  // const getCurrentMonth = () => {
+  //   return new Date().getMonth() + 1; // Months are zero-based, so add 1
+  // };
   
-  const currentWeek = getCurrentWeek();
-  const currentMonth = getCurrentMonth();
+  // const currentWeek = getCurrentWeek();
+  // const currentMonth = getCurrentMonth();
   
   const getWeeklyData = `
-    SELECT active_energy, DATE(date_time) as date_time
-    FROM MeterCumulativeEnergyUsage
-    WHERE
-      (YEARWEEK(date_time, 1) = YEARWEEK(CURDATE(), 1))
-      ${currentWeek === 1 ? 'OR (YEARWEEK(date_time, 1) = YEARWEEK(CURDATE() - INTERVAL 1 WEEK, 1))' : ''}
-  `;
-  
-  const getMonthData = `
-    SELECT active_energy, DATE(date_time) as date_time
-    FROM MeterCumulativeEnergyUsage
-    WHERE
+  SELECT active_energy, DATE(date_time) as date_time
+  FROM MeterCumulativeEnergyUsage
+  WHERE
+      (date_time BETWEEN CURDATE() - INTERVAL 6 DAY AND CURDATE())
+      OR (date_time BETWEEN CURDATE() - INTERVAL 13 DAY AND CURDATE() - INTERVAL 7 DAY)
+`;
+
+const getMonthData = `
+  SELECT active_energy, DATE(date_time) as date_time
+  FROM MeterCumulativeEnergyUsage
+  WHERE
       (YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE()))
-      ${currentMonth === 1 ? 'OR (YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH))' : ''}
-  `;
+      OR (YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH))
+`;
+
 
   
 
@@ -197,18 +198,20 @@ exports.calculateMonthWeekTotals = (allData) => {
 
 exports.getVoltageAndCurrent = () => {
   const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE()";
+  // console.log(CURDATE());
   return new Promise((resolve, reject) => {
     db.query(getVoltageAndCurrentQuery, (err, current , voltage) => {
       if (err) reject(err);
       else resolve(current , voltage);
+      console.log(current,voltage);
     });
   });
 };
 
 exports.calculateVoltageAndCurrent = (readings) => {
-  // if (!readings || !Array.isArray(readings) || readings.length === 0) {
-  //   return new Error("Invalid or empty readings data");
-  // }
+  if (!readings || !Array.isArray(readings) || readings.length === 0) {
+    return new Error("Invalid or empty readings data");
+  }
 
   // Initialize separate accumulators for voltage and current
   const result = readings.reduce((acc, record) => {
@@ -221,15 +224,16 @@ exports.calculateVoltageAndCurrent = (readings) => {
     
 
     return acc;
+    
   }, {});
 
   return {
     totalVoltage: result.totalVoltage,
     totalCurrent: result.totalCurrent,
-
+    
     
   };
-
+ 
 };
 
 
@@ -315,115 +319,105 @@ exports.getEnergyByDrn = (suburb, drn) => {
 
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
 
-// Function to get weekly data
-exports.getWeeklyData = (DRN) => {
-  const query = `
-    SELECT active_energy, DATE(date_time) as date_time
-    FROM MeterCumulativeEnergyUsage
-    WHERE
-      ((date_time >= CURDATE() AND date_time < CURDATE() + INTERVAL 1 DAY)
-      OR (date_time >= CURDATE() - INTERVAL 7 DAY AND date_time < CURDATE()))
-      AND DRN = ?`;
+exports.getDRNData = (DRN) => {
 
-  return new Promise((resolve, reject) => {
-    db.query(query, [DRN], (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-     
-    });
-  });
-};
+  
+  const getWeeklyData = `
+  SELECT active_energy, DATE(date_time) as date_time
+  FROM MeterCumulativeEnergyUsage
+  WHERE
+      (date_time BETWEEN CURDATE() - INTERVAL 6 DAY AND CURDATE())
+      OR (date_time BETWEEN CURDATE() - INTERVAL 13 DAY AND CURDATE() - INTERVAL 7 DAY) AND DRN = ?
+`;
 
-// Function to get monthly data
-exports.getMonthlyData = (DRN) => {
-  const query = `
-    SELECT active_energy, DATE(date_time) as date_time
-    FROM MeterCumulativeEnergyUsage
-    WHERE
-      ((YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE()) AND DAY(date_time) >= DAY(CURRENT_DATE()))
-      OR (YEAR(date_time) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)))
-      AND DRN = ?`;
+const getMonthData = `
+  SELECT active_energy, DATE(date_time) as date_time
+  FROM MeterCumulativeEnergyUsage
+  WHERE
+      (YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE()))
+      OR (YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND DRN = ?
+`;
 
-  return new Promise((resolve, reject) => {
-    db.query(query, [DRN], (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-       
-      }
-    });
-  });
-};
 
-// Function to calculate totals
-exports.calculateTotals = (data) => {
-  return data.reduce((acc, record) => {
+  
+
+       return new Promise((resolve, reject) => {
+        Promise.all([
+          new Promise((resolve, reject) => {
+            db.query(getWeeklyData, [DRN],(err, weeklyData) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(weeklyData);
+              }
+            });
+          }),
+          new Promise((resolve, reject) => {
+            db.query(getMonthData,[DRN], (err, monthlyData) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(monthlyData);
+              }
+            });
+          })
+        ])
+        .then(([weeklyData, monthlyData]) => resolve({weeklyData, monthlyData}))
+        .catch(err => reject(err));
+      });
+    };
+
+
+
+exports.CalculateDrnData = (allData) => {
+  return allData.reduce((acc, record) => {
     const date = record.date_time.toISOString().split('T')[0];
-    const active_energy = Number(record.active_energy) / 1000;
-    acc[date] = (acc[date] || 0) + active_energy;
+    const energy = Number(record.active_energy) / 1000;
+    acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
 };
 
 
 
-// exports.calculateMeterMonthWeekTotals = (allData) => {
-//   return allData.reduce((acc, record) => {
-//     const date = record.date_time.toISOString().split('T')[0];
-//     const energy = Number(record.active_energy) / 1000;
-//     acc[date] = (acc[date] || 0) + energy;
-//     return acc;
-//   }, {});
-// };
-
-
-
-exports.getMeterVoltageAndCurrent = (DRN) => {
-  console.log(DRN);
-  const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DRN = ? ORDER BY date_time DESC LIMIT 3360";
+exports.getDRNVoltageAndCurrent = (DRN) => {
+  const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE() AND DRN = ?";
+  // console.log(CURDATE());
   return new Promise((resolve, reject) => {
-    db.query(getVoltageAndCurrentQuery, [DRN], (err, current,voltage) => {
-      if (err) {
-        reject(err);
-      } else {
-        // Assuming the result is an array, you may need to adjust this based on the actual structure of the result
-        // const [current, voltage] = results;
-        resolve( current,voltage );
-        
-      }
+    db.query(getVoltageAndCurrentQuery, [DRN],(err, current , voltage) => {
+      if (err) reject(err);
+      else resolve(current , voltage);
+      console.log(current,voltage);
     });
   });
 };
 
-exports.calculateMeterVoltageAndCurrent = (readings) => {
+exports.calculateDRNVoltageAndCurrent = (readings) => {
   if (!readings || !Array.isArray(readings) || readings.length === 0) {
-    throw new Error("Invalid or empty readings data");
+    return new Error("Invalid or empty readings data");
   }
 
   // Initialize separate accumulators for voltage and current
   const result = readings.reduce((acc, record) => {
     const voltage = Number(record.voltage) || 0;
-    const current = Number(record.current) || 0 ;
-    
+    const current = Number(record.current) || 0;
+   
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
     acc.totalCurrent = (acc.totalCurrent || 0) + current / 1000;
     
 
     return acc;
+    
   }, {});
 
   return {
     totalVoltage: result.totalVoltage,
     totalCurrent: result.totalCurrent,
-
+    
     
   };
-
+ 
 };
 
 
