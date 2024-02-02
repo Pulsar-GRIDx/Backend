@@ -11,7 +11,7 @@ const corsOptions = {
 // Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 5,
-  max: 5,
+  max: 1000,
   message: 'Too many requests, please try again later.',
 });
 const authRoutes = require('./routes/authRoutes');
