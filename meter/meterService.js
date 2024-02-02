@@ -105,7 +105,7 @@ exports.getPreviousData = (startDateResult) => {
     db.query(getPreviousData, [startDateResult], (err, allData) => {
       if (err) reject(err);
       else resolve(allData);
-      console.log(allData);
+      // console.log(allData);
     });
   });
 };
@@ -203,7 +203,7 @@ exports.getVoltageAndCurrent = () => {
     db.query(getVoltageAndCurrentQuery, (err, current , voltage) => {
       if (err) reject(err);
       else resolve(current , voltage);
-      console.log(current,voltage);
+      // console.log(current,voltage);
     });
   });
 };
@@ -267,7 +267,7 @@ exports.insertIntoMeterRealInfo = (data) => {
       if (err) reject(err);
       else resolve();
     });
-    console.log(meterRealInfoData);
+    // console.log(meterRealInfoData);
   });
 };
 
@@ -387,7 +387,7 @@ exports.getDRNVoltageAndCurrent = (DRN) => {
     db.query(getVoltageAndCurrentQuery, [DRN],(err, current , voltage) => {
       if (err) reject(err);
       else resolve(current , voltage);
-      console.log(current,voltage);
+      // console.log(current,voltage);
     });
   });
 };
