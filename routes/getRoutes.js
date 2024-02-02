@@ -313,6 +313,7 @@ const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
 router.post('/getSuburbEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
+  console.log(req);
 
   const getCachedResult = (suburb) => cache.get(suburb);
 

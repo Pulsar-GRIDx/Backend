@@ -54,12 +54,12 @@ Content-Type: application/json
 }
 ###
 
-post https://backend2.gridxmeter.com/getSuburbEnergy
+post http://localhost:4000/getSuburbEnergy
 Content-Type: application/json
 
-{ 
-    "suburbs": [
-     "Academia" 
+{
+    "suburbs":[
+     "Academia" ,
       "Auasblick" ,
       "Avis" ,
      "Cimbebasia" ,
@@ -98,8 +98,7 @@ Content-Type: application/json
         "Windhoek Central" ,
         "Windhoek North" ,
        "Windhoek West" 
-    ]
-}
+    ]}
 
 ###
 get https://backend2.gridxmeter.com/meter_change
