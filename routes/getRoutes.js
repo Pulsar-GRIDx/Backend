@@ -313,7 +313,13 @@ const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
 router.post('/getSuburbEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
-  console.log(req);
+
+if (!Array.isArray(suburbs)) {
+  return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
+}
+
+// Rest of the code
+
 
   const getCachedResult = (suburb) => cache.get(suburb);
 
@@ -322,7 +328,8 @@ router.post('/getSuburbEnergy', async (req, res) => {
   };
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
+  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  
 
   try {
     const results = await Promise.all(suburbs.map(async (suburb) => {
@@ -331,14 +338,18 @@ router.post('/getSuburbEnergy', async (req, res) => {
       if (cachedResult) {
         return cachedResult;
       }
-
       const drns = await new Promise((resolve, reject) => {
         db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
-          if (err) reject(err);
-          else resolve(drnData.map((record) => record.DRN));
-          console.log(drnData);
+          if (err) {
+            console.log(err); // Move this log statement here
+            reject(err);
+          } else {
+            console.log(drnData);
+            resolve(drnData.map((record) => record.DRN));
+          }
         });
       });
+      
 
       const energyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
@@ -367,10 +378,12 @@ router.post('/getSuburbEnergy', async (req, res) => {
     }));
 
     res.json(Object.assign({}, ...results));
-  } catch (err) {
+  }  catch (err) {
     console.log('Error querying the database:', err);
-    return res.status(500).send({ error: 'Database query failed', details: err });
+    return res.status(500).send({ error: 'Database query failed', details: err.message || err });
   }
+  
+  
 });
 
 
