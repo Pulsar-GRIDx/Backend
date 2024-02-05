@@ -1,30 +1,38 @@
 
-get http://localhost:4000/meterDataByDRN0260066545641
-###
-get http://localhost:4000/meterWeekAndMonthData0260066545641
+get https://backend2.gridxmeter.com/allProcessedTokensByDRN0260152877924
 Content-Type: application/json
+###
+get http://localhost:4000/meterDataByDRN0260066545641
+Content-Type: application/json
+
+###
+###--------------PotentialIssue-----------####
+get http://localhost:4000/meterWeekAndMonthData0679210134
+Content-Type: application/json
+###--------------PotentialIssue-----------####
+
 ###
 get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
-
 ###
 get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
-
 ###
+###--------------PotentialIssue-----------####
 get http://localhost:4000/totalEnergyAmount
 Content-Type: application/json
+###--------------PotentialIssue-----------####
 ###
+###--------------PotentialIssue-----------####
 get http://localhost:4000/weeklyDataAmount
 Content-Type: application/json
-
+###--------------PotentialIssue-----------####
 ###
 get http://localhost:4000/currentDayEnergy
 Content-Type: application/json
-
 ###
 post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
@@ -48,11 +56,12 @@ Content-Type: application/json
  ]
 }
 ###
-post https://backend2.gridxmeter.com/getSuburbEnergy
+
+post http://localhost:4000/getSuburbEnergy
 Content-Type: application/json
 
-{ 
-    "suburbs": [
+{
+    "suburbs":[
      "Academia" ,
       "Auasblick" ,
       "Avis" ,
@@ -92,14 +101,36 @@ Content-Type: application/json
         "Windhoek Central" ,
         "Windhoek North" ,
        "Windhoek West" 
-  ]
+    ]}
+  
+###
+get https://backend2.gridxmeter.com/meter_change
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/active_state_count
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/inactive_state_count
+Content-Type: application/json
+###
+
+post http://localhost:4000/insertTransformer
+Content-Type: application/json
+ 
+{
+  "TransformerData":{
+    "DRN":"0260000000009",
+    "LocationName":"Wanahenda",
+    "Name":"Tugena 4",
+    "Type":"Big Tranformer",
+    "pLat":"-22.538236805338208",
+    "pLng":"17.050350565314446",
+    "Status":"1",
+    "PowerSupply":"0260000000003",
+    "powerRating":"1000kVA"
+  }
 }
 
 ###
-get https://backend2.gridxmeter.com/meter_change
-
-###
-get https://backend2.gridxmeter.com/active_state_count
-
-###
-get https://backend2.gridxmeter.com/inactive_state_count
+get http://localhost:4000/energy-stats
+Content-Type: application/json

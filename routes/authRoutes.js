@@ -22,37 +22,7 @@ const limiter = rateLimit({
 
 
 
-// Sign-Up route for admins.
-router.post('/adminSignup', authenticateTokenAndGetAdmin_ID , async (req, res) => {
-  const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
-  if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
-    return res.status(400).json({ error: 'Invalid input data' });
-  }
-
-  try {
-  
-    
-
-    const hashedPassword = await bcrypt.hash(Password, 10);
-
-    connection.query(
-      'INSERT INTO SystemAdmins (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
-      (err, result) => {
-        if (err) {
-          console.error('Registration error:', err);
-          return res.status(500).json({ error: 'Registration failed', err });
-        }
-        console.log('Registration successful');
-        res.status(201).json({ message: 'Registration successful' });
-      }
-    );
-  } catch (error) {
-    console.error('Error during registration:', error);
-    res.status(500).json({ error: 'Registration failed', err });
-  }
-});
 //signup router for users
 
 router.post('/signup', async (req, res) => {

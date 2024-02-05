@@ -1,6 +1,6 @@
 const energyService = require('./meterService');
 
-//ActiveAndIncativeMeters
+//ActiveAndInactiveMeters
 
 exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
@@ -176,7 +176,6 @@ exports.getCurrentDayEnergy = (req, res) => {
 exports.insertData = (req, res) => {
   const data = req.body; // Assuming the data is sent in the request body
   energyService.insertIntoMeterRealInfo(data)
-    .then(() => energyService.insertIntoAnotherTable(data))
     .then(() => res.status(200).json({ message: 'Data inserted successfully into both tables' }))
     .catch(err => {
       console.error('Error inserting into the database:', err);
@@ -186,7 +185,7 @@ exports.insertData = (req, res) => {
     console.log(data);
 };
 
-//------------------------------------------------------totalEnergyPerSuberb--------------------------------------------------------//
+//------------------------------------------------------totalEnergyPerSuburb--------------------------------------------------------//
 
 exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
@@ -224,25 +223,26 @@ exports.getSuburbEnergy = (req, res) => {
     });
 };
 
-//-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
+//-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyDataByDRN------------------------------------------------//
 
+exports.getDRNDATA = (req, res) => {
 
-exports.getMeterWeeklyAndMonthlyDataByDRN = (req, res) => {
   const DRN = req.params.DRN;
+  
   Promise.all([
-    energyService.getMeterWeekMonthlyData('current',DRN),
-    energyService.getMeterWeekMonthlyData('last',DRN),
-    energyService.getMeterWeekMonthlyData('currentMonth',DRN),
-    energyService.getMeterWeekMonthlyData('lastMonth',DRN),
-    energyService.getMeterVoltageAndCurrent(DRN),
+    energyService.getDRNData('current',DRN),
+    energyService.getDRNData('last',DRN),
+    energyService.getDRNData('currentMonth',DRN),
+    energyService.getDRNData('lastMonth',DRN),
+    energyService.getDRNVoltageAndCurrent(DRN),
   ])
   .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
     try {
-      const currentTotals = energyService.calculateMeterMonthWeekTotals(currentData.weeklyData);
-      const lastTotals = energyService.calculateMeterMonthWeekTotals(lastData.weeklyData);
-      const lastMonthTotals = energyService.calculateMeterMonthWeekTotals(lastMonthData.monthlyData);
-      const currentMonthTotals = energyService.calculateMeterMonthWeekTotals(currentMonthData.monthlyData);
-      const voltageAndCurrentTotals = energyService.calculateMeterVoltageAndCurrent(voltageAndCurrentData);
+      const currentTotals = energyService.CalculateDrnData(currentData.weeklyData);
+      const lastTotals = energyService.CalculateDrnData(lastData.weeklyData);
+      const lastMonthTotals = energyService.CalculateDrnData(lastMonthData.monthlyData);
+      const currentMonthTotals = energyService.CalculateDrnData(currentMonthData.monthlyData);
+      const voltageAndCurrentTotals = energyService.calculateDRNVoltageAndCurrent(voltageAndCurrentData);
 
       const currentWeekResult = Object.values(currentTotals);
       const lastWeekResult = Object.values(lastTotals);
@@ -295,16 +295,40 @@ exports.getDailyMeterEnergy =(req,res)=>{
 
 ///-----------------------------------------------------GetAllProcessedTokensByDRN------------------------------------------------------------------------///
 
-exports.getAllProcessedTokens =(req,res) =>{
+exports.getAllProcessedTokens = (req, res) => {
   const DRN = req.params.DRN;
-  Promise.all([
-    energyService.getAllProcessedTokens(DRN)
-  ])
-  .then(([processedTokens])=>{
+
+  Promise.all([energyService.getAllProcessedTokens(DRN)])
+    .then(([processedTokens]) => {
+      if (!processedTokens || !processedTokens || !Array.isArray(processedTokens)) {
+        // Handle the case where processedTokens, data, or data array is null or not present
+        return res.status(404).json({ error: 'Processed tokens not found' });
+      }
+
+      // Calculate kWh for each token
+      const kwkData = processedTokens.map((token) => ({
+        token_id: token.token_id,
+        date_time: token.date_time,
+        token_amount: parseFloat(token.token_amount),
+        kwk: parseFloat(token.token_amount) / 2.5,
+      }));
+
+      res.json( kwkData );
+    })
+    .catch((err) => {
+      console.log('Error querying the database:', err.message);
+      res.status(500).json({ error: 'Database query failed, try again', details: err.message });
+    });
+};
+
+//--------------------------------------------------------Inserting New Transformer----------------------------------------------------------//
+exports.insertTransformerData = (req, res) => {
+  const TransformerData = req.body.TransformerData; // Assuming the data is sent in the request body
+  energyService.insertIntoTransformerRealInfo(TransformerData)
+    .then(() => res.status(200).json({ message: 'Transformer Added Successfully' }))
+    .catch(err => {
+      console.error('Error inserting into the database:', err);
+      return res.status(500).json({ error: 'Database insertion failed', details: err });
+    });
     
-  })
-  .catch((err)=>{
-    console.log('Error quering the database:' , err.message);
-    res.status(500).json({error: 'DataBase query failed try again' , details: err.message});
-  });
 };

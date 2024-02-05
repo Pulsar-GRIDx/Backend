@@ -1,0 +1,29 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - king
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Authenticate Docker to ECR Public
+      run: |
+        echo ${{ secrets.AWS_ACCESS_KEY_ID }} | aws configure set aws_access_key_id --profile ecr-public-user
+        echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} | aws configure set aws_secret_access_key --profile ecr-public-user
+        aws ecr-public get-login-password --region us-east-1 --profile ecr-public-user | docker login --username AWS --password-stdin public.ecr.aws/l0z9j4j6
+
+    - name: Build Docker Image
+      run: docker build -t authentiation .
+
+    - name: Tag Docker Image
+      run: docker tag authentiation:latest public.ecr.aws/l0z9j4j6/authentiation:latest
+
+    - name: Push Docker Image to ECR Public
+      run: docker push public.ecr.aws/l0z9j4j6/authentiation:latest
