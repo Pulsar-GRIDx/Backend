@@ -314,12 +314,9 @@ const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 router.post('/getSuburbEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
 
-if (!Array.isArray(suburbs)) {
-  return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
-}
-
-// Rest of the code
-
+  if (!Array.isArray(suburbs)) {
+    return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
+  }
 
   const getCachedResult = (suburb) => cache.get(suburb);
 
@@ -328,12 +325,11 @@ if (!Array.isArray(suburbs)) {
   };
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
-  const getEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
-  
+  const getWeeklyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getMonthlyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
 
   try {
     const results = await Promise.all(suburbs.map(async (suburb) => {
-      // Check if result is already cached
       const cachedResult = getCachedResult(suburb);
       if (cachedResult) {
         return cachedResult;
@@ -341,7 +337,7 @@ if (!Array.isArray(suburbs)) {
       const drns = await new Promise((resolve, reject) => {
         db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
           if (err) {
-            console.log(err); // Move this log statement here
+            console.log(err);
             reject(err);
           } else {
             console.log(drnData);
@@ -349,11 +345,10 @@ if (!Array.isArray(suburbs)) {
           }
         });
       });
-      
 
-      const energyData = await Promise.all(drns.map(async (drn) => {
+      const weeklyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
-          db.query(getEnergyByDrn, [drn], (err, energyData) => {
+          db.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
             else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
             console.log(energyData);
@@ -361,7 +356,17 @@ if (!Array.isArray(suburbs)) {
         });
       }));
 
-      const totalEnergy = energyData.reduce((total, record) => {
+      const monthlyEnergyData = await Promise.all(drns.map(async (drn) => {
+        return new Promise((resolve, reject) => {
+          db.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
+            if (err) reject(err);
+            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            console.log(energyData);
+          });
+        });
+      }));
+
+      const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
         if (record.active_energy !== null) {
           return total + Number(record.active_energy);
         } else {
@@ -369,22 +374,28 @@ if (!Array.isArray(suburbs)) {
         }
       }, 0);
 
-      const result = { [suburb]: totalEnergy };
+      const totalMonthlyEnergy = monthlyEnergyData.reduce((total, record) => {
+        if (record.active_energy !== null) {
+          return total + Number(record.active_energy);
+        } else {
+          return total;
+        }
+      }, 0);
 
-      // Cache the result for future use
+      const result = { [suburb]: { weekly: totalWeeklyEnergy, monthly: totalMonthlyEnergy } };
+
       setCachedResult(suburb, result);
 
       return result;
     }));
 
     res.json(Object.assign({}, ...results));
-  }  catch (err) {
+  } catch (err) {
     console.log('Error querying the database:', err);
     return res.status(500).send({ error: 'Database query failed', details: err.message || err });
   }
-  
-  
 });
+
 
 
 // Function to get active energy totals
