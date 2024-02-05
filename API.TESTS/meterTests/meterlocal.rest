@@ -102,7 +102,7 @@ Content-Type: application/json
         "Windhoek North" ,
        "Windhoek West" 
     ]}
-
+  
 ###
 get https://backend2.gridxmeter.com/meter_change
 Content-Type: application/json
