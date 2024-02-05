@@ -2,6 +2,8 @@
 get https://backend2.gridxmeter.com/allProcessedTokensByDRN0260152877924
 ###
 get http://localhost:4000/meterDataByDRN0260066545641
+Content-Type: application/json
+
 ###
 ###--------------PotentialIssue-----------####
 get http://localhost:4000/meterWeekAndMonthData0679210134
@@ -54,7 +56,7 @@ Content-Type: application/json
 }
 ###
 
-post https://backend2.gridxmeter.com/getSuburbEnergy
+post http://localhost:4000/getSuburbEnergy
 Content-Type: application/json
 
 {
@@ -102,10 +104,13 @@ Content-Type: application/json
 
 ###
 get https://backend2.gridxmeter.com/meter_change
+Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/active_state_count
+Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/inactive_state_count
+Content-Type: application/json
 ###
 
 post http://localhost:4000/insertTransformer

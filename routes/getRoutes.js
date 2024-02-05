@@ -95,7 +95,7 @@ router.get('/allUsers', (req, res) => {
   });
 });
 
-router.get('/allAdmins',authenticateTokenAndGetAdmin_ID, (req, res) => {
+router.get('/allAdmins', (req, res) => {
   // Query the database to get the users
   connection.query('SELECT Admin_ID, Username ,FirstName, LastName, Password, Email, IsActive, AccessLevel FROM SystemAdmins', (err, results) => {
     if (err) {
@@ -325,14 +325,25 @@ router.post('/getSuburbEnergy', async (req, res) => {
   };
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+  //Weekly Query
   const getWeeklyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  //Monthly Query
   const getMonthlyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  //Yearly Query
+  const getYearlyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 365 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+
+  let suburbsWeekly = {};
+  let suburbsMonthly = {};
+  let suburbsYearly = {};
 
   try {
-    const results = await Promise.all(suburbs.map(async (suburb) => {
+    await Promise.all(suburbs.map(async (suburb) => {
       const cachedResult = getCachedResult(suburb);
       if (cachedResult) {
-        return cachedResult;
+        suburbsWeekly[suburb] = cachedResult.weekly;
+        suburbsMonthly[suburb] = cachedResult.monthly;
+        suburbsYearly[suburb] = cachedResult.yearly;
+        return;
       }
       const drns = await new Promise((resolve, reject) => {
         db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
@@ -345,7 +356,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
           }
         });
       });
-
+//Weekly data
       const weeklyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
           db.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
@@ -355,7 +366,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
           });
         });
       }));
-
+//Monthly data
       const monthlyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
           db.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
@@ -365,6 +376,16 @@ router.post('/getSuburbEnergy', async (req, res) => {
           });
         });
       }));
+//Yearly data
+      const yearlyEnergyByDrn = await Promise.all(drns.map(async (drn) => {
+        return new Promise((resolve, reject) => {
+          db.query(getYearlyEnergyByDrn, [drn], (err, energyData) => {
+            if (err) reject(err);
+            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            console.log(energyData);
+          });
+        });
+      }))
 
       const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
         if (record.active_energy !== null) {
@@ -382,19 +403,30 @@ router.post('/getSuburbEnergy', async (req, res) => {
         }
       }, 0);
 
-      const result = { [suburb]: { weekly: totalWeeklyEnergy, monthly: totalMonthlyEnergy } };
+      const totalYearlyEnergy = yearlyEnergyByDrn.reduce((total, record) => {
+        if (record.active_energy !== null) {
+          return total + Number(record.active_energy);
+        } else {
+          return total;
+        }
+      }, 0);
+
+      const result = { weekly: totalWeeklyEnergy, monthly: totalMonthlyEnergy , yearly: totalYearlyEnergy};
+
+      suburbsWeekly[suburb] = result.weekly;
+      suburbsMonthly[suburb] = result.monthly;
+      suburbsYearly[suburb] = result.yearly;
 
       setCachedResult(suburb, result);
-
-      return result;
     }));
 
-    res.json(Object.assign({}, ...results));
+    res.json({ suburbsWeekly, suburbsMonthly ,suburbsYearly});
   } catch (err) {
     console.log('Error querying the database:', err);
     return res.status(500).send({ error: 'Database query failed', details: err.message || err });
   }
 });
+
 
 
 
