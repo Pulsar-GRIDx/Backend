@@ -4,13 +4,9 @@ Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/meterDataByDRN0260066545641
 Content-Type: application/json
-
 ###
-###--------------PotentialIssue-----------####
 get https://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
 Content-Type: application/json
-###--------------PotentialIssue-----------####
-
 ###
 get https://backend2.gridxmeter.com/activeInactiveMeters
 Content-Type: application/json
@@ -21,15 +17,11 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
 ###
-###--------------PotentialIssue-----------####
 get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
-###--------------PotentialIssue-----------####
 ###
-###--------------PotentialIssue-----------####
 get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
-###--------------PotentialIssue-----------####
 ###
 get https://backend2.gridxmeter.com/currentDayEnergy
 Content-Type: application/json
@@ -113,7 +105,6 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/inactive_state_count
 Content-Type: application/json
 ###
-
 post https://backend2.gridxmeter.com/insertTransformer
 Content-Type: application/json
  
