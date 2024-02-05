@@ -95,8 +95,6 @@ router.get('/allUsers', (req, res) => {
   });
 });
 
-
-
 router.get('/allAdmins', (req, res) => {
   // Query the database to get the users
   connection.query('SELECT Admin_ID, Username ,FirstName, LastName, Password, Email, IsActive, AccessLevel FROM SystemAdmins', (err, results) => {
