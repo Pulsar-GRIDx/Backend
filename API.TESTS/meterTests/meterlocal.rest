@@ -2,17 +2,17 @@
 get https://backend2.gridxmeter.com/allProcessedTokensByDRN0260152877924
 Content-Type: application/json
 ###
-get http://localhost:4000/meterDataByDRN0260066545641
+get https://backend2.gridxmeter.com/meterDataByDRN0260066545641
 Content-Type: application/json
 
 ###
 ###--------------PotentialIssue-----------####
-get http://localhost:4000/meterWeekAndMonthData0679210134
+get https://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 
 ###
-get http://localhost:4000/activeInactiveMeters
+get https://backend2.gridxmeter.com/activeInactiveMeters
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/tokenAmount
@@ -22,16 +22,16 @@ get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
 ###
 ###--------------PotentialIssue-----------####
-get http://localhost:4000/totalEnergyAmount
+get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 ###
 ###--------------PotentialIssue-----------####
-get http://localhost:4000/weeklyDataAmount
+get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 ###
-get http://localhost:4000/currentDayEnergy
+get https://backend2.gridxmeter.com/currentDayEnergy
 Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/insertMeterData
@@ -57,7 +57,7 @@ Content-Type: application/json
 }
 ###
 
-post http://localhost:4000/getSuburbEnergy
+post https://backend2.gridxmeter.com/getSuburbEnergy
 Content-Type: application/json
 
 {
@@ -114,7 +114,7 @@ get https://backend2.gridxmeter.com/inactive_state_count
 Content-Type: application/json
 ###
 
-post http://localhost:4000/insertTransformer
+post https://backend2.gridxmeter.com/insertTransformer
 Content-Type: application/json
  
 {
@@ -132,5 +132,5 @@ Content-Type: application/json
 }
 
 ###
-get http://localhost:4000/energy-stats
+get https://backend2.gridxmeter.com/energy-stats
 Content-Type: application/json
