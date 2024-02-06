@@ -162,7 +162,7 @@ router.post('/signin', (req, res) => {
           // Generate a JWT with user's AccessLevel
           const token = jwt.sign(
             { Admin_ID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
-            environment.SECRET_KEY,
+            enviroment.SECRET_KEY,
             { expiresIn: '1h' } // Token expires in 1 hour
           );
 
