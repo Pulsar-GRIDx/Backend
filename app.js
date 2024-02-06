@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
-  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com'],
+  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001'],
   methods:[['GET'],['POST']],
   credentials: true,
   optionSuccessStatus: 200,
@@ -12,7 +12,7 @@ const corsOptions = {
 // Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 5,
-  max: 10000,
+  max: 1000000,
   message: 'Too many requests, please try again later.',
 });
 const authRoutes = require('./routes/authRoutes');
