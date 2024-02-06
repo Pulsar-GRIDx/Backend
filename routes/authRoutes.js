@@ -166,12 +166,12 @@ router.post('/signin', (req, res) => {
             httpOnly: false,
             secure: true, // Set this to true for HTTPS
             maxAge: 40 * 60 * 1000,
-            domain: 'admin.gridxmeter.com', // Include the dot before the domain
+            domain: ('admin.gridxmeter.com', 'localhost:3000' ,'localhost:3001') ,// Include the dot before the domain
             path: '/',
             sameSite: 'None',
           });
            // Set CORS headers
-        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
+        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com','http://localhost:3000' ,'http://localhost:3001'); 
         res.header('Access-Control-Allow-Credentials', true);
 
           // Send the response with both token and user data
@@ -192,8 +192,8 @@ router.get('/protected', authenticateToken, (req, res) => {
 });
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = req.query.token || (authHeader && authHeader.split(' ')[1]);
+  // Get the token from session storage on the front end
+  const token = localStorage.getItem('token');
 
   if (token == null) {
     return res.sendStatus(401);
@@ -209,12 +209,6 @@ function authenticateToken(req, res, next) {
   });
 }
 
-const validateEmail = (Email) => {
-  if (!validator.isEmail(Email)) {
-    return false;
-  }
-  return true;
-};
 
 router.post('/AdminUpdate/:UserID', (req, res) => {
   const UserID = req.params.UserID; // Extract the userId from the URL
