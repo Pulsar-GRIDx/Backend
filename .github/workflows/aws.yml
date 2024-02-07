@@ -35,14 +35,35 @@ env:
   ECR_REPOSITORY: public.ecr.aws/l0z9j4j6/authentiation          # set this to your Amazon ECR repository name
   ECS_SERVICE: AdminService                 # set this to your Amazon ECS service name
   ECS_CLUSTER: AdminBackendCluster                # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION:  authtask.json
- # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: authconainer
-
-
-           # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  ECS_TASK_DEFINITION: |
+    {
+      "family": "AuthTask",
+      "containerDefinitions": [
+        {
+          "name": "authconainer",
+          "image": "public.ecr.aws/l0z9j4j6/authentiation:latest",
+          "cpu": 0,
+          "portMappings": [
+            {
+              "name": "authconainer-4000-tcp",
+              "containerPort": 4000,
+              "hostPort": 4000,
+              "protocol": "tcp",
+              "appProtocol": "http"
+            }
+          ],
+          "essential": true,
+          "environment": [],
+          "mountPoints": [],
+          "volumesFrom": []
+        }
+      ],
+      "requiresCompatibilities": [
+        "EC2"
+      ],
+      "cpu": "1024",
+      "memory": "100"
+    }
 
 permissions:
   contents: read
@@ -86,7 +107,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME }}
+        container-name: authconainer
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
