@@ -1,0 +1,51 @@
+###
+post http://localhost:4000//AdminSignin 
+Content-Type: application/json   
+
+{
+    "Email": "admin@pulsar.com",
+    "Password": "Admin@123"
+    
+    
+    
+}
+
+###
+
+post http://localhost:4000/adminSignup
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDY3ODA1NDEsImV4cCI6MTcwNjc4NDE0MX0.wlGbY4aAVhtT48nHHuCzOgOKI1_xQgfgLAfQPwxMmVQ
+Content-Type: application/json
+
+{
+    "Username": "admin20",
+    "Password": "12345678",
+    "FirstName": "Dino",
+    "LastName": "Jose",
+    "Email": "jose@gmail.com",
+    "IsActive": 1,
+    "RoleName": "Engineer",
+    "AccessLevel": 0
+}
+###
+post http://localhost:4000/forgot-password
+
+{
+"Email": "admin@pulsarelectronic.com"
+
+}
+
+###
+post http://localhost:4000/reset-password
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+Content-Type: application/json
+
+{
+"newPassword": "undefined",
+"confirm_password": "undefined"
+
+}
+###
+
+get http://localhost:4000/protected
+Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjEsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcwODk1NDd9.e0w2iP1HWpyuztzeDI7LIFsNkL0W71me_Y-xDFr5xEI
+Content-Type: application/json

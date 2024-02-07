@@ -1,0 +1,9 @@
+###
+get https://backend2.gridxmeter.com/meter_change
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/active_state_count
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/inactive_state_count
+Content-Type: application/json

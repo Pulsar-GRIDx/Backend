@@ -1,0 +1,26 @@
+###
+post https://backend2.gridxmeter.com/insertMeterData
+Content-Type: application/json
+
+{
+ "data":[
+     "DRN": "0260694812784",
+    "Surname": "Jose",
+    "Name": "Dino",
+    "Suburb": "Havana",
+    "City": "Wndhoek",
+    "Streetname": "Tugela Steet",
+    "Housenumber": "20",
+    "Simnumber": "0811234567",
+    "Usercategory": "Home",
+    "Meterlng": "-22.521021538121",
+    "Meterlat": "17.0324874862621",
+    "Transformerlng": "-22.5208258027464",
+    "Transformerlat": "17.033259962460",
+    "TransformerDRN": "0260000000090"
+ ]
+}
+###
+get http://localhost:4000/randompath/activeInactiveMeters
+Content-Type: application/json
+###

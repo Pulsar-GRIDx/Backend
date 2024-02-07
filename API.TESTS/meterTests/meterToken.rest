@@ -1,0 +1,12 @@
+
+
+get https://backend2.gridxmeter.com/tokenAmount
+Content-Type: application/json
+###
+get https://backend2.gridxmeter.com/totalTokensBought
+Content-Type: application/json
+
+
+###
+get  https://backend2.gridxmeter.com/energy-stats
+Content-Type: application/json

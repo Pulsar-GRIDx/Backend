@@ -26,102 +26,102 @@ exports.registerAdmin = async (Username, Password, FirstName, LastName, Email, I
   });
 };
 
-// //Admin SignIn//
+//Admin SignIn//
 
-// exports.signIn = async (Email, Password, GuestID) => {
-//   if (!GuestID && (!Email || !Password)) {
-//     throw new Error('Invalid request');
-//   }
+exports.signIn = async (Email, Password, GuestID) => {
+  if (!GuestID && (!Email || !Password)) {
+    throw new Error('Invalid request');
+  }
 
-//   if (GuestID) {
-//     const findGuestQuery = 'SELECT * FROM guest_users WHERE GuestID = ?';
-//     const updateGuestQuery = 'UPDATE guest_users SET login_count = login_count + 1 WHERE GuestID = ?';
+  if (GuestID) {
+    const findGuestQuery = 'SELECT * FROM guest_users WHERE GuestID = ?';
+    const updateGuestQuery = 'UPDATE guest_users SET login_count = login_count + 1 WHERE GuestID = ?';
 
-//     const guestUser = await new Promise((resolve, reject) => {
-//       connection.query(findGuestQuery, [GuestID], (err, results) => {
-//         if (err) {
-//           reject(err);
-//         } else if (results.length === 0) {
-//           reject(new Error('Authentication failed'));
-//         } else {
-//           resolve(results[0]);
-//         }
-//       });
-//     });
+    const guestUser = await new Promise((resolve, reject) => {
+      connection.query(findGuestQuery, [GuestID], (err, results) => {
+        if (err) {
+          reject(err);
+        } else if (results.length === 0) {
+          reject(new Error('Authentication failed'));
+        } else {
+          resolve(results[0]);
+        }
+      });
+    });
 
-//     await new Promise((resolve, reject) => {
-//       connection.query(updateGuestQuery, [GuestID], (err, updateResult) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           resolve(updateResult);
-//         }
-//       });
-//     });
+    await new Promise((resolve, reject) => {
+      connection.query(updateGuestQuery, [GuestID], (err, updateResult) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(updateResult);
+        }
+      });
+    });
 
-//     const token = jwt.sign(
-//       { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
-//       process.env.SECRET_KEY,
-//       { expiresIn: '10m' }
-//     );
+    const token = jwt.sign(
+      { GuestID: guestUser.GuestID, name: guestUser.name, role: 'guest' },
+      process.env.SECRET_KEY,
+      { expiresIn: '10m' }
+    );
 
-//     return {
-//       token,
-//       user: {
-//         GuestID: guestUser.GuestID,
-//         name: guestUser.name,
-//         role: 'guest',
-//         redirect: `/protected?token=${encodeURIComponent(token)}`
-//       }
-//     };
-//   } else {
-//     // Regular Admin sign-in
-//     // Find the Admin by email
-//     const findUserQuery = 'SELECT * FROM SystemAdmins WHERE email = ?';
-//     const updateUserQuery = 'UPDATE SystemAdmins SET login_count = login_count + 1 WHERE Admin_ID = ?';
+    return {
+      token,
+      user: {
+        GuestID: guestUser.GuestID,
+        name: guestUser.name,
+        role: 'guest',
+        redirect: `/protected?token=${encodeURIComponent(token)}`
+      }
+    };
+  } else {
+    // Regular Admin sign-in
+    // Find the Admin by email
+    const findUserQuery = 'SELECT * FROM SystemAdmins WHERE email = ?';
+    const updateUserQuery = 'UPDATE SystemAdmins SET login_count = login_count + 1 WHERE Admin_ID = ?';
 
-//     const admin = await new Promise((resolve, reject) => {
-//       connection.query(findUserQuery, [Email], (err, results) => {
-//         if (err) {
-//           reject(err);
-//         } else if (results.length === 0) {
-//           reject(new Error('Authentication failed'));
-//         } else {
-//           resolve(results[0]);
-//         }
-//       });
-//     });
+    const admin = await new Promise((resolve, reject) => {
+      connection.query(findUserQuery, [Email], (err, results) => {
+        if (err) {
+          reject(err);
+        } else if (results.length === 0) {
+          reject(new Error('Authentication failed'));
+        } else {
+          resolve(results[0]);
+        }
+      });
+    });
 
-//     const isMatch = await bcrypt.compare(Password, admin.Password);
-//     if (!isMatch) {
-//       throw new Error('Authentication failed');
-//     }
+    const isMatch = await bcrypt.compare(Password, admin.Password);
+    if (!isMatch) {
+      throw new Error('Authentication failed');
+    }
 
-//     await new Promise((resolve, reject) => {
-//       connection.query(updateUserQuery, [admin.Admin_ID], (err, updateResult) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           resolve(updateResult);
-//         }
-//       });
-//     });
+    await new Promise((resolve, reject) => {
+      connection.query(updateUserQuery, [admin.Admin_ID], (err, updateResult) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(updateResult);
+        }
+      });
+    });
 
-//     const token = jwt.sign(
-//       { Admin_ID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
-//       process.env.SECRET_KEY,
-//       { expiresIn: '1h' } // Token expires in 1 hour
-//     );
+    const token = jwt.sign(
+      { Admin_ID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
+      process.env.SECRET_KEY,
+      { expiresIn: '1h' } // Token expires in 1 hour
+    );
 
-//     return {
-//       token,
-//       user: {
-//         Admin_ID: admin.adminID,
-//         email: admin.email,
-//         AccessLevel: admin.AccessLevel,
-//         redirect: `/protected?token=${encodeURIComponent(token)}`
-//       }
-//     };
-//   }
-// };
+    return {
+      token,
+      user: {
+        Admin_ID: admin.adminID,
+        email: admin.email,
+        AccessLevel: admin.AccessLevel,
+        redirect: `/protected?token=${encodeURIComponent(token)}`
+      }
+    };
+  }
+};
 

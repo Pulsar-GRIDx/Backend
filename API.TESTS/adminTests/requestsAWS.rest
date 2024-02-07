@@ -1,0 +1,91 @@
+
+# ### 
+# post https://backend2.gridxmeter.com/signin 
+# Content-Type: application/json
+
+# { "Email": "adrian@pulsarelectronic.com", "Password": "12345678" }
+# ###
+
+# post https://backend2.gridxmeter.com/signup
+# authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRlckRSTiI6IjAyNjAwNjY1NDYxNjkiLCJpYXQiOjE2NzU5MTIwMTF9.4UAhjczOReOuiFg7Gb3Yd9C6E_QwtRx0yvx6wO_YXns
+# Content-Type: application/json
+
+# {
+#     {"Username": "admin100",
+#     "Password": "12345678",
+#     "FirstName": "Adrian",
+#     "LastName": "Larreal",
+#     "Email": "adrian@pulsarelectronic.com",
+#     "IsActive": 1,
+#     "RoleName": "Engineer",
+#     "AccessLevel": 1},
+
+#     {"Username": "admin100",
+#     "Password": "12345678",
+#     "FirstName": "Adrian",
+#     "LastName": "Larreal",
+#     "Email": "adrian@pulsarelectronic.com",
+#     "IsActive": 1,
+#     "RoleName": "Engineer",
+#     "AccessLevel": 1}
+    
+# }
+
+
+# ###
+# post https://backend2.gridxmeter.com/forgot-password
+
+# {
+# "Email": "admin@pulsarelectronic.com"
+
+# }
+
+# ###
+# post https://backend2.gridxmeter.com/reset-password
+
+# {
+# "newPassword": "undefined",
+# "confirm_password": "undefined"
+
+# }
+
+# authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW1wb3JhcnlQYXNzd29yZCI6IjlqOGoxcnc0IiwiaWF0IjoxNjk1MDcyODc3LCJleHAiOjE2OTUwNzY0Nzd9.Obl8pXhoXwe94b162j-LQM6Pwt2x5Ez85qrgh5Ddr9c
+# Content-Type: application/json
+# ###
+
+# get https://backend2.gridxmeter.com/protected
+# Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjQsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTcyMjgzMDN9.9OFU8z-W3ijupu1b-qCkThdVr6P5xyA85SxrDi5hWnw
+# Content-Type: application/json
+# ###
+# get https://backend2.gridxmeter.com/reset-password
+# ###
+# get https://backend2.gridxmeter.com/profile/1
+
+# ###
+# get https://backend2.gridxmeter.com/allAdmins
+# ###
+
+# post https://backend2.gridxmeter.com/UserUpdate/1
+
+# {
+# "FirstName":"Update update",
+# "Email":"etangoking90@gmail.com"
+
+# }
+# ###
+
+# post https://backend2.gridxmeter.com/AdminUpdate/1
+
+# ###
+# delete https://backend2.gridxmeter.com/deleteUser/3
+
+# Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6NSwiQWNjZXNzTGV2ZWwiOjEsImlhdCI6MTY5NjQ0MDQwNiwiZXhwIjoxNjk2NDQ0MDA2fQ.h61S5SbnUGYbE8hu4jBFpzn1paRh9bq1OEuVfMGP10k
+# Content-Type: application/jsonn
+
+
+# ###
+
+# get https://backend2.gridxmeter.com/protected
+
+# authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTIsIkFjY2Vzc0xldmVsIjoxLCJpYXQiOjE2OTY5NzM2NjMsImV4cCI6MTY5Njk3NzI2M30.19KdEId8porRsVmhO8QgKY6PVxb7jYcxrnw3FJR0DVU
+# Content-Type: application/json

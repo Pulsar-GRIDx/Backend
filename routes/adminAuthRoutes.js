@@ -6,7 +6,8 @@ const adminController = require('../admin/adminControllers');
 
 
 router.post('/adminSignup', authenticateTokenAndGetAdmin_ID, adminController.adminSignup);
-// router.post('/AdminSignin', adminController.signIn);
+
+router.post('/AdminSignin', adminController.signIn);
 
 
 
