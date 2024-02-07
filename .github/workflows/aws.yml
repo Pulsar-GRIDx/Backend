@@ -63,6 +63,9 @@ env:
       ],
       "cpu": "1024",
       "memory": "100"
+      "executionRoleArn": "arn:aws:iam::242927478162:role/ecs-devops-sandbox-execution-role",
+      "taskRoleArn": "arn:aws:iam::242927478162:role/ecsTaskExecutionRole",
+      "placementConstraints": [authconainer]
     }
 
 permissions:
