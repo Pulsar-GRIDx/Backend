@@ -3,7 +3,14 @@
 post https://backend2.gridxmeter.com/signin 
 Content-Type: application/json
 
-{ "Email": "adrian@pulsarelectronic.com", "Password": "12345678" }
+
+{
+    "Email": "admin@pulsar.com",
+    "Password": "Admin@123"
+    
+    
+    
+}
 ###
 
 post https://backend2.gridxmeter.com/signup

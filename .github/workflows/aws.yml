@@ -35,9 +35,9 @@ env:
   ECR_REPOSITORY: public.ecr.aws/l0z9j4j6/authentiation          # set this to your Amazon ECR repository name
   ECS_SERVICE: AdminService                 # set this to your Amazon ECS service name
   ECS_CLUSTER: AdminBackendCluster                # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: aws/authtask.json # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION:  ecs\authtask.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: authconainer-4000-tcp           # set this to the name of the container in the
+  CONTAINER_NAME: authconainer           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
 permissions:
