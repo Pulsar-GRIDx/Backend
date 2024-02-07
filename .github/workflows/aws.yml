@@ -69,7 +69,7 @@ env:
     }
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
