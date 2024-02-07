@@ -313,7 +313,7 @@ exports.getAllProcessedTokens = (req, res) => {
         kwk: parseFloat(token.token_amount) / 2.5,
       }));
 
-      res.json( kwkData );
+      res.json( {data:kwkData });
     })
     .catch((err) => {
       console.log('Error querying the database:', err.message);
