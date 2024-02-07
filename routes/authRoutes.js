@@ -171,7 +171,7 @@ router.post('/signin', (req, res) => {
             sameSite: 'None',
           });
            // Set CORS headers
-        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com','http://localhost:3000' ,'http://localhost:3001'); 
+        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com','http://localhost:3000/' ,'http://localhost:3001/'); 
         res.header('Access-Control-Allow-Credentials', true);
 
           // Send the response with both token and user data
@@ -193,7 +193,7 @@ router.get('/protected', authenticateToken, (req, res) => {
 
 function authenticateToken(req, res, next) {
   // Get the token from session storage on the front end
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   if (token == null) {
     return res.sendStatus(401);
