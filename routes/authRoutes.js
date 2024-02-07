@@ -22,37 +22,7 @@ const limiter = rateLimit({
 
 
 
-// Sign-Up route for admins.
-router.post('/adminSignup', authenticateTokenAndGetAdmin_ID , async (req, res) => {
-  const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
-  if (!Username || !Password || !FirstName || !LastName || !Email || !IsActive || !RoleName || !AccessLevel || !validateEmail(Email)) {
-    return res.status(400).json({ error: 'Invalid input data' });
-  }
-
-  try {
-  
-    
-
-    const hashedPassword = await bcrypt.hash(Password, 10);
-
-    connection.query(
-      'INSERT INTO SystemAdmins (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
-      (err, result) => {
-        if (err) {
-          console.error('Registration error:', err);
-          return res.status(500).json({ error: 'Registration failed', err });
-        }
-        console.log('Registration successful');
-        res.status(201).json({ message: 'Registration successful' });
-      }
-    );
-  } catch (error) {
-    console.error('Error during registration:', error);
-    res.status(500).json({ error: 'Registration failed', err });
-  }
-});
 //signup router for users
 
 router.post('/signup', async (req, res) => {
@@ -200,12 +170,12 @@ router.post('/signin', (req, res) => {
             httpOnly: false,
             secure: true, // Set this to true for HTTPS
             maxAge: 40 * 60 * 1000,
-            domain: 'admin.gridxmeter.com', // Include the dot before the domain
+            domain: ('admin.gridxmeter.com', 'localhost:3000' ,'localhost:3001') ,// Include the dot before the domain
             path: '/',
             sameSite: 'None',
           });
            // Set CORS headers
-        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
+        res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com','http://localhost:3000/' ,'http://localhost:3001/'); 
         res.header('Access-Control-Allow-Credentials', true);
 
           // Send the response with both token and user data
@@ -227,8 +197,8 @@ router.get('/protected', authenticateToken, (req, res) => {
 });
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = req.query.token || (authHeader && authHeader.split(' ')[1]);
+  // Get the token from session storage on the front end
+  const token = sessionStorage.getItem('token');
 
   if (token == null) {
     return res.sendStatus(401);
@@ -244,12 +214,6 @@ function authenticateToken(req, res, next) {
   });
 }
 
-const validateEmail = (Email) => {
-  if (!validator.isEmail(Email)) {
-    return false;
-  }
-  return true;
-};
 
 // Admin Route to update user information
 router.post('/AdminUpdate/:Admin_ID', (req, res) => {

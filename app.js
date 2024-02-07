@@ -4,21 +4,24 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
-  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com'],
+  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001'],
+  methods:[['GET'],['POST']],
   credentials: true,
   optionSuccessStatus: 200,
 };
 // Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 5,
-  max: 5,
+  max: 1000000,
   message: 'Too many requests, please try again later.',
 });
 const authRoutes = require('./routes/authRoutes');
 const getRoutes = require('./routes/getRoutes');
 const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const meterRoutes = require('./meter/meterRoutes');
+const meterRoutes = require('./routes/meterRoutes');
 const getAll = require('./routes/getAllData');
+const adminAuthRoutes = require('./routes/adminAuthRoutes');
+
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -60,6 +63,8 @@ app.use('/', getRoutes);
 app.use('/',forgotPasswordRoutes);
 app.use('/',meterRoutes);
 app.use('/', getAll);
+app.use('/', adminAuthRoutes);
+
 
 
 
