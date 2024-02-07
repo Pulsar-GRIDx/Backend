@@ -32,7 +32,7 @@ on:
 
 env:
   AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: authentiation          # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: public.ecr.aws/l0z9j4j6/authentiation          # set this to your Amazon ECR repository name
   ECS_SERVICE: AdminService                 # set this to your Amazon ECS service name
   ECS_CLUSTER: AdminBackendCluster                # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: |
@@ -103,7 +103,13 @@ jobs:
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
     
         
-
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: authconainer
+        image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
