@@ -36,7 +36,7 @@ router.post('/forgot-password', async (req, res) => {
 
   try {
     // Check if the email exists in the database
-    const [rows] = await query('SELECT * FROM users WHERE email = ?', [Email]);
+    const [rows] = await query('SELECT * FROM SystemAdmins WHERE email = ?', [Email]);
 
     if (!rows || rows.length === 0) {
       return res.status(404).json({ error: 'Email not found' });
@@ -47,7 +47,7 @@ router.post('/forgot-password', async (req, res) => {
     const tokenPayload = { Email, temporaryPassword };
     const token = jwt.sign(tokenPayload, process.env.SECRET_KEY, { expiresIn: '1h' });
     resetTokens[token] = Email;
-    const resetLink = `https://gridxmeter.com/reset-password?token=${token}`;
+    const resetLink = `https://admin.gridxmeter.com/reset-password?token=${token}`;
 
     // Call the function to send the reset email
     sendResetEmail(Email, resetLink, temporaryPassword);
@@ -116,7 +116,7 @@ router.post('/reset-password', async (req, res) => {
       try {
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
   
-        const updateUserQuery = 'UPDATE users SET password = ? WHERE email = ?';
+        const updateUserQuery = 'UPDATE SystemAdmins SET password = ? WHERE email = ?';
         connection.query(updateUserQuery, [hashedNewPassword, Email], (err) => {
           if (err) {
             console.error('Password reset failed:', err);
