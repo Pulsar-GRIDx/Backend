@@ -1,6 +1,6 @@
 
 ###
-post http://localhost:4000/signin 
+post https://backend2.gridxmeter.com/signin 
 Content-Type: application/json   
 
 {
@@ -13,8 +13,8 @@ Content-Type: application/json
 
 ###
 
-post http://localhost:4000/adminSignup
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDY3ODA1NDEsImV4cCI6MTcwNjc4NDE0MX0.wlGbY4aAVhtT48nHHuCzOgOKI1_xQgfgLAfQPwxMmVQ
+post https://backend2.gridxmeter.com/adminSignup
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDczODA5OTIsImV4cCI6MTcwNzM4NDU5Mn0._i9B9L5jgOZ37iMAqhd1L9AjEL6IrMb9mdf7C3UAAy8
 Content-Type: application/json
 
 {

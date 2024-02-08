@@ -389,7 +389,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
       const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
         if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+          return total + Number(record.active_energy) / 1000;
         } else {
           return total;
         }
@@ -397,7 +397,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
       const totalMonthlyEnergy = monthlyEnergyData.reduce((total, record) => {
         if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+          return total + Number(record.active_energy / 1000);
         } else {
           return total;
         }
@@ -405,7 +405,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
       const totalYearlyEnergy = yearlyEnergyByDrn.reduce((total, record) => {
         if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+          return total + Number(record.active_energy) / 1000;
         } else {
           return total;
         }

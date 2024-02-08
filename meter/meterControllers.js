@@ -122,14 +122,22 @@ exports.getEnergyAmount = (req, res) => {
     energyService.getWeekMonthlyData('currentMonth'),
     energyService.getWeekMonthlyData('lastMonth'),
     energyService.getVoltageAndCurrent(),
+    energyService.getStartDate(),
   ])
-  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
+  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData,startDateResult]) => {
+
+
+    // Extract startDate without the time component
+    const startDate = startDateResult[0] && startDateResult[0].startDate ? startDateResult[0].startDate.toISOString().split('T')[0] : null;
+
+    
     try {
       const currentTotals = energyService.calculateMonthWeekTotals(currentData.weeklyData);
       const lastTotals = energyService.calculateMonthWeekTotals(lastData.weeklyData);
       const lastMonthTotals = energyService.calculateMonthWeekTotals(lastMonthData.monthlyData);
       const currentMonthTotals = energyService.calculateMonthWeekTotals(currentMonthData.monthlyData);
       const voltageAndCurrentTotals = energyService.calculateVoltageAndCurrent(voltageAndCurrentData);
+      console.log(startDate,startDateResult);
 
       const currentWeekResult = Object.values(currentTotals);
       const lastWeekResult = Object.values(lastTotals);
@@ -146,12 +154,15 @@ exports.getEnergyAmount = (req, res) => {
         currentMonthResult,
         currentweekVoltageTotal,
         currentweekCurrentTotal,
+        startDate,
       };
 
       res.json(response);
     } catch (err) {
       console.log('Error processing the data:', err);
+
       return res.status(500).send({ error: 'Data processing failed', details: err });
+      
     }
   })
   .catch(err => {
@@ -235,8 +246,11 @@ exports.getDRNDATA = (req, res) => {
     energyService.getDRNData('currentMonth',DRN),
     energyService.getDRNData('lastMonth',DRN),
     energyService.getDRNVoltageAndCurrent(DRN),
+    energyService.getStartDate(DRN),
   ])
-  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData]) => {
+  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData,startDateResult]) => {
+    // Extract startDate without the time component
+    const startDate = startDateResult[0] ? startDateResult[0].startDate.toISOString().split('T')[0] : null;
     try {
       const currentTotals = energyService.CalculateDrnData(currentData.weeklyData);
       const lastTotals = energyService.CalculateDrnData(lastData.weeklyData);
@@ -259,6 +273,7 @@ exports.getDRNDATA = (req, res) => {
         currentMonthResult,
         currentweekVoltageTotal,
         currentweekCurrentTotal,
+        startDate,
       };
 
       res.json(response);

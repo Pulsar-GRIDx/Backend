@@ -237,6 +237,22 @@ exports.calculateVoltageAndCurrent = (readings) => {
 };
 
 
+exports.getStartDate = () => {
+  const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage";
+  
+  return new Promise((resolve, reject) => {
+    db.query(getStartDate, (err, startDateResult) => {
+      if (err) reject(err);
+      
+      else resolve(startDateResult);
+      console.log(startDateResult);
+      
+    
+   
+    });
+  });
+};
+
 //------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------------------------//
 
 exports.getCurrentDayData = () => {
@@ -433,6 +449,20 @@ exports.getDailyMeterEnergy  = (DRN) => {
  
 };
 
+exports.getStartDate = (DRN) => {
+  const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage WHERE DRN = ?";
+  
+  return new Promise((resolve, reject) => {
+    db.query(getStartDate, [DRN],(err, startDateResult) => {
+      if (err) reject(err);
+      
+      else resolve(startDateResult);
+      
+    
+   
+    });
+  });
+};
 
 ///-------------------------------------GetAllProcessedTokensByDRN-----------------------------//
 exports.getAllProcessedTokens =(DRN) =>{
