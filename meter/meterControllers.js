@@ -115,34 +115,30 @@ exports.getTotalEnergyAmount = (req, res) => {
 ///------------------------------CurrentWeekTotals-------------------------------------------//
 
 exports.getEnergyAmount = (req, res) => {
+ 
   
   Promise.all([
-    energyService.getWeekMonthlyData('current'),
-    energyService.getWeekMonthlyData('last'),
-    energyService.getWeekMonthlyData('currentMonth'),
-    energyService.getWeekMonthlyData('lastMonth'),
-    energyService.getVoltageAndCurrent(),
+    energyService.getSystemCurrentWeekData(),
+    energyService.getSystemLastWeekData(),
+    energyService.getSystemCurrentMonthData(),
+    energyService.getSystemLastMonthData(),
+    energyService.getSystemVoltageAndCurrent(),
     energyService.getStartDate(),
   ])
-  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData,startDateResult]) => {
-
-
+  .then(([currentWeekData, lastWeekData, currentMonthData, lastMonthData, voltageAndCurrentData, startDateResult]) => {
     // Extract startDate without the time component
-    const startDate = startDateResult[0] && startDateResult[0].startDate ? startDateResult[0].startDate.toISOString().split('T')[0] : null;
-
-    
+    const startDate = startDateResult[0] ? startDateResult[0].startDate.toISOString().split('T')[0] : null;
     try {
-      const currentTotals = energyService.calculateMonthWeekTotals(currentData.weeklyData);
-      const lastTotals = energyService.calculateMonthWeekTotals(lastData.weeklyData);
-      const lastMonthTotals = energyService.calculateMonthWeekTotals(lastMonthData.monthlyData);
-      const currentMonthTotals = energyService.calculateMonthWeekTotals(currentMonthData.monthlyData);
-      const voltageAndCurrentTotals = energyService.calculateVoltageAndCurrent(voltageAndCurrentData);
-      console.log(startDate,startDateResult);
+      const currentWeekTotals = energyService.CalculateDrnData(currentWeekData);
+      const lastWeekTotals = energyService.CalculateDrnData(lastWeekData);
+      const currentMonthTotals = energyService.CalculateDrnData(currentMonthData);
+      const lastMonthTotals = energyService.CalculateDrnData(lastMonthData);
+      const voltageAndCurrentTotals = energyService.calculateSystemVoltageAndCurrent(voltageAndCurrentData);
 
-      const currentWeekResult = Object.values(currentTotals);
-      const lastWeekResult = Object.values(lastTotals);
-      const lastMonthResult = Object.values(lastMonthTotals);
+      const currentWeekResult = Object.values(currentWeekTotals);
+      const lastWeekResult = Object.values(lastWeekTotals);
       const currentMonthResult = Object.values(currentMonthTotals);
+      const lastMonthResult = Object.values(lastMonthTotals);
 
       const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
       const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
@@ -150,8 +146,8 @@ exports.getEnergyAmount = (req, res) => {
       const response = {
         currentWeekResult,
         lastWeekResult,
-        lastMonthResult,
         currentMonthResult,
+        lastMonthResult,
         currentweekVoltageTotal,
         currentweekCurrentTotal,
         startDate,
@@ -160,9 +156,7 @@ exports.getEnergyAmount = (req, res) => {
       res.json(response);
     } catch (err) {
       console.log('Error processing the data:', err);
-
       return res.status(500).send({ error: 'Data processing failed', details: err });
-      
     }
   })
   .catch(err => {
@@ -237,31 +231,30 @@ exports.getSuburbEnergy = (req, res) => {
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyDataByDRN------------------------------------------------//
 
 exports.getDRNDATA = (req, res) => {
-
   const DRN = req.params.DRN;
   
   Promise.all([
-    energyService.getDRNData('current',DRN),
-    energyService.getDRNData('last',DRN),
-    energyService.getDRNData('currentMonth',DRN),
-    energyService.getDRNData('lastMonth',DRN),
+    energyService.getCurrentWeekData(DRN),
+    energyService.getLastWeekData(DRN),
+    energyService.getCurrentMonthData(DRN),
+    energyService.getLastMonthData(DRN),
     energyService.getDRNVoltageAndCurrent(DRN),
-    energyService.getStartDate(DRN),
+    energyService.getDRNStartDate(DRN),
   ])
-  .then(([currentData, lastData, currentMonthData, lastMonthData, voltageAndCurrentData,startDateResult]) => {
+  .then(([currentWeekData, lastWeekData, currentMonthData, lastMonthData, voltageAndCurrentData, startDateResult]) => {
     // Extract startDate without the time component
     const startDate = startDateResult[0] ? startDateResult[0].startDate.toISOString().split('T')[0] : null;
     try {
-      const currentTotals = energyService.CalculateDrnData(currentData.weeklyData);
-      const lastTotals = energyService.CalculateDrnData(lastData.weeklyData);
-      const lastMonthTotals = energyService.CalculateDrnData(lastMonthData.monthlyData);
-      const currentMonthTotals = energyService.CalculateDrnData(currentMonthData.monthlyData);
+      const currentWeekTotals = energyService.CalculateDrnData(currentWeekData);
+      const lastWeekTotals = energyService.CalculateDrnData(lastWeekData);
+      const currentMonthTotals = energyService.CalculateDrnData(currentMonthData);
+      const lastMonthTotals = energyService.CalculateDrnData(lastMonthData);
       const voltageAndCurrentTotals = energyService.calculateDRNVoltageAndCurrent(voltageAndCurrentData);
 
-      const currentWeekResult = Object.values(currentTotals);
-      const lastWeekResult = Object.values(lastTotals);
-      const lastMonthResult = Object.values(lastMonthTotals);
+      const currentWeekResult = Object.values(currentWeekTotals);
+      const lastWeekResult = Object.values(lastWeekTotals);
       const currentMonthResult = Object.values(currentMonthTotals);
+      const lastMonthResult = Object.values(lastMonthTotals);
 
       const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
       const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
@@ -269,8 +262,8 @@ exports.getDRNDATA = (req, res) => {
       const response = {
         currentWeekResult,
         lastWeekResult,
-        lastMonthResult,
         currentMonthResult,
+        lastMonthResult,
         currentweekVoltageTotal,
         currentweekCurrentTotal,
         startDate,
@@ -287,6 +280,8 @@ exports.getDRNDATA = (req, res) => {
     return res.status(500).send({ error: 'Database query failed', details: err });
   });
 };
+
+
 
 
 
@@ -315,8 +310,8 @@ exports.getAllProcessedTokens = (req, res) => {
 
   Promise.all([energyService.getAllProcessedTokens(DRN)])
     .then(([processedTokens]) => {
-      if (!processedTokens || !processedTokens || !Array.isArray(processedTokens)) {
-        // Handle the case where processedTokens, data, or data array is null or not present
+      if (!processedTokens || !Array.isArray(processedTokens)) {
+        // Handle the case where processedTokens or data array is null or not present
         return res.status(404).json({ error: 'Processed tokens not found' });
       }
 
@@ -325,16 +320,20 @@ exports.getAllProcessedTokens = (req, res) => {
         token_id: token.token_id,
         date_time: token.date_time,
         token_amount: parseFloat(token.token_amount),
-        kwk: parseFloat(token.token_amount) / 2.5,
+        kwh: parseFloat(token.token_amount) / 2.5,
       }));
 
-      res.json( {data:kwkData });
+      const total = kwkData.reduce((total, record) => total + record.token_amount, 0);
+      const kwhTotal = kwkData.reduce((total, record) => total + record.kwh , 0);
+
+      res.json({ data: kwkData, total ,kwhTotal});
     })
     .catch((err) => {
       console.log('Error querying the database:', err.message);
       res.status(500).json({ error: 'Database query failed, try again', details: err.message });
     });
 };
+
 
 //--------------------------------------------------------Inserting New Transformer----------------------------------------------------------//
 exports.insertTransformerData = (req, res) => {
