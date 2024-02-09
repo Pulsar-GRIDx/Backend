@@ -220,6 +220,8 @@ exports.CalculateSystemData = (allData) => {
 
 
 
+
+
 exports.getSystemVoltageAndCurrent = () => {
   const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE()";
   // console.log(CURDATE());
@@ -232,6 +234,9 @@ exports.getSystemVoltageAndCurrent = () => {
   });
 };
 
+
+
+////
 exports.calculateSystemVoltageAndCurrent = (readings) => {
   if (!readings || !Array.isArray(readings) || readings.length === 0) {
     return new Error("Invalid or empty readings data");
@@ -244,22 +249,23 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
    
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current / 1000;
-    
+    acc.totalCurrent = (acc.totalCurrent || 0) + current;
+
+    // Count the number of readings
+    acc.count = (acc.count || 0) + 1;
 
     return acc;
     
   }, {});
 
-  return {
-    totalVoltage: result.totalVoltage,
-    totalCurrent: result.totalCurrent,
-    
-    
-  };
- 
-};
+  // Calculate the average voltage
+  const totalVoltage = result.totalVoltage / result.count;
 
+  return {
+    totalVoltage,
+    totalCurrent: result.totalCurrent,
+  };
+};
 
 exports.getStartDate = () => {
   const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage";
