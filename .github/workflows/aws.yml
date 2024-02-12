@@ -71,8 +71,8 @@ jobs:
         id: describe-service
         run: |
             SERVICE=$(aws ecs describe-services --cluster AdminBackendCluster --services AdminService)
-            echo "SERVICE=$SERVICE" >> $GITHUB_ENV
-            echo "Service ARN: $SERVICE"
+            echo "SERVICE=$SERVICE" >> $GITHUB_OUTPUT
+            echo "Service ARN: $SERVICE" >> $GITHUB_OUTPUT
             
       - name: Check SERVICE variable
         run: |
