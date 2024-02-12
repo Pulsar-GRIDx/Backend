@@ -65,7 +65,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: authtask.json
+          task-definition: authtask
           container-name: authcontainer
           image: ${{ steps.build-image.outputs.image }}    
           
@@ -93,4 +93,3 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
 
 
-          
