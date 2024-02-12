@@ -78,11 +78,7 @@ jobs:
             TASK_DEFINITION=$(echo $SERVICE | jq -r '.taskDefinition')
             
             # Update the service with the new task definition and desired count set to 0
-            aws ecs update-service --cluster AdminBackendCluster --service AdminService --task-definition $TASK_DEFINITION --desired-count 0
-        env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_DEFAULT_REGION: us-east-1    
+            aws ecs update-service --cluster AdminBackendCluster --service AdminService --task-definition $TASK_DEFINITION --desired-count 0  
           
 
       - name: Deploy Amazon ECS task definition
