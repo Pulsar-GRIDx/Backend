@@ -70,7 +70,7 @@ jobs:
       - name: Describe ECS Service
         id: describe-service
         run: |
-          SERVICE=$(aws ecs describe-services --cluster AdminBackendCluster --services AdminService | jq -r '.services[0].taskDefinition')
+          SERVICE=$(aws ecs describe-services --cluster AdminBackendCluster --services AdminService | jq -r '.services[0].authtask')
           echo "SERVICE=$SERVICE" >> $GITHUB_ENV
           echo "Service ARN: $SERVICE"
           
@@ -82,7 +82,7 @@ jobs:
         if: steps.describe-service.outputs.SERVICE != ''
         run: |
           echo "Stopping current task"
-          aws ecs update-service --cluster AdminBackendCluster --service AdminService --task-definition $SERVICE --desired-count 0
+          aws ecs update-service --cluster AdminBackendCluster --service AdminService --task-definition authtask $SERVICE --desired-count 0
           
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
