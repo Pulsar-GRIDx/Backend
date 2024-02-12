@@ -34,12 +34,14 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
+      
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'us-east-1'
+          
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -53,9 +55,6 @@ jobs:
           IMAGE_TAG: latest
           REPOSITORY: adminbackend
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT    
@@ -67,19 +66,19 @@ jobs:
           task-definition: authtask.json
           container-name: authconainer
           image: ${{ steps.build-image.outputs.image }}    
-
+          
       - name: Describe ECS Service
         id: describe-service
         run: |
-          service=$(aws ecs describe-services --cluster AdminBackendCluster --services AdminService)
-          echo "::set-env name=SERVICE::$service"
+          aws ecs describe-services --cluster AdminBackendCluster --services CICD > service.json
+          echo "service=$(cat service.json)" >> $GITHUB_ENV
 
       - name: Stop current task
         id: stop-task
         if: steps.describe-service.outputs.service != '{}'
         run: |
-          serviceArn=$(echo $SERVICE | jq -r '.services[0].taskDefinition')
-          aws ecs update-service --cluster AdminBackendCluster --service AdminService --task-definition $serviceArn --desired-count 0
+          serviceArn=$(echo $service | jq -r '.services[0].taskDefinition')
+          aws ecs update-service --cluster AdminBackendCluster --service CICD --task-definition $serviceArn --desired-count 0
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
