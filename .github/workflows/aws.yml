@@ -73,8 +73,8 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: adminService
-          cluster: adminBackendCluster
+          service: AdminService
+          cluster: AdminBackendCluster
           wait-for-service-stability: true 
            
           
