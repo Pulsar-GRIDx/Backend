@@ -70,14 +70,14 @@ jobs:
       - name: Describe ECS Service
         id: describe-service
         run: |
-          aws ecs describe-services --cluster AdminBackendCluster --services CICD > service.json
-          echo "service=$(cat service.json)" >> $GITHUB_ENV
-
+          service=$(aws ecs describe-services --cluster AdminBackendCluster --services CICD)
+          echo "::set-env name=SERVICE::$service"
+          
       - name: Stop current task
         id: stop-task
-        if: steps.describe-service.outputs.service != '{}'
+        if: steps.describe-service.outputs.SERVICE != '{}'
         run: |
-          serviceArn=$(echo $service | jq -r '.services[0].taskDefinition')
+          serviceArn=$(echo $SERVICE | jq -r '.services[0].taskDefinition')
           aws ecs update-service --cluster AdminBackendCluster --service CICD --task-definition $serviceArn --desired-count 0
 
       - name: Deploy Amazon ECS task definition
@@ -87,6 +87,3 @@ jobs:
           service: AdminService
           cluster: AdminBackendCluster
           wait-for-service-stability: true 
-
-
-          
