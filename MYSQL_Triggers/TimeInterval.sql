@@ -8,13 +8,13 @@ BEGIN
 
     -- Insert notifications for meters that have not sent data in the last three hours from meteringpower
     INSERT INTO meternotifications (DRN, AlarmType, Alarm, Urgency_Type)
-    SELECT DISTINCT DRN, 'Meter State', 'Meter has not sent data in the last three hours.', 1
+    SELECT DISTINCT DRN, 'Meter Power', 'Meter has not sent data in the last three hours.', 1
     FROM meteringpower
     WHERE date_time < threeHoursAgo;
 
     -- Insert notifications for meters that have not sent data in the last three hours from metercumulativeenergyusage
     INSERT INTO meternotifications (DRN, AlarmType, Alarm, Urgency_Type)
-    SELECT DISTINCT DRN, 'Meter State', 'Meter has not sent data in the last three hours.', 1
+    SELECT DISTINCT DRN, 'Meter Energy', 'Meter has not sent data in the last three hours.', 1
     FROM metercumulativeenergyusage
     WHERE date_time < threeHoursAgo;
 END//
