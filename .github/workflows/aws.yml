@@ -28,7 +28,7 @@ name: ECS Deployment Workflow
 
 on:
   push:
-    branches: [mainingking]
+    branches: [main]
 
 jobs:
   build-and-deploy:
@@ -69,23 +69,13 @@ jobs:
           container-name: authconainer
           image: ${{ steps.build-image.outputs.image }}
           
-      - name: Stop Current Task
-        run: |
-            # Get the current service details
-            SERVICE=$(aws ecs describe-services --cluster AdminBackendCluster --services AdminService --query 'services[0]')
-            
-            # Extract the task definition ARN from the service details
-            TASK_DEFINITION=$(echo $SERVICE | jq -r '.taskDefinition')
-            
-            # Update the service with the new task definition and desired count set to 0
-            aws ecs update-service --cluster AdminBackendCluster --service AdminService --task-definition $TASK_DEFINITION --desired-count 0  
-          
+      
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: AdminService
+          service: Admin_Service
           cluster: AdminBackendCluster
           wait-for-service-stability: true
 
