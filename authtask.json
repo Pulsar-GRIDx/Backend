@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "authconainer",
-            "image": "public.ecr.aws/l0z9j4j6/authentiation:latest",
+            "image": "242927478162.dkr.ecr.us-east-1.amazonaws.com/adminbackend:latest",
             "cpu": 0,
             "portMappings": [
                 {
