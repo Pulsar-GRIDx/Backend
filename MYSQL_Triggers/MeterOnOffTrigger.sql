@@ -1,5 +1,5 @@
 CREATE TRIGGER GyserOnOfWarning
-AFTER update ON metermainsstatetable
+AFTER INSERT ON metermainsstatetable
 FOR EACH ROW
 BEGIN
     IF NEW.state = 0 THEN

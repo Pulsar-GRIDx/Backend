@@ -7,15 +7,15 @@ BEGIN
     SET threeHoursAgo = NOW() - INTERVAL 3 HOUR;
 
     -- Insert notifications for meters that have not sent data in the last three hours from meteringpower
-    INSERT INTO meternotifications (DRN, AlarmType, Alarm, Urgency_Type)
+    INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type)
     SELECT DISTINCT DRN, 'Meter Power', 'Meter has not sent data in the last three hours.', 1
-    FROM meteringpower
+    FROM MeteringPower
     WHERE date_time < threeHoursAgo;
 
     -- Insert notifications for meters that have not sent data in the last three hours from metercumulativeenergyusage
-    INSERT INTO meternotifications (DRN, AlarmType, Alarm, Urgency_Type)
+    INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type)
     SELECT DISTINCT DRN, 'Meter Energy', 'Meter has not sent data in the last three hours.', 1
-    FROM metercumulativeenergyusage
+    FROM MeterCumulativeEnergyUsage
     WHERE date_time < threeHoursAgo;
 END//
 
@@ -27,4 +27,5 @@ ON SCHEDULE EVERY 3 HOUR
 DO
 BEGIN
     CALL CheckMeteringTables();
-END//
+END
+//
