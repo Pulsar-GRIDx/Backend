@@ -1,0 +1,5 @@
+DELETE http://localhost:4000/deleteNotifications/1
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDgwMDY5NTcsImV4cCI6MTcwODAxMDU1N30.gYplowjuirczQy3UPhsElFTFUEGz4Z5VfUgNDbkMGZs
+Content-Type: application/json
+
+####
