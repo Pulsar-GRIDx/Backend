@@ -144,12 +144,12 @@ exports.getEnergyAmount = (req, res) => {
       const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
 
       const response = {
-        currentWeekResult,
-        lastWeekResult,
-        currentMonthResult,
-        lastMonthResult,
-        currentweekVoltageTotal,
-        currentweekCurrentTotal,
+        currentWeekResult : currentWeekResult.map(value => parseFloat(value.toFixed(2))),
+        lastWeekResult: lastWeekResult.map(value => parseFloat(value.toFixed(2))),
+        currentMonthResult : currentMonthResult.map(value => parseFloat(value.toFixed(2))),
+        lastMonthResult: currentMonthResult.map(value => parseFloat(value.toFixed(2))),
+        currentweekVoltageTotal : currentweekVoltageTotal.map(value => parseFloat(value.toFixed(2))),
+        currentweekCurrentTotal : currentweekCurrentTotal.map(value => parseFloat(value.toFixed(2))),
         startDate,
       };
 
