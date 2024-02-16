@@ -204,7 +204,7 @@ function authenticateToken(req, res, next) {
     return res.sendStatus(401);
   }
 
-  jwt.verify(token, environment.SECRET_KEY, (err, user) => {
+  jwt.verify(token, enviroment.SECRET_KEY, (err, user) => {
     if (err) {
       return res.sendStatus(403);
     }
@@ -213,6 +213,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
 
 
 // Admin Route to update user information

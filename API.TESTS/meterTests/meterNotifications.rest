@@ -1,5 +1,5 @@
-DELETE http://localhost:4000/deleteNotifications/1
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDgwMDY5NTcsImV4cCI6MTcwODAxMDU1N30.gYplowjuirczQy3UPhsElFTFUEGz4Z5VfUgNDbkMGZs
+DELETE https://backend2.gridxmeter.com/deleteNotifications/25
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDgwNzM1NDYsImV4cCI6MTcwODA3NzE0Nn0.aNlEckwLQxxznVi-yf7Wdgqog4577O_qVG7aURXktvg
 Content-Type: application/json
 
 ####
