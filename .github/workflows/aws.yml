@@ -28,7 +28,7 @@ name: ECS Deployment Workflow
 
 on:
   push:
-    branches: [mainm]
+    branches: [main]
 
 jobs:
   build-and-deploy:
@@ -71,13 +71,13 @@ jobs:
           
       
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: Admin_Service
-          cluster: AdminBackendCluster
-          wait-for-service-stability: true
+      # - name: Deploy Amazon ECS task definition
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     service: Admin_Service
+      #     cluster: AdminBackendCluster
+      #     wait-for-service-stability: true
 
       
 
