@@ -583,3 +583,34 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
     
   });
 };
+
+
+///Grid Topology ////
+exports.fetchDRNs = (locationName) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+        SELECT TI.DRN ,Name AS TransformerDRN, MLIT.DRN AS MeterDRN
+        FROM TransformerInformation TI
+        LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
+        WHERE TI.LocationName = ?
+    `;
+    db.query(query, [locationName], (error, results, fields) => {
+      if (error) {
+        reject(error);
+      } else {
+        const transformersWithDRNs = {};
+        results.forEach(row => {
+          const transformerDRN = row.TransformerDRN;
+          const meterDRN = row.MeterDRN;
+          if (!transformersWithDRNs.hasOwnProperty(transformerDRN)) {
+            transformersWithDRNs[transformerDRN] = [];
+          }
+          if (meterDRN) {
+            transformersWithDRNs[transformerDRN].push(meterDRN);
+          }
+        });
+        resolve({ [locationName]: transformersWithDRNs });
+      }
+    });
+  });
+};

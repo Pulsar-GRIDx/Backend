@@ -3,3 +3,9 @@ authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJp
 Content-Type: application/json
 
 ####
+
+get http://localhost:4000/notificationsByDRN/0260066545641
+Content-Type: application/json
+###
+get http://localhost:4000/criticalNotifications
+Content-Type: application/json

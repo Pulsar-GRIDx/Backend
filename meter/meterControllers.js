@@ -346,3 +346,17 @@ exports.insertTransformerData = (req, res) => {
     });
     
 };
+
+
+//Grid Topology //
+exports.fetchDRNs = async (req, res) => {
+  const locationName = req.params.locationName;
+  try {
+    const data = await energyService.fetchDRNs(locationName);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while fetching data' });
+  }
+};
+

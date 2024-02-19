@@ -21,7 +21,7 @@ const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
 const meterRoutes = require('./routes/meterRoutes');
 const getAll = require('./routes/getAllData');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
-const notificationRoutes = require('./notifications/deleteNoficationsRoutes');
+const notificationRoutes = require('./notifications/noficationsRoutes');
 
 const app = express();
 app.set('view engine', 'ejs');

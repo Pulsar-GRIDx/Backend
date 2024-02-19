@@ -29,6 +29,53 @@ router.post('/insertMeterData', energyController.insertData);
 router.get('/suburbEnergy', energyController.getSuburbEnergy);
 ///Inserting a new Transformer//
 router.post('/insertTransformer', energyController.insertTransformerData);
+// //GridTology //
+router.get('/gridTopology/:locationName' , energyController.fetchDRNs);
+
+
+
+////////////////////////
+// GET route to fetch DRNs based on location name
+// router.get('/fetch-drns/:locationName', (req, res) => {
+//     const locationName = req.params.locationName;
+
+//     // Query to select transformers and associated DRNs based on location name
+//     const query = `
+//         SELECT TI.DRN ,Name AS TransformerDRN, MLIT.DRN AS MeterDRN
+//         FROM TransformerInformation TI
+//         LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
+//         WHERE TI.LocationName = ?
+//     `;
+
+//     // Execute the query
+//     db.query(query, [locationName], (error, results, fields) => {
+//         if (error) {
+//             res.status(500).json({ error: 'An error occurred while fetching data' });
+//         } else {
+//             // Transform the results into the desired format
+//             const transformersWithDRNs = {};
+
+//             results.forEach(row => {
+//                 const transformerDRN = row.TransformerDRN;
+//                 const meterDRN = row.MeterDRN;
+
+//                 // If the transformer does not exist in the object, initialize it
+//                 if (!transformersWithDRNs.hasOwnProperty(transformerDRN)) {
+//                     transformersWithDRNs[transformerDRN] = [];
+//                 }
+
+//                 // Push the meter DRN into the array of the corresponding transformer
+//                 if (meterDRN) {
+//                     transformersWithDRNs[transformerDRN].push(meterDRN);
+//                 }
+//             });
+
+//             // Send the transformers with associated meters as JSON response
+//             res.status(200).json({ [locationName]: transformersWithDRNs });
+//         }
+//     });
+// });
+
 
 
 

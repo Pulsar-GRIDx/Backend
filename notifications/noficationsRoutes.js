@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
+const notificationController = require('./notificationController');
 
 
 // DELETE route to delete a notification by ID
@@ -23,4 +24,10 @@ router.delete('/deleteNotifications/:id', authenticateTokenAndGetAdmin_ID,(req, 
     });
   });
 
-  module.exports = router ;
+
+
+router.get('/notificationsByDRN/:DRN', notificationController.getAllNotificationsByDRN);
+router.get('/criticalNotifications' , notificationController.getAllCriticalNotifications) ;
+
+module.exports = router;
+
