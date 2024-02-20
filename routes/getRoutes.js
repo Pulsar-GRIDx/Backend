@@ -310,7 +310,6 @@ function inactivePercent(previousValue, currentValue) {
 // Create a new cache instance
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
-
 router.post('/getSuburbEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
 
@@ -411,7 +410,12 @@ router.post('/getSuburbEnergy', async (req, res) => {
         }
       }, 0);
 
-      const result = { weekly: totalWeeklyEnergy, monthly: totalMonthlyEnergy , yearly: totalYearlyEnergy};
+      // Round the total energy values to two decimal places
+      const roundedWeeklyEnergy = parseFloat(totalWeeklyEnergy.toFixed(2));
+      const roundedMonthlyEnergy = parseFloat(totalMonthlyEnergy.toFixed(2));
+      const roundedYearlyEnergy = parseFloat(totalYearlyEnergy.toFixed(2));
+
+      const result = { weekly: roundedWeeklyEnergy, monthly: roundedMonthlyEnergy, yearly: roundedYearlyEnergy };
 
       suburbsWeekly[suburb] = result.weekly;
       suburbsMonthly[suburb] = result.monthly;
@@ -426,6 +430,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
     return res.status(500).send({ error: 'Database query failed', details: err.message || err });
   }
 });
+
 
 
 

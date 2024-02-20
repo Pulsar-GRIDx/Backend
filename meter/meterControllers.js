@@ -194,10 +194,10 @@ exports.insertData = (req, res) => {
 
 exports.getSuburbEnergy = (req, res) => {
   const suburbs = req.body.suburbs; // Assuming the suburbs are sent in the request body as an array
-  Promise.all(suburbs.map(suburbs => {
-    return energyService.getDrnsBySuburb(suburbs)
+  Promise.all(suburbs.map(suburb => {
+    return energyService.getDrnsBySuburb(suburb)
     .then(energyData => {
-      console.log('Energy data for suburb', suburbs, ':', energyData);
+      console.log('Energy data for suburb', suburb, ':', energyData);
       const totalEnergy = energyData.reduce((total, record) => {
         const activeEnergy = record.active_energy;
         console.log('Active Energy:', activeEnergy);
@@ -213,11 +213,10 @@ exports.getSuburbEnergy = (req, res) => {
         return total;
       }, 0);
       
+      // // Round totalEnergy to 2 decimal places
+      // const roundedTotalEnergy = parseFloat(totalEnergy.toFixed(2));
       
-      
-      
-    
-      return { suburbs, totalEnergy };
+      return { suburb, totalEnergy: (totalEnergy.toFixed(2)) };
     });
     
   }))
@@ -227,6 +226,7 @@ exports.getSuburbEnergy = (req, res) => {
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
+
 
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyDataByDRN------------------------------------------------//
 
