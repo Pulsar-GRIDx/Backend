@@ -6,7 +6,7 @@ get httpss://backend2.gridxmeter.com/meterDataByDRN0260066545641
 Content-Type: application/json
 ###
 ###--------------PotentialIssue-----------####
-get http://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
+get https://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/activeInactiveMeters
@@ -21,7 +21,7 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/weeklyDataAmount
+get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/currentDayEnergy
@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 ###
 
-post http://localhost:4000/getSuburbEnergy
+post https://backend2.gridxmeter.com/getSuburbEnergy
 Content-Type: application/json
 
 {

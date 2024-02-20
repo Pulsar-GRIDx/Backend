@@ -22,6 +22,7 @@ const meterRoutes = require('./routes/meterRoutes');
 const getAll = require('./routes/getAllData');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
+const userAuth = require('./routes/userRoutes');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -66,6 +67,7 @@ app.use('/',meterRoutes);
 app.use('/', getAll);
 app.use('/', adminAuthRoutes);
 app.use('/', notificationRoutes);
+app.use('/', userAuth);
 
 
 
