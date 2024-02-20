@@ -5,7 +5,7 @@ const path = require('path');
 const rateLimit = require('express-rate-limit');
 const corsOptions = {
   origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001'],
-  methods:[['GET'],['POST']],
+  methods:[['GET'],['POST'],['DELETE'],['PUT']],
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -21,6 +21,7 @@ const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
 const meterRoutes = require('./routes/meterRoutes');
 const getAll = require('./routes/getAllData');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
+const notificationRoutes = require('./notifications/noficationsRoutes');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -64,6 +65,7 @@ app.use('/',forgotPasswordRoutes);
 app.use('/',meterRoutes);
 app.use('/', getAll);
 app.use('/', adminAuthRoutes);
+app.use('/', notificationRoutes);
 
 
 

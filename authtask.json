@@ -1,0 +1,28 @@
+{
+    "family": "AuthTask",
+    "containerDefinitions": [
+        {
+            "name": "authconainer",
+            "image": "242927478162.dkr.ecr.us-east-1.amazonaws.com/adminbackend:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "authconainer-4000-tcp",
+                    "containerPort": 4000,
+                    "hostPort": 4000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": []
+        }
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "1024",
+    "memory": "100"
+}

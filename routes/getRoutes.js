@@ -116,7 +116,6 @@ router.get('/allAdmins', (req, res) => {
 // Create a new cache instance
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
-
 router.post('/getSuburbEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
 
@@ -195,7 +194,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
       const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
         if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+          return total + Number(record.active_energy) / 1000;
         } else {
           return total;
         }
@@ -203,7 +202,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
       const totalMonthlyEnergy = monthlyEnergyData.reduce((total, record) => {
         if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+          return total + Number(record.active_energy / 1000);
         } else {
           return total;
         }
@@ -211,13 +210,18 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
       const totalYearlyEnergy = yearlyEnergyByDrn.reduce((total, record) => {
         if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+          return total + Number(record.active_energy) / 1000;
         } else {
           return total;
         }
       }, 0);
 
-      const result = { weekly: totalWeeklyEnergy, monthly: totalMonthlyEnergy , yearly: totalYearlyEnergy};
+      // Round the total energy values to two decimal places
+      const roundedWeeklyEnergy = parseFloat(totalWeeklyEnergy.toFixed(2));
+      const roundedMonthlyEnergy = parseFloat(totalMonthlyEnergy.toFixed(2));
+      const roundedYearlyEnergy = parseFloat(totalYearlyEnergy.toFixed(2));
+
+      const result = { weekly: roundedWeeklyEnergy, monthly: roundedMonthlyEnergy, yearly: roundedYearlyEnergy };
 
       suburbsWeekly[suburb] = result.weekly;
       suburbsMonthly[suburb] = result.monthly;
@@ -232,6 +236,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
     return res.status(500).send({ error: 'Database query failed', details: err.message || err });
   }
 });
+
 
 
 
@@ -269,34 +274,34 @@ async function getActiveEnergyTotalsAndVoltageCurrent(startDate, endDate) {
 
 
 
-// router.get('/weeklyDataAmount', async (req, res) => {
-//   const now = new Date();
-//   const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
-//   const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (6 - now.getDay()));
-//   const startOfLastWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7);
-//   const endOfLastWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 1);
-//   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-//   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-//   const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-//   const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+async function getActiveEnergy(startDate, endDate) {
+  return new Promise((resolve, reject) => {
+      const query = `SELECT DATE(date_time) as day, SUM(active_energy) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE date_time >= ? AND date_time < ? GROUP BY day`;
+      db.query(query, [startDate, endDate], (err, results) => {
+          if (err) return reject(err);
+          resolve(results);
+      });
+  });
+}
 
-//   const currentWeekResult = await getActiveEnergyTotalsAndVoltageCurrent(startOfWeek, endOfWeek);
-//   const lastWeekResult = await getActiveEnergyTotalsAndVoltageCurrent(startOfLastWeek, endOfLastWeek);
-//   const currentMonthResult = await getActiveEnergyTotalsAndVoltageCurrent(startOfMonth, endOfMonth);
-//   const lastMonthResult = await getActiveEnergyTotalsAndVoltageCurrent(startOfLastMonth, endOfLastMonth);
+router.get('/active-energy', async (req, res) => {
+  const now = new Date();
+  const startOfCurrentWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+  const startOfLastWeek = new Date(startOfCurrentWeek - 7 * 24 * 60 * 60 * 1000);
+  const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
-//   const currentweekVoltageTotal = currentWeekResult.reduce((total, record) => total + record.voltage, 0);
-//   const currentweekCurrentTotal = currentWeekResult.reduce((total, record) => total + record.current, 0);
+  const activeEnergyThisWeek = await getActiveEnergy(startOfCurrentWeek, now);
+  const activeEnergyLastWeek = await getActiveEnergy(startOfLastWeek, startOfCurrentWeek);
+  const activeEnergyThisMonth = await getActiveEnergy(startOfCurrentMonth, now);
+  const activeEnergyLastMonth = await getActiveEnergy(startOfLastMonth, startOfCurrentMonth);
 
-//   res.json({
-//       currentWeekResult,
-//       lastWeekResult,
-//       currentMonthResult,
-//       lastMonthResult,
-//       currentweekVoltageTotal,
-//       currentweekCurrentTotal
-//   });
-// });
-
+  res.json({
+      thisWeek: activeEnergyThisWeek,
+      lastWeek: activeEnergyLastWeek,
+      thisMonth: activeEnergyThisMonth,
+      lastMonth: activeEnergyLastMonth
+  });
+});
 
 module.exports = router;

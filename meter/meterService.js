@@ -124,71 +124,95 @@ exports.calculateTotalss = (allData) => {
 
 
 //-------------------------------------------------Current And last Week API-------------------------------------//
-exports.getWeekMonthlyData = () => {
-  // const getCurrentWeek = () => {
-  //   const today = new Date();
-  //   const days = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (24 * 60 * 60 * 1000));
-  //   return Math.ceil((days + 1) / 7);
-  // };
-  
-  // const getCurrentMonth = () => {
-  //   return new Date().getMonth() + 1; // Months are zero-based, so add 1
-  // };
-  
-  // const currentWeek = getCurrentWeek();
-  // const currentMonth = getCurrentMonth();
-  
-  const getWeeklyData = `
-  SELECT active_energy, DATE(date_time) as date_time
-  FROM MeterCumulativeEnergyUsage
-  WHERE
-      (date_time BETWEEN CURDATE() - INTERVAL 6 DAY AND CURDATE())
-      OR (date_time BETWEEN CURDATE() - INTERVAL 13 DAY AND CURDATE() - INTERVAL 7 DAY)
-`;
+exports.getSystemCurrentWeekData = () => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        WEEKDAY(date_time) BETWEEN 0 AND 6 AND
+        WEEK(date_time, 1) = WEEK(CURDATE(), 1) 
+    GROUP BY date
+  `;
 
-const getMonthData = `
-  SELECT active_energy, DATE(date_time) as date_time
-  FROM MeterCumulativeEnergyUsage
-  WHERE
-      (YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE()))
-      OR (YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH))
-`;
+  return new Promise((resolve, reject) => {
+    db.query(query, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
 
+exports.getSystemLastWeekData = () => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        WEEKDAY(date_time) BETWEEN 0 AND 6 AND
+        WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 
+    GROUP BY date
+  `;
 
-  
-
-       return new Promise((resolve, reject) => {
-        Promise.all([
-          new Promise((resolve, reject) => {
-            db.query(getWeeklyData, (err, weeklyData) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(weeklyData);
-              }
-            });
-          }),
-          new Promise((resolve, reject) => {
-            db.query(getMonthData, (err, monthlyData) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(monthlyData);
-              }
-            });
-          })
-        ])
-        .then(([weeklyData, monthlyData]) => resolve({weeklyData, monthlyData}))
-        .catch(err => reject(err));
-      });
-    };
+  return new Promise((resolve, reject) => {
+    db.query(query,(err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
 
 
 
-exports.calculateMonthWeekTotals = (allData) => {
+exports.getSystemCurrentMonthData = () => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE()) 
+    GROUP BY date
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.query(query,(err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+exports.getSystemLastMonthData = () => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH) 
+    GROUP BY date
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.query(query, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+
+exports.CalculateSystemData = (allData) => {
   return allData.reduce((acc, record) => {
-    const date = record.date_time.toISOString().split('T')[0];
-    const energy = Number(record.active_energy) / 1000;
+    const date = record.date.toISOString().split('T')[0];
+    const energy = Number(record.total_active_energy) / 1000;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
@@ -196,7 +220,9 @@ exports.calculateMonthWeekTotals = (allData) => {
 
 
 
-exports.getVoltageAndCurrent = () => {
+
+
+exports.getSystemVoltageAndCurrent = () => {
   const getVoltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE DATE(date_time) = CURDATE()";
   // console.log(CURDATE());
   return new Promise((resolve, reject) => {
@@ -208,7 +234,10 @@ exports.getVoltageAndCurrent = () => {
   });
 };
 
-exports.calculateVoltageAndCurrent = (readings) => {
+
+
+////
+exports.calculateSystemVoltageAndCurrent = (readings) => {
   if (!readings || !Array.isArray(readings) || readings.length === 0) {
     return new Error("Invalid or empty readings data");
   }
@@ -220,22 +249,39 @@ exports.calculateVoltageAndCurrent = (readings) => {
    
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current / 1000;
-    
+    acc.totalCurrent = (acc.totalCurrent || 0) + current;
+
+    // Count the number of readings
+    acc.count = (acc.count || 0) + 1;
 
     return acc;
     
   }, {});
 
+  // Calculate the average voltage
+  const totalVoltage = result.totalVoltage / result.count;
+
   return {
-    totalVoltage: result.totalVoltage,
+    totalVoltage,
     totalCurrent: result.totalCurrent,
-    
-    
   };
- 
 };
 
+exports.getStartDate = () => {
+  const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage";
+  
+  return new Promise((resolve, reject) => {
+    db.query(getStartDate, (err, startDateResult) => {
+      if (err) reject(err);
+      
+      else resolve(startDateResult);
+      console.log(startDateResult);
+      
+    
+   
+    });
+  });
+};
 
 //------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------------------------//
 
@@ -324,64 +370,105 @@ exports.getEnergyByDrn = (suburb, drn) => {
 
 //-------------------------------------------------------------GetSpecificMeterWeeklyAndMonthlyData------------------------------------------------//
 
-exports.getDRNData = (DRN) => {
+exports.getCurrentWeekData = (DRN) => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        WEEKDAY(date_time) BETWEEN 0 AND 6 AND
+        WEEK(date_time, 1) = WEEK(CURDATE(), 1) AND
+        DRN = ?
+    GROUP BY date
+  `;
 
-  
-  const getWeeklyData = `
-  SELECT active_energy, DATE(date_time) as date_time
-  FROM MeterCumulativeEnergyUsage
-  WHERE
-      (date_time BETWEEN CURDATE() - INTERVAL 6 DAY AND CURDATE())
-      OR (date_time BETWEEN CURDATE() - INTERVAL 13 DAY AND CURDATE() - INTERVAL 7 DAY) AND DRN = ?
-`;
+  return new Promise((resolve, reject) => {
+    db.query(query, [DRN],(err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
 
-const getMonthData = `
-  SELECT active_energy, DATE(date_time) as date_time
-  FROM MeterCumulativeEnergyUsage
-  WHERE
-      (YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE()))
-      OR (YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH)) AND DRN = ?
-`;
+exports.getLastWeekData = (DRN) => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        WEEKDAY(date_time) BETWEEN 0 AND 6 AND
+        WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 AND
+        DRN = ?
+    GROUP BY date
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.query(query, [DRN],(err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
 
 
-  
 
-       return new Promise((resolve, reject) => {
-        Promise.all([
-          new Promise((resolve, reject) => {
-            db.query(getWeeklyData, [DRN],(err, weeklyData) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(weeklyData);
-              }
-            });
-          }),
-          new Promise((resolve, reject) => {
-            db.query(getMonthData,[DRN], (err, monthlyData) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(monthlyData);
-              }
-            });
-          })
-        ])
-        .then(([weeklyData, monthlyData]) => resolve({weeklyData, monthlyData}))
-        .catch(err => reject(err));
-      });
-    };
+exports.getCurrentMonthData = (DRN) => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE())
+        AND DRN = ?
+    GROUP BY date
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.query(query, [DRN],(err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+exports.getLastMonthData = (DRN) => {
+  const query = `
+    SELECT DATE(date_time) as date, SUM(active_energy) as total_active_energy
+    FROM MeterCumulativeEnergyUsage
+    WHERE
+        YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+        AND DRN = ?
+    GROUP BY date
+  `;
+
+  return new Promise((resolve, reject) => {
+    db.query(query, [DRN],(err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
 
 
 
 exports.CalculateDrnData = (allData) => {
   return allData.reduce((acc, record) => {
-    const date = record.date_time.toISOString().split('T')[0];
-    const energy = Number(record.active_energy) / 1000;
+    const date = record.date.toISOString().split('T')[0];
+    const energy = Number(record.total_active_energy) / 1000;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
 };
+
 
 
 
@@ -397,6 +484,10 @@ exports.getDRNVoltageAndCurrent = (DRN) => {
   });
 };
 
+
+
+////////
+
 exports.calculateDRNVoltageAndCurrent = (readings) => {
   if (!readings || !Array.isArray(readings) || readings.length === 0) {
     return new Error("Invalid or empty readings data");
@@ -409,21 +500,25 @@ exports.calculateDRNVoltageAndCurrent = (readings) => {
    
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
-    acc.totalCurrent = (acc.totalCurrent || 0) + current / 1000;
-    
+    acc.totalCurrent = (acc.totalCurrent || 0) + current;
+
+    // Count the number of readings
+    acc.count = (acc.count || 0) + 1;
 
     return acc;
     
   }, {});
 
+  // Calculate the average voltage
+  const totalVoltage = result.totalVoltage / result.count;
+
   return {
-    totalVoltage: result.totalVoltage,
+    totalVoltage,
     totalCurrent: result.totalCurrent,
-    
-    
   };
- 
 };
+
+////
 
 
 exports.getDailyMeterEnergy  = (DRN) => {
@@ -438,6 +533,20 @@ exports.getDailyMeterEnergy  = (DRN) => {
  
 };
 
+exports.getDRNStartDate = (DRN) => {
+  const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage WHERE DRN = ?";
+  
+  return new Promise((resolve, reject) => {
+    db.query(getStartDate, [DRN],(err, startDateResult) => {
+      if (err) reject(err);
+      
+      else resolve(startDateResult);
+      
+    
+   
+    });
+  });
+};
 
 ///-------------------------------------GetAllProcessedTokensByDRN-----------------------------//
 exports.getAllProcessedTokens =(DRN) =>{
@@ -472,5 +581,36 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
       else resolve();
     });
     
+  });
+};
+
+
+///Grid Topology ////
+exports.fetchDRNs = (locationName) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+        SELECT TI.DRN ,Name AS TransformerDRN, MLIT.DRN AS MeterDRN
+        FROM TransformerInformation TI
+        LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
+        WHERE TI.LocationName = ?
+    `;
+    db.query(query, [locationName], (error, results, fields) => {
+      if (error) {
+        reject(error);
+      } else {
+        const transformersWithDRNs = {};
+        results.forEach(row => {
+          const transformerDRN = row.TransformerDRN;
+          const meterDRN = row.MeterDRN;
+          if (!transformersWithDRNs.hasOwnProperty(transformerDRN)) {
+            transformersWithDRNs[transformerDRN] = [];
+          }
+          if (meterDRN) {
+            transformersWithDRNs[transformerDRN].push(meterDRN);
+          }
+        });
+        resolve({ [locationName]: transformersWithDRNs });
+      }
+    });
   });
 };
