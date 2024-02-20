@@ -21,7 +21,7 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
 ###
-get https://backend2.gridxmeter.com/weeklyDataAmount
+get http://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/currentDayEnergy

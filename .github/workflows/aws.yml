@@ -69,18 +69,18 @@ jobs:
           container-name: authconainer
           image: ${{ steps.build-image.outputs.image }}
 
-      - name: Stop running tasks
-        run: |
-          aws ecs update-service --cluster AdminBackendCluster --service Admin_Service --desired-count 0
-          while [[ $(aws ecs describe-services --cluster AdminBackendCluster --services Admin_Service --query "services[0].runningCount") != "0" ]]; do
-            echo "Waiting for running tasks to be stopped..."
-            sleep 10
-          done
+      # - name: Stop running tasks
+      #   run: |
+      #     aws ecs update-service --cluster AdminBackendCluster --service Admin_Service --desired-count 0
+      #     while [[ $(aws ecs describe-services --cluster AdminBackendCluster --services Admin_Service --query "services[0].runningCount") != "0" ]]; do
+      #       echo "Waiting for running tasks to be stopped..."
+      #       sleep 10
+      #     done
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: Admin_Service
-          cluster: AdminBackendCluster
-          wait-for-service-stability: true
+      # - name: Deploy Amazon ECS task definition
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     service: Admin_Service
+      #     cluster: AdminBackendCluster
+      #     wait-for-service-stability: true
