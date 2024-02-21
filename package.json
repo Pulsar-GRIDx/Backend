@@ -1,7 +1,7 @@
 {
-  "name": "auth-system",
+  "name": "GridX_Admin_Backend",
   "version": "1.0.0",
-  "description": "Node authentication_system for Pulsar_Softwar",
+  "description": "Node authentication_system for Pulsar_Software",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
     "devStart": "nodemon app.js"
   },
   "keywords": [
-    "authentication_system"
+    "aGridX_Admin_Backend"
   ],
   "author": "Pulsar_Software_Team",
   "license": "ISC",

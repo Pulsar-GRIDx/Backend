@@ -348,15 +348,24 @@ exports.insertTransformerData = (req, res) => {
 };
 
 
-//Grid Topology //
+
+// Controller function
 exports.fetchDRNs = async (req, res) => {
-  const locationName = req.params.locationName;
+  const cities = req.body.cities;
   try {
-    const data = await energyService.fetchDRNs(locationName);
-    res.status(200).json(data);
+    const result = {};
+    for (const city of cities) {
+      const data = await energyService.fetchDRNs(city);
+      result[city] = data[city]; // Remove the redundant city wrapping
+    }
+    res.status(200).json({["data"]:result});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while fetching data' });
   }
 };
+
+
+
+
 

@@ -574,6 +574,7 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
     Status:TransformerData.Status,
     PowerSupply:TransformerData.PowerSupply,
     powerRating:TransformerData.powerRating,
+    city:TransformerData.city
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO TransformerInformation SET ?', transformerRealInfoData, (err) => {
@@ -585,31 +586,35 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
 };
 
 
-///Grid Topology ////
-exports.fetchDRNs = (locationName) => {
+// Grid Topology
+exports.fetchDRNs = (city) => {
   return new Promise((resolve, reject) => {
     const query = `
-        SELECT TI.DRN ,Name AS TransformerDRN, MLIT.DRN AS MeterDRN
+        SELECT TI.LocationName, TI.Name AS TransformerName, MLIT.DRN AS MeterDRN
         FROM TransformerInformation TI
         LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
-        WHERE TI.LocationName = ?
+        WHERE TI.city = ?
     `;
-    db.query(query, [locationName], (error, results, fields) => {
+    db.query(query, [city], (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
-        const transformersWithDRNs = {};
+        const data = {};
         results.forEach(row => {
-          const transformerDRN = row.TransformerDRN;
+          const locationName = row.LocationName;
+          const transformerName = row.TransformerName;
           const meterDRN = row.MeterDRN;
-          if (!transformersWithDRNs.hasOwnProperty(transformerDRN)) {
-            transformersWithDRNs[transformerDRN] = [];
+          if (!data.hasOwnProperty(locationName)) {
+            data[locationName] = {};
+          }
+          if (!data[locationName].hasOwnProperty(transformerName)) {
+            data[locationName][transformerName] = [];
           }
           if (meterDRN) {
-            transformersWithDRNs[transformerDRN].push(meterDRN);
+            data[locationName][transformerName].push(meterDRN);
           }
         });
-        resolve({ [locationName]: transformersWithDRNs });
+        resolve({ [city]: data });
       }
     });
   });
