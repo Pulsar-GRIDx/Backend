@@ -14,18 +14,18 @@ Content-Type: application/json
 ###
 
 post https://backend2.gridxmeter.com/adminSignup
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDczODA5OTIsImV4cCI6MTcwNzM4NDU5Mn0._i9B9L5jgOZ37iMAqhd1L9AjEL6IrMb9mdf7C3UAAy8
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDg0MzI0OTMsImV4cCI6MTcwODQzNjA5M30.PfpDvdx7RY8DNgfzAJ5c80b0zAm8aZvFPq_8vrzyXnk
 Content-Type: application/json
 
 {
-    "Username": "admin20",
+    "Username": "admin25",
     "Password": "12345678",
-    "FirstName": "Dino",
-    "LastName": "Jose",
-    "Email": "jose@gmail.com",
+    "FirstName": "King",
+    "LastName": "Hiholike",
+    "Email": "king@gmail.com",
     "IsActive": 1,
-    "RoleName": "Engineer",
-    "AccessLevel": 0
+    "RoleName": "Developer",
+    "AccessLevel": 1
 }
 
 
@@ -98,10 +98,3 @@ get http://localhost:4000/active_state_count
 ###
 get http://localhost:4000/inactive_state_count
 
-###
-post http://localhost:4000/tsetsignup
-Content-Type: application/json
-
-{
-    "email":"king@gmail.com", "firstName":"Hiholike", "lastName":"Dino"
-}
