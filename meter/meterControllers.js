@@ -349,6 +349,50 @@ exports.insertTransformerData = (req, res) => {
 
 
 
+// GridTopology
+function convertDataToMockTree(data) {
+  let mockTreeData = [];
+
+  for (const city in data) {
+    const cityNode = {
+      key: `${city}`,
+      title: `City: ${city}`,
+      children: [],
+    };
+
+    for (const locationName in data[city]) {
+      const locationNode = {
+        key: `${city}-${locationName}`,
+        title: `Location: ${locationName}`,
+        children: [],
+      };
+
+      for (const transformerName in data[city][locationName]) {
+        const transformerNode = {
+          key: `${city}-${locationName}-${transformerName}`,
+          title: `Transformer: ${transformerName}`,
+          children: [],
+        };
+
+        data[city][locationName][transformerName].forEach(meterNumber => {
+          transformerNode.children.push({
+            key: `${city}-${locationName}-${transformerName}-${meterNumber}`,
+            title: `DRN: ${meterNumber}`,
+          });
+        });
+
+        locationNode.children.push(transformerNode);
+      }
+
+      cityNode.children.push(locationNode);
+    }
+
+    mockTreeData.push(cityNode);
+  }
+
+  return mockTreeData;
+}
+
 // Controller function
 exports.fetchDRNs = async (req, res) => {
   const cities = req.body.cities;
@@ -356,9 +400,9 @@ exports.fetchDRNs = async (req, res) => {
     const result = {};
     for (const city of cities) {
       const data = await energyService.fetchDRNs(city);
-      result[city] = data[city]; // Remove the redundant city wrapping
+      result[city] = data; // No need to convert data to mockTreeData here
     }
-    res.status(200).json({["data"]:result});
+    res.status(200).json({ mockTreeData: convertDataToMockTree(result) }); // Convert the final result to mockTreeData
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while fetching data' });

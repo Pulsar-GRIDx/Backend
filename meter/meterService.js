@@ -614,8 +614,9 @@ exports.fetchDRNs = (city) => {
             data[locationName][transformerName].push(meterDRN);
           }
         });
-        resolve({ [city]: data });
+        resolve(data);
       }
     });
   });
 };
+
