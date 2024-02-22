@@ -587,7 +587,26 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
 
 
 // Grid Topology
-exports.fetchDRNs = (city) => {
+
+// Function to get active power
+exports.getGridTopologyActivePower = (meterDRN) => {
+  return new Promise((resolve, reject) => {
+    const getActiveEnergy = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE() AND DRN = ? ORDER BY date_time DESC LIMIT 1';
+
+    db.query(getActiveEnergy, [meterDRN], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        // Convert active energy to numerical type
+        const numericActiveEnergy = results.map(result => parseFloat(result.active_energy));
+        resolve(numericActiveEnergy[0]); // Assuming there's only one result per meter DRN
+      }
+    });
+  });
+};
+
+// Function to fetch DRNs
+exports.fetchDRNs = async (city) => {
   return new Promise((resolve, reject) => {
     const query = `
         SELECT TI.LocationName, TI.Name AS TransformerName, MLIT.DRN AS MeterDRN
@@ -600,23 +619,33 @@ exports.fetchDRNs = (city) => {
         reject(error);
       } else {
         const data = {};
-        results.forEach(row => {
+        const promises = results.map(async row => {
           const locationName = row.LocationName;
           const transformerName = row.TransformerName;
           const meterDRN = row.MeterDRN;
           if (!data.hasOwnProperty(locationName)) {
-            data[locationName] = {};
+            data[locationName] = { transformers: {}, active_energy: 0 };
           }
-          if (!data[locationName].hasOwnProperty(transformerName)) {
-            data[locationName][transformerName] = [];
+          if (!data[locationName].transformers.hasOwnProperty(transformerName)) {
+            data[locationName].transformers[transformerName] = { meters: [], active_energy: 0 };
           }
           if (meterDRN) {
-            data[locationName][transformerName].push(meterDRN);
+            let activeEnergy = await exports.getGridTopologyActivePower(meterDRN);
+            activeEnergy = isNaN(activeEnergy) ? 0 : activeEnergy; // Treat NaN as 0
+            const meterData = { DRN: meterDRN, active_energy: activeEnergy };
+            data[locationName].transformers[transformerName].meters.push(meterData);
+            if (isNaN(data[locationName].transformers[transformerName].active_energy)) {
+              data[locationName].transformers[transformerName].active_energy = 0;
+            }
+            if (isNaN(data[locationName].active_energy)) {
+              data[locationName].active_energy = 0;
+            }
+            data[locationName].transformers[transformerName].active_energy += activeEnergy;
+            data[locationName].active_energy += activeEnergy;
           }
         });
-        resolve(data);
+        Promise.all(promises).then(() => resolve(data));
       }
     });
   });
 };
-

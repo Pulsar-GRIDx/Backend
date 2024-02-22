@@ -135,9 +135,7 @@ Content-Type: application/json
 
 {
   "cities":[
-    "Windhoek",
-    "Swakopmund",
-    "Walvis Bay",
-    "Rehoboth"
+    "Windhoek"
+    
   ]
 }

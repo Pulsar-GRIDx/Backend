@@ -354,6 +354,7 @@ function convertDataToMockTree(data) {
   let mockTreeData = [];
 
   for (const city in data) {
+    let cityActiveEnergy = 0;
     const cityNode = {
       key: `${city}`,
       title: `City: ${city}`,
@@ -361,37 +362,46 @@ function convertDataToMockTree(data) {
     };
 
     for (const locationName in data[city]) {
+      let locationActiveEnergy = 0;
       const locationNode = {
         key: `${city}-${locationName}`,
         title: `Location: ${locationName}`,
         children: [],
       };
 
-      for (const transformerName in data[city][locationName]) {
+      for (const transformerName in data[city][locationName].transformers) {
+        const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
           key: `${city}-${locationName}-${transformerName}`,
-          title: `Transformer: ${transformerName}`,
+          title: `Transformer: ${transformerName}, Active Energy: ${transformerData.active_energy}`,
           children: [],
+          
         };
-
-        data[city][locationName][transformerName].forEach(meterNumber => {
+      // console.log(transformerData.active_energy,cityActiveEnergy,locationActiveEnergy);
+        transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
-            key: `${city}-${locationName}-${transformerName}-${meterNumber}`,
-            title: `DRN: ${meterNumber}`,
+            key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
+            title: `DRN: ${meterData.DRN}, Active Energy: ${meterData.active_energy}`,
           });
         });
 
         locationNode.children.push(transformerNode);
+        locationActiveEnergy += transformerData.active_energy;
       }
 
+      locationNode.title += `, Active Energy: ${locationActiveEnergy}`;
       cityNode.children.push(locationNode);
+      cityActiveEnergy += locationActiveEnergy;
     }
 
+    cityNode.title += `, Active Energy: ${cityActiveEnergy}`;
     mockTreeData.push(cityNode);
   }
 
   return mockTreeData;
 }
+
+
 
 // Controller function
 exports.fetchDRNs = async (req, res) => {
