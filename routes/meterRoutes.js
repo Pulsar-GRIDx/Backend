@@ -31,7 +31,7 @@ router.get('/suburbEnergy', energyController.getSuburbEnergy);
 ///Inserting a new Transformer//
 router.post('/insertTransformer', energyController.insertTransformerData);
 // //GridTology //
-router.get('/gridTopology'  ,energyController.fetchDRNs);
+router.post('/gridTopology'  ,energyController.fetchDRNs);
 
 
 
