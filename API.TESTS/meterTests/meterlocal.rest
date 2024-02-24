@@ -1,33 +1,33 @@
 
-get http://backend2.gridxmeter.com/allProcessedTokensByDRN0260066545641
+get https://backend2.gridxmeter.com/allProcessedTokensByDRN0260066545641
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/meterDataByDRN0260066545641
 Content-Type: application/json
 ###
 ###--------------PotentialIssue-----------####
-get http://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
+get https://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/activeInactiveMeters
+get https://backend2.gridxmeter.com/activeInactiveMeters
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/tokenAmount
+get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/totalTokensBought
+get https://backend2.gridxmeter.com/totalTokensBought
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/totalEnergyAmount
+get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/weeklyDataAmount
+get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/currentDayEnergy
+get https://backend2.gridxmeter.com/currentDayEnergy
 Content-Type: application/json
 ###
-post http://backend2.gridxmeter.com/insertMeterData
+post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
 
 {
@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 ###
 
-post http://backend2.gridxmeter.com/getSuburbEnergy
+post https://backend2.gridxmeter.com/getSuburbEnergy
 Content-Type: application/json
 
 {
@@ -97,16 +97,16 @@ Content-Type: application/json
     ]}
   
 ###
-get http://backend2.gridxmeter.com/meter_change
+get https://backend2.gridxmeter.com/meter_change
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/active_state_count
+get https://backend2.gridxmeter.com/active_state_count
 Content-Type: application/json
 ###
-get http://backend2.gridxmeter.com/inactive_state_count
+get https://backend2.gridxmeter.com/inactive_state_count
 Content-Type: application/json
 ###
-post http://backend2.gridxmeter.com/insertTransformer
+post https://backend2.gridxmeter.com/insertTransformer
 Content-Type: application/json
  
 {
@@ -125,12 +125,12 @@ Content-Type: application/json
 }
 
 ###
-get http://backend2.gridxmeter.com/active-energy
+get https://backend2.gridxmeter.com/active-energy
 Content-Type: application/json
 
 
 ####
-post http://localhost:4000/gridTopology
+post https://backend2.gridxmeter.com/gridTopology
 Content-Type: application/json
 
 {

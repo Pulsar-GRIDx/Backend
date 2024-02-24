@@ -2,11 +2,11 @@
   "name": "GridX_Admin_Backend",
   "version": "1.0.0",
   "description": "Node authentication_system for Pulsar_Software",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "devStart": "nodemon app.js"
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
   },
   "keywords": [
     "aGridX_Admin_Backend"
