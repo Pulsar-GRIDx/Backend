@@ -267,7 +267,7 @@ router.post('/UserUpdate/:UserID', (req, res) => {
 });
 
 // Route to delete the currently logged-in user
-router.delete('/deleteUser/:UserID', (req, res) => {
+router.delete('/deleteUser/:UserID', authenticateTokenAndGetAdmin_ID,(req, res) => {
   const UserID = req.params.UserID; // Get the userId from the URL parameter
 
   const deleteUserQuery = 'DELETE FROM SystemUsers WHERE UserID = ?';
@@ -290,7 +290,7 @@ router.delete('/deleteUser/:UserID', (req, res) => {
 });
 
 // Route to update Admin status
-router.post('/updateStatus/:Admin_ID', (req, res) => {
+router.post('/updateStatus/:Admin_ID', authenticateTokenAndGetAdmin_ID,(req, res) => {
   const Admin_ID = req.params.Admin_ID;
    // Check if the user exists in the database
   const checkUserQuery = 'SELECT * FROM SystemAdmins WHERE Admin_ID = ?';
@@ -346,7 +346,7 @@ router.post('/AdminUpdate/:Admin_ID', (req, res) => {
 });
 
 // Route to update Admin status
-router.post('/updateStatus/:Admin_ID', (req, res) => {
+router.post('/updateStatus/:Admin_ID',authenticateTokenAndGetAdmin_ID, (req, res) => {
   const Admin_ID = req.params.Admin_ID;
    // Check if the user exists in the database
   const checkUserQuery = 'SELECT * FROM SystemAdmins WHERE Admin_ID = ?';

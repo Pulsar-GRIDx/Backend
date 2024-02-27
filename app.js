@@ -46,6 +46,7 @@ app.use((err, req, res, next) => {
 });
 
 
+
 // Use your authRoutes and getRoutes as before
 app.use('/', authRoutes);
 app.use('/', getRoutes);

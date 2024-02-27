@@ -3,6 +3,7 @@ const router = express.Router();
 const energyController = require('../meter/meterControllers');
 const db = require('../config/db');
 // const convertDataToMockTree = require('../meter/meterControllers');
+const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 
 //Get all ProcessedTokens By DRN//
 router.get('/allProcessedTokensByDRN:DRN', energyController.getAllProcessedTokens);
@@ -25,11 +26,11 @@ router.get('/weeklyDataAmount', energyController.getEnergyAmount);
 //Getting the current day energyConsumption in the system//
 router.get('/currentDayEnergy', energyController.getCurrentDayEnergy);
 //Creating a new meter //
-router.post('/insertMeterData', energyController.insertData);
+router.post('/insertMeterData',authenticateTokenAndGetAdmin_ID, energyController.insertData);
 //Getting the energyConsumption in the system perSuburb//
 router.get('/suburbEnergy', energyController.getSuburbEnergy);
 ///Inserting a new Transformer//
-router.post('/insertTransformer', energyController.insertTransformerData);
+router.post('/insertTransformer',authenticateTokenAndGetAdmin_ID, energyController.insertTransformerData);
 // //GridTology //
 router.post('/gridTopology'  ,energyController.fetchDRNs);
 
