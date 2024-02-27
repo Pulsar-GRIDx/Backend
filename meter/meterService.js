@@ -13,6 +13,7 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
     }
 
     if (results.length === 0) {
+      console.log('No data found',err );
       return callback({ error: 'No data found', details: err });
     }
 
@@ -233,8 +234,6 @@ exports.getSystemVoltageAndCurrent = () => {
     });
   });
 };
-
-
 
 ////
 exports.calculateSystemVoltageAndCurrent = (readings) => {
@@ -574,7 +573,7 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
     Status:TransformerData.Status,
     PowerSupply:TransformerData.PowerSupply,
     powerRating:TransformerData.powerRating,
-    city:TransformerData.city
+    city:TransformerData.City
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO TransformerInformation SET ?', transformerRealInfoData, (err) => {

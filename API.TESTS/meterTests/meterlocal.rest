@@ -108,19 +108,20 @@ Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/insertTransformer
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDkwMjU5MzksImV4cCI6MTcwOTAyOTUzOX0.Jm7GAosRlzrlEacE1n1D3pX9-sDpvWInV6aJsKokixQ
  
 {
   "TransformerData":{
-    "DRN":"0240000000009",
+    "DRN":"0240000000019",
     "LocationName":"Khomasdal",
-    "Name":"Tugena 4",
+    "Name":"Hofsanger 1",
     "Type":"Big Tranformer",
-    "pLat":"-22.538236805338208",
-    "pLng":"17.050350565314446",
+    "pLat":"-22.538236805338209",
+    "pLng":"17.050350565314447",
     "Status":"1",
-    "PowerSupply":"0260000000003",
+    "PowerSupply":"0260000000009",
     "powerRating":"1000kVA",
-    "city":"Windhoek"
+    "City":"Windhoek"
   }
 }
 
