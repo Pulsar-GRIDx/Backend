@@ -1,8 +1,6 @@
-DELETE https://backend2.gridxmeter.com/deleteNotifications/25
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDgwNzM1NDYsImV4cCI6MTcwODA3NzE0Nn0.aNlEckwLQxxznVi-yf7Wdgqog4577O_qVG7aURXktvg
+DELETE https://backend2.gridxmeter.com/deleteNotifications/41322
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDkyMDU0NjIsImV4cCI6MTcwOTIwOTA2Mn0.nKyNLrSGFG6y36H3KwjOnaQIDaEqt7k2r-quQlVhIX8
 Content-Type: application/json
-
-
 
 ####
 

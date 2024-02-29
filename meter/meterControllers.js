@@ -354,17 +354,10 @@ function convertDataToMockTree(data) {
   let mockTreeData = [];
 
   for (const city in data) {
-    let cityActiveEnergy = 0;
-    const cityNode = {
-      key: `${city}`,
-      title: `City: ${city}`,
-      children: [],
-    };
-
     for (const locationName in data[city]) {
       let locationActiveEnergy = 0;
       const locationNode = {
-        key: `${city}-${locationName}`,
+        key: `${locationName}`,
         title: `Location: ${locationName}`,
         children: [],
       };
@@ -372,12 +365,11 @@ function convertDataToMockTree(data) {
       for (const transformerName in data[city][locationName].transformers) {
         const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
-          key: `${city}-${locationName}-${transformerName}`,
+          key: `${transformerName}`,
           title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy / 1000).toFixed(2)} kWh`,
           children: [],
-          
         };
-      // console.log(transformerData.active_energy,cityActiveEnergy,locationActiveEnergy);
+
         transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
@@ -390,12 +382,8 @@ function convertDataToMockTree(data) {
       }
 
       locationNode.title += `, Active Energy: ${(locationActiveEnergy / 1000).toFixed(2)} kWh`;
-      cityNode.children.push(locationNode);
-      cityActiveEnergy += locationActiveEnergy;
+      mockTreeData.push(locationNode);
     }
-
-    cityNode.title += `, Active Energy: ${(cityActiveEnergy / 1000).toFixed(2)} kWh`;
-    mockTreeData.push(cityNode);
   }
 
   return mockTreeData;
