@@ -2,24 +2,11 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const db = require('../db');
-const validator = require('validator');
-const rateLimit = require('express-rate-limit');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 const connection = require("../config/db");
 const dotenv = require('dotenv');
-
 dotenv.config();
-const config = process.env;
 const enviroment = process.env;
-
-// Rate limiter
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 5,
-  message: 'Too many requests, please try again later.',
-});
-
 
 
 
