@@ -15,12 +15,17 @@ const limiter = rateLimit({
   max: 1000000,
   message: 'Too many requests, please try again later.',
 });
-const authRoutes = require('./routes/authRoutes');
-const getRoutes = require('./routes/getRoutes');
-const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const meterRoutes = require('./routes/meterRoutes');
-const getAll = require('./routes/getAllData');
-const adminAuthRoutes = require('./routes/adminAuthRoutes');
+
+
+
+
+
+// Get the routes
+const getRoutes = require('./meter/getSuburbEnergyRoute');
+const meterPercentageRoutes = require('./routes/meterPercentageCountRoutes');
+const meterRoutes = require('./meter/meterRoutes');
+const suburbEnergyRoute = require('./meter/getSuburbEnergyRoute');
+const adminAuthRoutes = require('./admin/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
 
 const app = express();
@@ -47,17 +52,17 @@ app.use((err, req, res, next) => {
 
 
 
-// Use your authRoutes and getRoutes as before
-app.use('/', authRoutes);
+// Use our routes
+
 app.use('/', getRoutes);
-app.use('/',forgotPasswordRoutes);
 app.use('/',meterRoutes);
-app.use('/', getAll);
+app.use('/', suburbEnergyRoute);
 app.use('/', adminAuthRoutes);
 app.use('/', notificationRoutes);
+app.use('/', meterPercentageRoutes)
 
 
-
+//Export the app server configuration
 
 module.exports = app ;
 

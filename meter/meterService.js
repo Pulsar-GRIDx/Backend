@@ -245,7 +245,7 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
   const result = readings.reduce((acc, record) => {
     const voltage = Number(record.voltage) || 0;
     const current = Number(record.current) || 0;
-   
+
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
     acc.totalCurrent = (acc.totalCurrent || 0) + current;
@@ -254,7 +254,6 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
     acc.count = (acc.count || 0) + 1;
 
     return acc;
-    
   }, {});
 
   // Calculate the average voltage
@@ -262,9 +261,10 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
 
   return {
     totalVoltage,
-    totalCurrent: result.totalCurrent,
+    totalCurrent: result.totalCurrent / 100
   };
 };
+
 
 exports.getStartDate = () => {
   const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage";

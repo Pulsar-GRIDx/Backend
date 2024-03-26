@@ -1,34 +1,29 @@
 // Configure dotenv
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+const validator = require('validator');
+
 dotenv.config();
-const config = process.env;
-const environment = process.env;
 
-
-
+// Using `process.env` directly
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = req.query.token || (authHeader && authHeader.split(' ')[1]);
-  
-    if (token == null) {
-      return res.sendStatus(401);
-    }
-  
-    jwt.verify(token, environment.SECRET_KEY, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
-      }
-  
-      req.user = user;
-      next();
-    });
-  }
-  
-  const validateEmail = (Email) => {
-    if (!validator.isEmail(Email)) {
-      return false;
-    }
-    return true;
-  };
+  const token = req.query.token || req.headers['authorization']?.split(' ')[1];
 
-  module.exports = authenticateToken;
+  if (!token) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+    if (err) {
+      return res.status(403).send('Forbidden');
+    }
+
+    req.user = user;
+    next();
+  });
+}
+
+// Email Validation
+const validateEmail = (Email) => validator.isEmail(Email);
+
+module.exports = { authenticateToken, validateEmail };
