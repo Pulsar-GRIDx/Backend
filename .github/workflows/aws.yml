@@ -28,7 +28,7 @@ name: ECS Deployment Workflow
 
 on:
   push:
-    branches: [main]
+    branches: [mainng]
 
 jobs:
   build-and-deploy:

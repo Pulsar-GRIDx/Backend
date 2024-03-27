@@ -261,7 +261,7 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
 
   return {
     totalVoltage,
-    totalCurrent: result.totalCurrent / 100
+    totalCurrent: result.totalCurrent
   };
 };
 

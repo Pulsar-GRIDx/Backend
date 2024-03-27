@@ -29,6 +29,7 @@ Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDkwMjU5MzksImV4cCI6MTcwOTAyOTUzOX0.Jm7GAosRlzrlEacE1n1D3pX9-sDpvWInV6aJsKokixQ
 
 {
  "data":[
