@@ -2,7 +2,7 @@
 get https://backend2.gridxmeter.com/allProcessedTokensByDRN0260066545641
 Content-Type: application/json
 ###
-get httpss://backend2.gridxmeter.com/meterDataByDRN0260066545641
+get https://backend2.gridxmeter.com/meterDataByDRN0260066545641
 Content-Type: application/json
 ###
 ###--------------PotentialIssue-----------####
@@ -21,7 +21,7 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
 ###
-get https://backend2.gridxmeter.com/weeklyDataAmount
+get http://localhost:4000/weeklyDataAmount
 Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/currentDayEnergy
@@ -29,6 +29,7 @@ Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/insertMeterData
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDkwMjU5MzksImV4cCI6MTcwOTAyOTUzOX0.Jm7GAosRlzrlEacE1n1D3pX9-sDpvWInV6aJsKokixQ
 
 {
  "data":[
@@ -108,18 +109,20 @@ Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/insertTransformer
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDkwMjU5MzksImV4cCI6MTcwOTAyOTUzOX0.Jm7GAosRlzrlEacE1n1D3pX9-sDpvWInV6aJsKokixQ
  
 {
   "TransformerData":{
-    "DRN":"0260000000009",
-    "LocationName":"Wanahenda",
-    "Name":"Tugena 4",
+    "DRN":"0240000000019",
+    "LocationName":"Khomasdal",
+    "Name":"Hofsanger 1",
     "Type":"Big Tranformer",
-    "pLat":"-22.538236805338208",
-    "pLng":"17.050350565314446",
+    "pLat":"-22.538236805338209",
+    "pLng":"17.050350565314447",
     "Status":"1",
-    "PowerSupply":"0260000000003",
-    "powerRating":"1000kVA"
+    "PowerSupply":"0260000000009",
+    "powerRating":"1000kVA",
+    "City":"Windhoek"
   }
 }
 
@@ -129,5 +132,12 @@ Content-Type: application/json
 
 
 ####
-get https://backend2.gridxmeter.com/gridTopology/Windhoek West
+post http://localhost:4000/gridTopology
 Content-Type: application/json
+
+{
+  "cities":[
+    "Windhoek"
+    
+  ]
+}

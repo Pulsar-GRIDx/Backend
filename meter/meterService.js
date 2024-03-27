@@ -13,6 +13,7 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
     }
 
     if (results.length === 0) {
+      console.log('No data found',err );
       return callback({ error: 'No data found', details: err });
     }
 
@@ -234,8 +235,6 @@ exports.getSystemVoltageAndCurrent = () => {
   });
 };
 
-
-
 ////
 exports.calculateSystemVoltageAndCurrent = (readings) => {
   if (!readings || !Array.isArray(readings) || readings.length === 0) {
@@ -246,7 +245,7 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
   const result = readings.reduce((acc, record) => {
     const voltage = Number(record.voltage) || 0;
     const current = Number(record.current) || 0;
-   
+
     // Accumulate voltage and current separately
     acc.totalVoltage = (acc.totalVoltage || 0) + voltage;
     acc.totalCurrent = (acc.totalCurrent || 0) + current;
@@ -255,7 +254,6 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
     acc.count = (acc.count || 0) + 1;
 
     return acc;
-    
   }, {});
 
   // Calculate the average voltage
@@ -263,9 +261,10 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
 
   return {
     totalVoltage,
-    totalCurrent: result.totalCurrent,
+    totalCurrent: result.totalCurrent
   };
 };
+
 
 exports.getStartDate = () => {
   const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeterCumulativeEnergyUsage";
@@ -574,6 +573,7 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
     Status:TransformerData.Status,
     PowerSupply:TransformerData.PowerSupply,
     powerRating:TransformerData.powerRating,
+    city:TransformerData.City
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO TransformerInformation SET ?', transformerRealInfoData, (err) => {
@@ -585,31 +585,65 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
 };
 
 
-///Grid Topology ////
-exports.fetchDRNs = (locationName) => {
+// Grid Topology
+
+// Function to get active power
+exports.getGridTopologyActivePower = (meterDRN) => {
+  return new Promise((resolve, reject) => {
+    const getActiveEnergy = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE() AND DRN = ? ORDER BY date_time DESC LIMIT 1';
+
+    db.query(getActiveEnergy, [meterDRN], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        // Convert active energy to numerical type
+        const numericActiveEnergy = results.map(result => parseFloat(result.active_energy));
+        resolve(numericActiveEnergy[0]); // Assuming there's only one result per meter DRN
+      }
+    });
+  });
+};
+
+// Function to fetch DRNs
+exports.fetchDRNs = async (city) => {
   return new Promise((resolve, reject) => {
     const query = `
-        SELECT TI.DRN ,Name AS TransformerDRN, MLIT.DRN AS MeterDRN
+        SELECT TI.LocationName, TI.Name AS TransformerName, MLIT.DRN AS MeterDRN
         FROM TransformerInformation TI
         LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
-        WHERE TI.LocationName = ?
+        WHERE TI.city = ?
     `;
-    db.query(query, [locationName], (error, results, fields) => {
+    db.query(query, [city], (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
-        const transformersWithDRNs = {};
-        results.forEach(row => {
-          const transformerDRN = row.TransformerDRN;
+        const data = {};
+        const promises = results.map(async row => {
+          const locationName = row.LocationName;
+          const transformerName = row.TransformerName;
           const meterDRN = row.MeterDRN;
-          if (!transformersWithDRNs.hasOwnProperty(transformerDRN)) {
-            transformersWithDRNs[transformerDRN] = [];
+          if (!data.hasOwnProperty(locationName)) {
+            data[locationName] = { transformers: {}, active_energy: 0 };
+          }
+          if (!data[locationName].transformers.hasOwnProperty(transformerName)) {
+            data[locationName].transformers[transformerName] = { meters: [], active_energy: 0 };
           }
           if (meterDRN) {
-            transformersWithDRNs[transformerDRN].push(meterDRN);
+            let activeEnergy = await exports.getGridTopologyActivePower(meterDRN);
+            activeEnergy = isNaN(activeEnergy) ? 0 : activeEnergy; // Treat NaN as 0
+            const meterData = { DRN: meterDRN, active_energy: activeEnergy };
+            data[locationName].transformers[transformerName].meters.push(meterData);
+            if (isNaN(data[locationName].transformers[transformerName].active_energy)) {
+              data[locationName].transformers[transformerName].active_energy = 0;
+            }
+            if (isNaN(data[locationName].active_energy)) {
+              data[locationName].active_energy = 0;
+            }
+            data[locationName].transformers[transformerName].active_energy += activeEnergy;
+            data[locationName].active_energy += activeEnergy;
           }
         });
-        resolve({ [locationName]: transformersWithDRNs });
+        Promise.all(promises).then(() => resolve(data));
       }
     });
   });

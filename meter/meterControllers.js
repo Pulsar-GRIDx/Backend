@@ -6,7 +6,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
     if (err) {
       console.error('Error querying MySQL:', err);
-      res.status(500).send('Internal Server Error');
+      res.status(500).send('No active Meters');
       return;
     }
 
@@ -348,15 +348,66 @@ exports.insertTransformerData = (req, res) => {
 };
 
 
-//Grid Topology //
+
+// GridTopology
+function convertDataToMockTree(data) {
+  let mockTreeData = [];
+
+  for (const city in data) {
+    for (const locationName in data[city]) {
+      let locationActiveEnergy = 0;
+      const locationNode = {
+        key: `${locationName}`,
+        title: `Location: ${locationName}`,
+        children: [],
+      };
+
+      for (const transformerName in data[city][locationName].transformers) {
+        const transformerData = data[city][locationName].transformers[transformerName];
+        const transformerNode = {
+          key: `${transformerName}`,
+          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy / 1000).toFixed(2)} kWh`,
+          children: [],
+        };
+
+        transformerData.meters.forEach(meterData => {
+          transformerNode.children.push({
+            key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
+            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy / 1000).toFixed(2)} kWh`,
+          });
+        });
+
+        locationNode.children.push(transformerNode);
+        locationActiveEnergy += transformerData.active_energy;
+      }
+
+      locationNode.title += `, Active Energy: ${(locationActiveEnergy / 1000).toFixed(2)} kWh`;
+      mockTreeData.push(locationNode);
+    }
+  }
+
+  return mockTreeData;
+}
+
+
+
+// Controller function
 exports.fetchDRNs = async (req, res) => {
-  const locationName = req.params.locationName;
+  const cities = req.body.cities;
   try {
-    const data = await energyService.fetchDRNs(locationName);
-    res.status(200).json(data);
+    const result = {};
+    for (const city of cities) {
+      const data = await energyService.fetchDRNs(city);
+      result[city] = data; // No need to convert data to mockTreeData here
+    }
+    res.status(200).json({ mockTreeData: convertDataToMockTree(result) }); // Convert the final result to mockTreeData
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while fetching data' });
   }
 };
+
+
+
+
 

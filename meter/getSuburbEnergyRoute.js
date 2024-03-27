@@ -1,19 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const winston = require('winston');
-const jwt = require('jsonwebtoken');
-const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 const NodeCache = require('node-cache');
 
+
+//Import dotenv
 const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../config/db");
-const db = require("../config/db");
 
+
+
+//Configure dotenv
 dotenv.config();
-// const config = process.env;
-// const enviroment = process.env;
-// Set up Winston logger with console and file transports
+
 
 // Set up Winston logger with console and file transports
 const logger = winston.createLogger({
@@ -39,74 +38,12 @@ process.on('unhandledRejection', (reason, promise) => {
   // You can perform any necessary cleanup here before exiting
   process.exit(1);
 });
-//Get Signin router
-router.get('/signin', (req, res) => {
-    res.sendFile(__dirname + '/signin.html');
-  });
 
-  //Get Signup router
-  router.get('/signup', (req, res) => {
-    res.status(200).json({ message: 'Welome' });
-  });
 
   
-// Get user profile router
-router.get('/profile/:UserID', (req, res) => {
-  const { UserID } = req.params;
-  console.log(UserID);
-
-  if (!UserID) {
-    return res.status(400).json({ error: 'Invalid UserID' });
-  }
-
-  // Query the database to retrieve user profile
-  connection.query('SELECT FirstName, Email FROM SystemUsers WHERE UserID = ?', [UserID], (err, results) => {
-    if (err) {
-      console.error('Error retrieving user profile:', err);
-      return res.status(500).json({ error: 'Failed to fetch user profile' });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Send the user profile data as JSON response
-    const userProfile = results[0];
-    res.status(200).json({userProfile ,
-      redirect: `/protected?token=${encodeURIComponent(token)}`});
-});
-});
 
 
 
-// router.use(authenticateTokenAndGetAdmin_ID);
-// Router to get all the details of the users from the database
-router.get('/allUsers', (req, res) => {
-  // Query the database to get the users
-  connection.query('SELECT UserID, FirstName,Email,lastName FROM SystemUsers', (err, results) => {
-    if (err) {
-      console.error('Error fetching users:', err);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-
-    // Send the list of users as a JSON response
-    res.status(200).type({ users: results 
-      });
-  });
-});
-
-router.get('/allAdmins', (req, res) => {
-  // Query the database to get the users
-  connection.query('SELECT Admin_ID, Username ,FirstName, LastName, Password, Email, IsActive, AccessLevel FROM SystemAdmins', (err, results) => {
-    if (err) {
-      console.error('Error fetching users:', err);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-
-    // Send the list of users as a JSON response
-    res.status(200).json({ users: results });
-  });
-});
 
 
 
@@ -151,7 +88,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
         return;
       }
       const drns = await new Promise((resolve, reject) => {
-        db.query(getDrnsBySuburb, [suburb], (err, drnData) => {
+        connection.query(getDrnsBySuburb, [suburb], (err, drnData) => {
           if (err) {
             console.log(err);
             reject(err);
@@ -164,7 +101,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 //Weekly data
       const weeklyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
-          db.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
+          connection.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
             else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
             console.log(energyData);
@@ -174,7 +111,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 //Monthly data
       const monthlyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
-          db.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
+          connection.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
             else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
             console.log(energyData);
@@ -184,7 +121,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 //Yearly data
       const yearlyEnergyByDrn = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
-          db.query(getYearlyEnergyByDrn, [drn], (err, energyData) => {
+          connection.query(getYearlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
             else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
             console.log(energyData);
@@ -277,7 +214,7 @@ async function getActiveEnergyTotalsAndVoltageCurrent(startDate, endDate) {
 async function getActiveEnergy(startDate, endDate) {
   return new Promise((resolve, reject) => {
       const query = `SELECT DATE(date_time) as day, SUM(active_energy) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE date_time >= ? AND date_time < ? GROUP BY day`;
-      db.query(query, [startDate, endDate], (err, results) => {
+      connection.query(query, [startDate, endDate], (err, results) => {
           if (err) return reject(err);
           resolve(results);
       });

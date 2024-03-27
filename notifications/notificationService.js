@@ -31,4 +31,23 @@ exports.getNotificationsByDRN = (DRN) => {
     });
   };
 
+//Get All notifications
+exports.getAll = () => {
+
+  const query = 'SELECT * FROM MeterNotifications WHERE DATE(date_time) = CURDATE()';
+  
+    return new Promise((resolve, reject) => {
+      db.query(query,  (err, notifications) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(notifications);
+        }
+      });
+    });
+
+ 
+};
+
+
   

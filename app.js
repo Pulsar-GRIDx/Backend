@@ -15,12 +15,17 @@ const limiter = rateLimit({
   max: 1000000,
   message: 'Too many requests, please try again later.',
 });
-const authRoutes = require('./routes/authRoutes');
-const getRoutes = require('./routes/getRoutes');
-const forgotPasswordRoutes = require('./routes/forgotPasswordRoutes');
-const meterRoutes = require('./routes/meterRoutes');
-const getAll = require('./routes/getAllData');
-const adminAuthRoutes = require('./routes/adminAuthRoutes');
+
+
+
+
+
+// Get the routes
+const getRoutes = require('./meter/getSuburbEnergyRoute');
+const meterPercentageRoutes = require('./routes/meterPercentageCountRoutes');
+const meterRoutes = require('./meter/meterRoutes');
+const suburbEnergyRoute = require('./meter/getSuburbEnergyRoute');
+const adminAuthRoutes = require('./admin/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
 const userAuth = require('./routes/userRoutes');
 
@@ -45,32 +50,20 @@ app.use((err, req, res, next) => {
  
   res.status(500).json({ error: 'Something went wrong!' });
 });
-const db = require("./config/db");
-
-db.connect((err) => {
-  if (err) {
-    console.log("Failed to connect to AWS RDS:", err.message);
-    return;
-  }
-  console.log("Successfully connected to AWS RDS database");
-  app.listen(process.env.PORT || 4000, () => {
-    console.log(`Server is running on port ${process.env.PORT || 4000}`);
-  });
-});
 
 
-// Use your authRoutes and getRoutes as before
-app.use('/', authRoutes);
+
+// Use our routes
+
 app.use('/', getRoutes);
-app.use('/',forgotPasswordRoutes);
 app.use('/',meterRoutes);
-app.use('/', getAll);
+app.use('/', suburbEnergyRoute);
 app.use('/', adminAuthRoutes);
 app.use('/', notificationRoutes);
-app.use('/', userAuth);
+app.use('/', meterPercentageRoutes)
 
 
-
+//Export the app server configuration
 
 module.exports = app ;
 
