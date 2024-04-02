@@ -1,1 +1,2 @@
 {"code":"ECONNRESET","errno":-4077,"fatal":true,"level":"error","message":"Uncaught Exception: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:217:20)","syscall":"read"}
+{"code":"ECONNRESET","errno":-4077,"fatal":true,"level":"error","message":"Uncaught Exception: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:217:20)","syscall":"read"}
