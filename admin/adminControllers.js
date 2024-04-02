@@ -33,9 +33,10 @@ exports.signIn = async (req, res) => {
     res.header('Access-Control-Allow-Credentials', true);
     // Send the response with both token and user data
     res.status(200).json({
-      message: 'User signed in successfully',
+      message: 'Admin signed in successfully',
       token: result.token,
-      user: result.user
+      user: result.user,
+      redirect: `/protected?token=${encodeURIComponent(result.token)}`
     });
   } catch (error) {
     console.error('Error during sign-in:', error);
@@ -73,6 +74,7 @@ exports.getAllAdmins = (req, res) => {
     .then(users => res.status(200).json({ users: users }))
     .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
 };
+
 
 //Update user
 exports.updateUserInfo = (req, res) => {
@@ -121,4 +123,18 @@ exports.resetAdminPassword = (req, res) => {
   adminService.resetAdminPassword(Admin_ID, Password)
     .then(() => res.status(200).json({ message: 'Password updated successfully' }))
     .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+};
+
+//Get Admin Data
+
+exports.getAdminData = (req, res) => {
+  const { Admin_ID } = req.params;
+
+  if (!Admin_ID) {
+    return res.status(400).json({ error: 'Invalid Admin_ID' });
+  }
+
+  adminService.getAdminData(Admin_ID)
+    .then(adminData => res.status(200).json(adminData))
+    .catch(err => res.status(500).json({ error: 'Failed to fetch admin data', details: err }));
 };

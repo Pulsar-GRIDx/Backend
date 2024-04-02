@@ -108,7 +108,7 @@ exports.signIn = async (Email, Password, GuestID) => {
     });
 
     const token = jwt.sign(
-      { Admin_ID: admin.adminID, email: admin.email, AccessLevel: admin.AccessLevel },
+      { Admin_ID: admin.Admin_ID, Email: admin.Email, AccessLevel: admin.AccessLevel },
       process.env.SECRET_KEY,
       { expiresIn: '1h' } // Token expires in 1 hour
     );
@@ -116,12 +116,12 @@ exports.signIn = async (Email, Password, GuestID) => {
     return {
       token,
       user: {
-        Admin_ID: admin.adminID,
-        email: admin.email,
+        Admin_ID: admin.Admin_ID,
+        email: admin.Email,
         AccessLevel: admin.AccessLevel,
         
-      },
-      redirect: `/protected?token=${encodeURIComponent(token)}`
+      }
+      
     };
   }
 };
@@ -264,6 +264,20 @@ exports.resetAdminPassword = (Admin_ID, Password) => {
             });
           }
         });
+      }
+    });
+  });
+};
+
+//Get Admin Data
+
+exports.getAdminData = (Admin_ID) => {
+  return new Promise((resolve, reject) => {
+    connection.query('SELECT * FROM SystemAdmins WHERE Admin_ID = ?', [Admin_ID], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results[0]);
       }
     });
   });

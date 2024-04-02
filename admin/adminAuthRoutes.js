@@ -28,5 +28,8 @@ router.delete('/deleteAdmin/:Admin_ID',adminController.deleteAdmin);
 router.post('/updateStatus/:Admin_ID',adminController.updateAdminStatus);
 //Resets the admin Password
 router.post('/resetPassword/:Admin_ID',adminController.resetAdminPassword);
+//Get admin data
+
+router.get('/adminData/:Admin_ID', authenticateTokenAndGetAdmin_ID,adminController.getAdminData);
 
 module.exports = router;
