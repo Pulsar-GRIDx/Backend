@@ -258,10 +258,11 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
 
   // Calculate the average voltage
   const totalVoltage = result.totalVoltage / result.count;
+  const totalCurrent = result.totalCurrent / result.count;
 
   return {
     totalVoltage,
-    totalCurrent: result.totalCurrent
+    totalCurrent,
   };
 };
 
@@ -510,10 +511,10 @@ exports.calculateDRNVoltageAndCurrent = (readings) => {
 
   // Calculate the average voltage
   const totalVoltage = result.totalVoltage / result.count;
-
+  const totalCurrent = result.totalCurrent / result.count;
   return {
     totalVoltage,
-    totalCurrent: result.totalCurrent,
+    totalCurrent,
   };
 };
 
