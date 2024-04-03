@@ -29,7 +29,12 @@ router.post('/updateStatus/:Admin_ID',adminController.updateAdminStatus);
 //Resets the admin Password
 router.post('/resetPassword/:Admin_ID',adminController.resetAdminPassword);
 //Get admin data
-
-router.get('/adminData/:Admin_ID', authenticateTokenAndGetAdmin_ID,adminController.getAdminData);
+router.get('/adminAuth/accessLevel', authenticateTokenAndGetAdmin_ID, (req, res) => {
+  // AccessLevel is attached to the request object by the decodeToken middleware
+  // const accessLevel = req.AccessLevel;
+  const AccessLevel = req.tokenPayload ;
+  // Send AccessLevel to the frontend
+  res.json(AccessLevel );
+});
 
 module.exports = router;

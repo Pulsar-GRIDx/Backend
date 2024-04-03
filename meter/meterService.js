@@ -114,7 +114,7 @@ exports.getPreviousData = (startDateResult) => {
 exports.calculateTotalss = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date_time;
-    const energy = Number(record.active_energy) / 1000;
+    const energy = Number(record.active_energy) ;
     if (!acc[date]) {
       acc[date] = 0;
     }
@@ -213,7 +213,7 @@ exports.getSystemLastMonthData = () => {
 exports.CalculateSystemData = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date.toISOString().split('T')[0];
-    const energy = Number(record.total_active_energy) / 1000;
+    const energy = Number(record.total_active_energy) ;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
@@ -462,7 +462,7 @@ exports.getLastMonthData = (DRN) => {
 exports.CalculateDrnData = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date.toISOString().split('T')[0];
-    const energy = Number(record.total_active_energy) / 1000;
+    const energy = Number(record.total_active_energy) ;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});

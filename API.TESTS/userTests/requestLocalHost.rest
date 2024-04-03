@@ -98,3 +98,8 @@ get http://localhost:4000/active_state_count
 ###
 get http://localhost:4000/inactive_state_count
 
+####
+
+get http://localhost:4000/adminAuth/accessLevel
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMjA1OTEyMiwiZXhwIjoxNzEyMDYyNzIyfQ.Ubt8RnUdq-ZO61Yjspu9kVPLDhEX-HqvnaMTWwDQDwE
+Content-Type: application/jsonn

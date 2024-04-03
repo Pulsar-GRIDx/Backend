@@ -169,7 +169,7 @@ exports.getCurrentDayEnergy = (req, res) => {
   
   energyService.getCurrentDayData()
     .then(currentDayData => {
-      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) ;
       res.json({ totalEnergy });
     })
     .catch(err => {
@@ -294,7 +294,7 @@ exports.getDailyMeterEnergy =(req,res)=>{
     energyService.getDailyMeterEnergy(DRN)
   ])
   .then(([meterData])=>{
-    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) ;
     res.json({ dailyTotalEnergy });
   })
   .catch((err) =>{
@@ -366,14 +366,14 @@ function convertDataToMockTree(data) {
         const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
           key: `${transformerName}`,
-          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy / 1000).toFixed(2)} kWh`,
+          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy).toFixed(2)} kWh`,
           children: [],
         };
 
         transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
-            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy / 1000).toFixed(2)} kWh`,
+            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy ).toFixed(2)} kWh`,
           });
         });
 
@@ -381,7 +381,7 @@ function convertDataToMockTree(data) {
         locationActiveEnergy += transformerData.active_energy;
       }
 
-      locationNode.title += `, Active Energy: ${(locationActiveEnergy / 1000).toFixed(2)} kWh`;
+      locationNode.title += `, Active Energy: ${(locationActiveEnergy ).toFixed(2)} kWh`;
       mockTreeData.push(locationNode);
     }
   }
