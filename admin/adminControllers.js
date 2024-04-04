@@ -36,7 +36,7 @@ exports.signIn = async (req, res) => {
       message: 'Admin signed in successfully',
       token: result.token,
       user: result.user,
-      redirect: `/protected?token=${encodeURIComponent(result.token)}`
+      
     });
   } catch (error) {
     console.error('Error during sign-in:', error);
