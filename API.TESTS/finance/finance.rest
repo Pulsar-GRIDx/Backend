@@ -1,0 +1,12 @@
+get http://localhost:4000/finance/dailyRevenue
+Content-Type: application/json
+
+####
+get http://localhost:4000/finance/currentMonthRevenue
+Content-Type: application/json
+
+####
+get http://localhost:4000/finance/currentYearRevenue
+Content-Type: application/json
+
+####

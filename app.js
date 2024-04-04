@@ -27,6 +27,7 @@ const meterRoutes = require('./routes/meterRoutes');
 const suburbEnergyRoute = require('./meter/getSuburbEnergyRoute');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
+const financialRoutes = require('./routes/financialRoutes');
 
 
 const app = express();
@@ -60,7 +61,8 @@ app.use('/',meterRoutes);
 app.use('/', suburbEnergyRoute);
 app.use('/', adminAuthRoutes);
 app.use('/', notificationRoutes);
-app.use('/', meterPercentageRoutes)
+app.use('/', meterPercentageRoutes);
+app.use('/finance', financialRoutes);
 
 
 //Export the app server configuration
