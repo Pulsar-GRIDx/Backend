@@ -114,7 +114,7 @@ exports.getPreviousData = (startDateResult) => {
 exports.calculateTotalss = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date_time;
-    const energy = Number(record.active_energy) ;
+    const energy = Number(record.active_energy) / 1000 ;
     if (!acc[date]) {
       acc[date] = 0;
     }
@@ -213,7 +213,7 @@ exports.getSystemLastMonthData = () => {
 exports.CalculateSystemData = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date.toISOString().split('T')[0];
-    const energy = Number(record.total_active_energy) ;
+    const energy = Number(record.total_active_energy) / 1000 ;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
@@ -291,7 +291,7 @@ exports.getCurrentDayData = () => {
     db.query(getCurrentDayData,
        (err, currentDayData) => {
       if (err) reject(err);
-      else resolve(currentDayData);
+      else resolve(currentDayData) / 1000;
     });
   });
 };
@@ -361,7 +361,7 @@ exports.getEnergyByDrn = (suburb, drn) => {
         if (energyData.length > 0) {
           console.log('active_energy:', energyData[0].active_energy);
         }
-        resolve(energyData);
+        resolve(energyData) / 1000;
       }
     });
   });
@@ -463,7 +463,7 @@ exports.getLastMonthData = (DRN) => {
 exports.CalculateDrnData = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date.toISOString().split('T')[0];
-    const energy = Number(record.total_active_energy) ;
+    const energy = Number(record.total_active_energy) / 1000 ;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
@@ -526,7 +526,7 @@ exports.getDailyMeterEnergy  = (DRN) => {
  return new Promise ((resolve ,reject) =>{
   db.query(getMetaData ,[DRN],(err,meterData) => {
     if (err) reject(err);
-    else resolve(meterData);
+    else resolve(meterData) / 1000;
     
   });
  });
@@ -614,7 +614,7 @@ exports.fetchDRNs = async (city) => {
         LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
         WHERE TI.city = ?
     `;
-    db.query(query, [city], (error, results, fields) => {
+    db.query(query, [city], (error, results , fields) => {
       if (error) {
         reject(error);
       } else {
@@ -624,7 +624,7 @@ exports.fetchDRNs = async (city) => {
           const transformerName = row.TransformerName;
           const meterDRN = row.MeterDRN;
           if (!data.hasOwnProperty(locationName)) {
-            data[locationName] = { transformers: {}, active_energy: 0 };
+            data[locationName] = { transformers: {}, active_energy: 0 / 1000};
           }
           if (!data[locationName].transformers.hasOwnProperty(transformerName)) {
             data[locationName].transformers[transformerName] = { meters: [], active_energy: 0 };

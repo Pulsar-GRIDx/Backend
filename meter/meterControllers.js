@@ -97,7 +97,7 @@ exports.getTotalEnergyAmount = (req, res) => {
       const grandTotal = result.reduce((total, record) => total + record, 0);
 
       const response = {
-        allData: result,
+        allData: result.map(value => parseFloat(value.toFixed(2))),
         startDate,
         grandTotal: grandTotal,
       };
