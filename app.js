@@ -23,11 +23,11 @@ const limiter = rateLimit({
 // Get the routes
 const getRoutes = require('./meter/getSuburbEnergyRoute');
 const meterPercentageRoutes = require('./routes/meterPercentageCountRoutes');
-const meterRoutes = require('./meter/meterRoutes');
+const meterRoutes = require('./routes/meterRoutes');
 const suburbEnergyRoute = require('./meter/getSuburbEnergyRoute');
-const adminAuthRoutes = require('./admin/adminAuthRoutes');
+const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
-const userAuth = require('./routes/userRoutes');
+
 
 const app = express();
 app.set('view engine', 'ejs');

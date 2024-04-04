@@ -119,6 +119,7 @@ exports.signIn = async (Email, Password, GuestID) => {
         Admin_ID: admin.Admin_ID,
         email: admin.Email,
         AccessLevel: admin.AccessLevel,
+        redirect: (`/protected?token=${encodeURIComponent(token)}`)
         
       }
       

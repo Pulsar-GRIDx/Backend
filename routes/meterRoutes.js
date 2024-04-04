@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const energyController = require('./meterControllers');
+const energyController = require('../meter/meterControllers');
 // const convertDataToMockTree = require('../meter/meterControllers');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 
