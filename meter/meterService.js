@@ -649,3 +649,79 @@ exports.fetchDRNs = async (city) => {
     });
   });
 };
+
+///----------------------------------------CurrentMonthDta--------------------------------//
+exports.getCurrentMonthData = () => {
+  const getCurrentMonthData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())";
+  return new Promise((resolve, reject) => {
+    db.query(getCurrentMonthData,
+       (err, currentMonthData) => {
+      if (err) reject(err);
+      else resolve(currentMonthData) / 1000;
+    });
+  });
+};
+//------------------------------------------CurrentYearData-----------------------------//
+exports.getCurrentYearData = () => {
+  const getCurrentYearData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE())";
+  return new Promise((resolve, reject) => {
+    db.query(getCurrentYearData,
+       (err, currentYearData) => {
+      if (err) reject(err);
+      else resolve(currentYearData) / 1000;
+    });
+  });
+};
+
+
+//----------------------------------------CurrentAnd Last year energy for all the months---------------------------------------//
+exports.getMonthlyDataForCurrentAndLastYear = () => {
+  const getMonthlyDataForCurrentAndLastYear = `
+    SELECT 
+      YEAR(date_time) as year,
+      MONTH(date_time) as month,
+      SUM(active_energy) as total_active_energy
+    FROM 
+      MeterCumulativeEnergyUsage 
+    WHERE 
+      YEAR(date_time) IN (YEAR(CURRENT_DATE()), YEAR(CURRENT_DATE()) - 1)
+    GROUP BY 
+      YEAR(date_time),
+      MONTH(date_time)
+  `;
+  return new Promise((resolve, reject) => {
+    db.query(getMonthlyDataForCurrentAndLastYear,
+       (err, monthlyData) => {
+      if (err) reject(err);
+      else resolve(monthlyData);
+    });
+  });
+};
+
+//----------------------------------------CurrentAndLastWeek With the day starting on Monday --------------------------------------------------------------//
+exports.getWeeklyDataForCurrentAndLastWeek = () => {
+  const getWeeklyDataForCurrentAndLastWeek = `
+    SELECT 
+      YEAR(date_time) as year,
+      WEEK(date_time, 1) as week,
+      DAYNAME(date_time) as day,
+      DATE(date_time) as date,
+      SUM(active_energy) as total_active_energy
+    FROM 
+      MeterCumulativeEnergyUsage 
+    WHERE 
+      WEEK(date_time, 1) IN (WEEK(CURRENT_DATE(), 1), WEEK(CURRENT_DATE(), 1) - 1)
+    GROUP BY 
+      YEAR(date_time),
+      WEEK(date_time, 1),
+      DAYNAME(date_time),
+      DATE(date_time)
+  `;
+  return new Promise((resolve, reject) => {
+    db.query(getWeeklyDataForCurrentAndLastWeek,
+       (err, weeklyData) => {
+      if (err) reject(err);
+      else resolve(weeklyData);
+    });
+  });
+};

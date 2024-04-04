@@ -408,6 +408,74 @@ exports.fetchDRNs = async (req, res) => {
 };
 
 
+//----------------------------------------------------------------CurrentMonth---------------------------------------------//
+exports.getCurrentMonthEnergy = (req, res) => {
+  energyService.getCurrentMonthData()
+    .then(currentMonthData => {
+      const totalEnergy = currentMonthData.reduce((total, record) => total + Number(record.active_energy / 1000), 0) ;
+      res.json({ totalEnergy });
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+//-----------------------------------------------------------------CurrentYear----------------------------------------------------------------/
+exports.getCurrentYearEnergy = (req, res) => {
+  energyService.getCurrentYearData()
+    .then(currentYearData => {
+      const totalEnergy = currentYearData.reduce((total, record) => total + Number(record.active_energy / 1000), 0) ;
+      res.json({ totalEnergy });
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+//-------------------------------------------------------------CurrentAndLastYearData For all the current and last months------------------------//
+exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
+  energyService.getMonthlyDataForCurrentAndLastYear()
+    .then(monthlyData => {
+      const monthlyEnergy = monthlyData.reduce((acc, record) => {
+        if (!acc[record.year]) {
+          acc[record.year] = {};
+        }
+        acc[record.year][record.month] = Number(record.total_active_energy / 1000);
+        return acc;
+      }, {});
+      res.json({ monthlyEnergy });
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+///-------------------------------------------------------------CurrentAndLastWeek With the day starting on Monday -------------------------------------//
+exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
+  energyService.getWeeklyDataForCurrentAndLastWeek()
+    .then(weeklyData => {
+      const weeklyEnergy = { lastweek: {}, currentweek: {} };
+      const currentWeekNumber = new Date().getWeek();
+      
+      weeklyData.forEach(record => {
+        const weekKey = record.week === currentWeekNumber ? 'currentweek' : 'lastweek';
+        weeklyEnergy[weekKey][record.day] = Number(record.total_active_energy / 1000);
+      });
 
+      res.json(weeklyEnergy);
+    })
+    .catch(err => {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err });
+    });
+};
+//getWeek method 
+Date.prototype.getWeek = function() {
+  const date = new Date(this.getTime());
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  const week1 = new Date(date.getFullYear(), 0, 4);
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+};
 
 

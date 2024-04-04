@@ -57,4 +57,23 @@ Content-Type: application/json
         "Windhoek North" ,
        "Windhoek West" 
     ]}
-  
+
+
+###
+
+get http://localhost:4000/monthly/currentMonthEnergyTotal
+Content-Type: application/json
+
+####
+get http://localhost:4000/yearly/currentYearEnergyTotal
+
+Content-Type: application/json
+####
+get http://localhost:4000/yearly/currentAndLastYearMonthEnergyTotal
+
+Content-Type: application/json
+####
+get http://localhost:4000/weekly/currentAndLastWeekEnergyTotal
+
+Content-Type: application/json
+####
