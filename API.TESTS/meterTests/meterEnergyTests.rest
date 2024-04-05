@@ -61,15 +61,15 @@ Content-Type: application/json
 
 ###
 
-get http://localhost:4000/monthly/currentMonthEnergyTotal
+get https://backend2.gridxmeter.com/monthly/currentMonthEnergyTotal
 Content-Type: application/json
 
 ####
-get http://localhost:4000/yearly/currentYearEnergyTotal
+get https://backend2.gridxmeter.com/yearly/currentYearEnergyTotal
 
 Content-Type: application/json
 ####
-get http://localhost:4000/yearly/currentAndLastYearMonthEnergyTotal
+get https://backend2.gridxmeter.com/yearly/currentAndLastYearMonthEnergyTotal
 
 Content-Type: application/json
 ####
