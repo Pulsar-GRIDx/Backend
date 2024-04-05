@@ -32,11 +32,9 @@ router.get('/suburbEnergy', energyController.getSuburbEnergy);
 router.post('/insertTransformer',authenticateTokenAndGetAdmin_ID, energyController.insertTransformerData);
 // //GridTology //
 router.post('/gridTopology'  ,energyController.fetchDRNs);
-//Get current Month Data
-router.get('/monthly/currentMonthEnergyTotal' ,energyController.getCurrentMonthEnergy);
-//Get currentYearDta
-router.get('/yearly/currentYearEnergyTotal' ,energyController.getCurrentYearEnergy);
-//Get Enery for all the months on the current and last year
+//Get all energy time periods
+router.get("/energy-time-periods", energyController.getEnergyData);
+
 router.get('/yearly/currentAndLastYearMonthEnergyTotal' ,energyController.getMonthlyEnergyForCurrentAndLastYear);
 //CurrentAndLastWeek With the day starting on Monday 
 router.get('/weekly/currentAndLastWeekEnergyTotal' ,energyController.getWeeklyEnergyForCurrentAndLastWeek);

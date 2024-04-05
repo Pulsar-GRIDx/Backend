@@ -650,25 +650,32 @@ exports.fetchDRNs = async (city) => {
   });
 };
 
-///----------------------------------------CurrentMonthDta--------------------------------//
-exports.getCurrentMonthData = () => {
-  const getCurrentMonthData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())";
+//-----------------------------------------All time periods -------------------------------------------------------------------//
+exports.getEnergyData = () => {
+  const getCurrentDayData = "SELECT COALESCE(SUM(active_energy), 0) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
+  const getCurrentMonthData = "SELECT COALESCE(SUM(active_energy), 0) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())";
+  const getCurrentYearData = "SELECT COALESCE(SUM(active_energy), 0) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE())";
+
   return new Promise((resolve, reject) => {
-    db.query(getCurrentMonthData,
-       (err, currentMonthData) => {
+    db.query(getCurrentDayData, (err, currentDayData) => {
       if (err) reject(err);
-      else resolve(currentMonthData) / 1000;
-    });
-  });
-};
-//------------------------------------------CurrentYearData-----------------------------//
-exports.getCurrentYearData = () => {
-  const getCurrentYearData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE())";
-  return new Promise((resolve, reject) => {
-    db.query(getCurrentYearData,
-       (err, currentYearData) => {
-      if (err) reject(err);
-      else resolve(currentYearData) / 1000;
+      else {
+        db.query(getCurrentMonthData, (err, currentMonthData) => {
+          if (err) reject(err);
+          else {
+            db.query(getCurrentYearData, (err, currentYearData) => {
+              if (err) reject(err);
+              else {
+                resolve({
+                  day: currentDayData[0].total_active_energy,
+                  month: currentMonthData[0].total_active_energy,
+                  year: currentYearData[0].total_active_energy
+                });
+              }
+            });
+          }
+        });
+      }
     });
   });
 };

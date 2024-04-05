@@ -6,11 +6,8 @@ const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateToken
 
 
 //Get current Day revenue
-router.get('/currentDayRevenue',financialContoller.getCurrentDayTokenAmount);
-//Get Current Month revenue
-router.get('/currentMonthRevenue', financialContoller.getCurrentMonthTokenAmount);
-//Get current Year revenue
-router.get('/currentYearRevenue', financialContoller.getCurrentYearTokenAmount);
+router.get('/time-periods',financialContoller.getTokenAmounts);
+
 //Get current year and last year financial revenue
 router.get('/currentAndLastYearMonthRevenueTotal', financialContoller.getMonthlyTokenAmountForCurrentAndLastYear);
 //Get current and last week finacial data //

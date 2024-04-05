@@ -1,37 +1,37 @@
 const db = require('../config/db'); // replace './db' with the path to your database connection file
+//------------------------------------------All time perionds-------------------------------------//
 
-exports.getCurrentDayTokenAmount = () => {
-  const getCurrentDayTokenAmount = "SELECT SUM(token_amount) as total_token_amount FROM STSTokesInfo WHERE DATE(date_time) = CURDATE() AND display_msg = 'Accept'";
+exports.getTokenAmounts = () => {
+  const getCurrentDayTokenAmount = "SELECT COALESCE(SUM(token_amount), 0) as total_token_amount FROM STSTokesInfo WHERE DATE(date_time) = CURDATE() AND display_msg = 'Accept'";
+  const getCurrentMonthTokenAmount = "SELECT COALESCE(SUM(token_amount), 0) as total_token_amount FROM STSTokesInfo WHERE MONTH(date_time) = MONTH(CURRENT_DATE()) AND display_msg = 'Accept'";
+  const getCurrentYearTokenAmount = "SELECT COALESCE(SUM(token_amount), 0) as total_token_amount FROM STSTokesInfo WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND display_msg = 'Accept'";
+
   return new Promise((resolve, reject) => {
-    db.query(getCurrentDayTokenAmount,
-       (err, result) => {
+    db.query(getCurrentDayTokenAmount, (err, dayResult) => {
       if (err) reject(err);
-      else resolve(result[0].total_token_amount);
+      else {
+        db.query(getCurrentMonthTokenAmount, (err, monthResult) => {
+          if (err) reject(err);
+          else {
+            db.query(getCurrentYearTokenAmount, (err, yearResult) => {
+              if (err) reject(err);
+              else {
+                resolve({
+                  day: dayResult[0].total_token_amount,
+                  month: monthResult[0].total_token_amount,
+                  year: yearResult[0].total_token_amount
+                });
+              }
+            });
+          }
+        });
+      }
     });
   });
 };
-//-------------------------------------------------------------Current Month Revenue  ---------------------------------------//
-exports.getCurrentMonthTokenAmount = () => {
-  const getCurrentMonthTokenAmount = "SELECT SUM(token_amount) as total_token_amount FROM STSTokesInfo WHERE MONTH(date_time) = MONTH(CURRENT_DATE()) AND display_msg = 'Accept'";
-  return new Promise((resolve, reject) => {
-    db.query(getCurrentMonthTokenAmount,
-       (err, result) => {
-      if (err) reject(err);
-      else resolve(result[0].total_token_amount);
-    });
-  });
-};
-///---------------------------------------------------Current Year Total Revenue --------------------------------------//
-exports.getCurrentYearTokenAmount = () => {
-  const getCurrentYearTokenAmount = "SELECT SUM(token_amount) as total_token_amount FROM STSTokesInfo WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND display_msg = 'Accept'";
-  return new Promise((resolve, reject) => {
-    db.query(getCurrentYearTokenAmount,
-       (err, result) => {
-      if (err) reject(err);
-      else resolve(result[0].total_token_amount);
-    });
-  });
-};
+
+
+
 //---------------------------------------------------Get financial stats for all the months of last year and current year------------------------//
 exports.getMonthlyTokenAmountForCurrentAndLastYear = () => {
   const getMonthlyTokenAmountForCurrentAndLastYear = `
