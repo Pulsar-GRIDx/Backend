@@ -169,8 +169,8 @@ exports.getCurrentDayEnergy = (req, res) => {
   
   energyService.getCurrentDayData()
     .then(currentDayData => {
-      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) ;
-      res.json({ totalEnergy });
+      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+      res.json({ totalEnergy  });
     })
     .catch(err => {
       console.log('Error querying the database:', err);

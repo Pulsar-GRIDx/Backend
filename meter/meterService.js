@@ -286,7 +286,7 @@ exports.getStartDate = () => {
 //------------------------------------------------CurrentDayActiveEnergy----------------------------------------------------------------------//
 
 exports.getCurrentDayData = () => {
-  const getCurrentDayData = "SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
+  const getCurrentDayData = "SELECT DRN, active_energy FROM (  SELECT DRN, active_energy, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn  FROM MeterCumulativeEnergyUsage    WHERE DATE(date_time) = CURDATE() ) t  WHERE t.rn = 1 ";
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData,
        (err, currentDayData) => {
@@ -652,7 +652,7 @@ exports.fetchDRNs = async (city) => {
 
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {
-  const getCurrentDayData = "SELECT COALESCE(SUM(active_energy), 0) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE DATE(date_time) = CURDATE()";
+  const getCurrentDayData = "SELECT SUM(COALESCE(active_energy, 0)) as total_active_energy  FROM (    SELECT active_energy, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn    FROM MeterCumulativeEnergyUsage   WHERE DATE(date_time) = CURDATE()  ) t  WHERE t.rn = 1";
   const getCurrentMonthData = "SELECT COALESCE(SUM(active_energy), 0) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())";
   const getCurrentYearData = "SELECT COALESCE(SUM(active_energy), 0) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE YEAR(date_time) = YEAR(CURRENT_DATE())";
 
@@ -667,9 +667,9 @@ exports.getEnergyData = () => {
               if (err) reject(err);
               else {
                 resolve({
-                  day: currentDayData[0].total_active_energy,
-                  month: currentMonthData[0].total_active_energy,
-                  year: currentYearData[0].total_active_energy
+                  day: currentDayData[0].total_active_energy / 1000,
+                  month: currentMonthData[0].total_active_energy / 1000,
+                  year: currentYearData[0].total_active_energy / 1000
                 });
               }
             });
