@@ -412,13 +412,26 @@ exports.fetchDRNs = async (req, res) => {
 exports.getEnergyData = (req, res) => {
   energyService.getEnergyData()
     .then(energyData => {
-      res.json(energyData);
+      // Check if energyData is an object and has the required properties
+      if (typeof energyData === 'object' && energyData.day !== undefined && energyData.month !== undefined && energyData.year !== undefined) {
+        const roundedEnergyData = {
+          day: parseFloat(energyData.day).toFixed(2),
+          month: parseFloat(energyData.month).toFixed(2),
+          year: parseFloat(energyData.year).toFixed(2)
+        };
+        res.json(roundedEnergyData);
+      } else {
+        console.log('Error: energyData is not a valid object:', energyData);
+        return res.status(500).send({ error: 'Data format error', details: 'Expected an object with day, month, and year for energyData' });
+      }
     })
     .catch(err => {
       console.log('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
+
+
 //-------------------------------------------------------------CurrentAndLastYearData For all the current and last months------------------------//
 exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
   energyService.getMonthlyDataForCurrentAndLastYear()
@@ -429,7 +442,7 @@ exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
       monthlyData.forEach(record => {
         const yearKey = record.year === currentYear ? 'Current' : 'Last';
         const monthIndex = record.month - 1;
-        monthlyEnergy[yearKey][monthIndex] = Number(record.total_apparent_power / 1000);
+        monthlyEnergy[yearKey][monthIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
       });
 
       res.json({ monthlyEnergy });
@@ -451,7 +464,7 @@ exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
       weeklyData.forEach(record => {
         const weekKey = record.week === currentWeekNumber ? 'currentweek' : 'lastweek';
         const dayIndex = daysOfWeek.indexOf(record.day);
-        weeklyEnergy[weekKey][dayIndex] = Number(record.total_apparent_power / 1000);
+        weeklyEnergy[weekKey][dayIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
       });
 
       res.json(weeklyEnergy);
