@@ -68,11 +68,11 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
   //Weekly Query
-  const getWeeklyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getWeeklyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ';
   //Monthly Query
-  const getMonthlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getMonthlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN  ';
   //Yearly Query
-  const getYearlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 365 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getYearlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 365 DAY GROUP BY DRN ';
 
   let suburbsWeekly = {};
   let suburbsMonthly = {};
