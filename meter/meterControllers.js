@@ -169,7 +169,7 @@ exports.getCurrentDayEnergy = (req, res) => {
   
   energyService.getCurrentDayData()
     .then(currentDayData => {
-      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000;
+      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.apparent_power), 0) / 1000;
       res.json({ totalEnergy  });
     })
     .catch(err => {
@@ -199,7 +199,7 @@ exports.getSuburbEnergy = (req, res) => {
     .then(energyData => {
       console.log('Energy data for suburb', suburb, ':', energyData);
       const totalEnergy = energyData.reduce((total, record) => {
-        const activeEnergy = record.active_energy;
+        const activeEnergy = record.apparent_power;
         console.log('Active Energy:', activeEnergy);
         
         if (activeEnergy !== null && activeEnergy !== undefined && typeof activeEnergy === 'string') {
@@ -294,7 +294,7 @@ exports.getDailyMeterEnergy =(req,res)=>{
     energyService.getDailyMeterEnergy(DRN)
   ])
   .then(([meterData])=>{
-    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000 ;
+    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.apparent_power), 0) / 1000 ;
     res.json({ dailyTotalEnergy });
   })
   .catch((err) =>{
@@ -366,19 +366,19 @@ function convertDataToMockTree(data) {
         const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
           key: `${transformerName}`,
-          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy).toFixed(2)} kWh`,
+          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.apparent_power).toFixed(2)} kWh`,
           children: [],
         };
 
         transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
-            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy ).toFixed(2)} kWh`,
+            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.apparent_power ).toFixed(2)} kWh`,
           });
         });
 
         locationNode.children.push(transformerNode);
-        locationActiveEnergy += transformerData.active_energy;
+        locationActiveEnergy += transformerData.apparent_power;
       }
 
       locationNode.title += `, Active Energy: ${(locationActiveEnergy ).toFixed(2)} kWh`;
@@ -429,7 +429,7 @@ exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
       monthlyData.forEach(record => {
         const yearKey = record.year === currentYear ? 'Current' : 'Last';
         const monthIndex = record.month - 1;
-        monthlyEnergy[yearKey][monthIndex] = Number(record.total_active_energy / 1000);
+        monthlyEnergy[yearKey][monthIndex] = Number(record.total_apparent_power / 1000);
       });
 
       res.json({ monthlyEnergy });
@@ -451,7 +451,7 @@ exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
       weeklyData.forEach(record => {
         const weekKey = record.week === currentWeekNumber ? 'currentweek' : 'lastweek';
         const dayIndex = daysOfWeek.indexOf(record.day);
-        weeklyEnergy[weekKey][dayIndex] = Number(record.total_active_energy / 1000);
+        weeklyEnergy[weekKey][dayIndex] = Number(record.total_apparent_power / 1000);
       });
 
       res.json(weeklyEnergy);

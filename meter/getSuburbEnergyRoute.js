@@ -68,11 +68,11 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
   //Weekly Query
-  const getWeeklyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getWeeklyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
   //Monthly Query
-  const getMonthlyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getMonthlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
   //Yearly Query
-  const getYearlyEnergyByDrn = 'SELECT active_energy FROM MeterCumulativeEnergyUsage WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 365 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
+  const getYearlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 365 DAY GROUP BY DRN ORDER BY date_time DESC LIMIT 1';
 
   let suburbsWeekly = {};
   let suburbsMonthly = {};
@@ -103,7 +103,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
         return new Promise((resolve, reject) => {
           connection.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
             console.log(energyData);
           });
         });
@@ -113,7 +113,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
         return new Promise((resolve, reject) => {
           connection.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: 0 });
             console.log(energyData);
           });
         });
@@ -123,31 +123,31 @@ router.post('/getSuburbEnergy', async (req, res) => {
         return new Promise((resolve, reject) => {
           connection.query(getYearlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: null });
+            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: 0 });
             console.log(energyData);
           });
         });
       }))
 
       const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
-        if (record.active_energy !== null) {
-          return total + Number(record.active_energy) ;
+        if (record.apparent_power !== 0) {
+          return total + Number(record.apparent_power) ;
         } else {
           return total;
         }
       }, 0);
 
       const totalMonthlyEnergy = monthlyEnergyData.reduce((total, record) => {
-        if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+        if (record.apparent_power !== 0) {
+          return total + Number(record.apparent_power);
         } else {
           return total;
         }
       }, 0);
 
       const totalYearlyEnergy = yearlyEnergyByDrn.reduce((total, record) => {
-        if (record.active_energy !== null) {
-          return total + Number(record.active_energy);
+        if (record.apparent_power !== 0) {
+          return total + Number(record.apparent_power);
         } else {
           return total;
         }
@@ -181,7 +181,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 // Function to get active energy totals
 async function getActiveEnergyTotalsAndVoltageCurrent(startDate, endDate) {
   return new Promise((resolve, reject) => {
-      const energyQuery = 'SELECT DATE(date_time) as date, SUM(active_energy) as total FROM MeterCumulativeEnergyUsage WHERE date_time BETWEEN ? AND ? GROUP BY DATE(date_time)';
+      const energyQuery = 'SELECT DATE(date_time) as date, SUM(apparent_power) as total FROM MeteringPower WHERE date_time BETWEEN ? AND ? GROUP BY DATE(date_time)';
       const voltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE date_time BETWEEN ? AND ?";
 
       connection.query(energyQuery, [startDate, endDate], (error, energyResults) => {
@@ -197,8 +197,8 @@ async function getActiveEnergyTotalsAndVoltageCurrent(startDate, endDate) {
                           return {
                               date: energyRecord.date,
                               totalActiveEnergy: energyRecord.total,
-                              voltage: voltageAndCurrentRecord ? voltageAndCurrentRecord.voltage : null,
-                              current: voltageAndCurrentRecord ? voltageAndCurrentRecord.current : null,
+                              voltage: voltageAndCurrentRecord ? voltageAndCurrentRecord.voltage : 0,
+                              current: voltageAndCurrentRecord ? voltageAndCurrentRecord.current : 0,
                           };
                       });
                       resolve(results);
@@ -213,7 +213,7 @@ async function getActiveEnergyTotalsAndVoltageCurrent(startDate, endDate) {
 
 async function getActiveEnergy(startDate, endDate) {
   return new Promise((resolve, reject) => {
-      const query = `SELECT DATE(date_time) as day, SUM(active_energy) as total_active_energy FROM MeterCumulativeEnergyUsage WHERE date_time >= ? AND date_time < ? GROUP BY day`;
+      const query = `SELECT DATE(date_time) as day, SUM(apparent_power) as total_apparent_power FROM MeteringPower WHERE date_time >= ? AND date_time < ? GROUP BY day`;
       connection.query(query, [startDate, endDate], (err, results) => {
           if (err) return reject(err);
           resolve(results);
