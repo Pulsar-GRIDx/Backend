@@ -294,7 +294,7 @@ exports.getDailyMeterEnergy =(req,res)=>{
     energyService.getDailyMeterEnergy(DRN)
   ])
   .then(([meterData])=>{
-    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) ;
+    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) / 1000 ;
     res.json({ dailyTotalEnergy });
   })
   .catch((err) =>{
