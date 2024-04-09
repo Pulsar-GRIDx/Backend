@@ -12,8 +12,8 @@ BEGIN
     IF last_reset IS NOT NULL AND NEW.meter_reset != last_reset THEN
         -- Your trigger action here
         -- For example:
-        INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type)
-        VALUES (NEW.DRN, 'Meter Reset', CONCAT('Meter reset value changed from ', last_reset, ' to ', NEW.meter_reset), 1);
+        INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type,Type)
+        VALUES (NEW.DRN, 'Meter Reset', CONCAT('Meter reset value changed from ', last_reset, ' to ', NEW.meter_reset), 1,'Critical');
     END IF;
 END;
 //

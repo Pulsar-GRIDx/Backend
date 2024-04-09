@@ -17,7 +17,7 @@ BEGIN
     
     -- Check if the sum exceeds the threshold
     IF sum_current > 30 THEN
-        INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type)
-        VALUES (NEW.DRN, 'Meter Current',  concat('Too much current overload: ',sum_current), 1);
+        INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type,Type)
+        VALUES (NEW.DRN, 'Meter Current',  concat('Too much current overload: ',sum_current), 1,'Warning');
     END IF;
 END;
