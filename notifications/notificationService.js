@@ -18,7 +18,7 @@ exports.getNotificationsByDRN = (DRN) => {
 
 
   exports.getAllCriticalNotifications = () => {
-    const query = 'SELECT Alarm, DRN, date_time FROM MeterNotifications WHERE date_time >= DATE_SUB(NOW() , INTERVAL 1 HOUR) ORDER BY date_time DESC LIMIT 25';
+    const query = 'SELECT Alarm, DRN, date_time FROM MeterNotifications WHERE date_time >= DATE_SUB(NOW() AND Type = "Critical", INTERVAL 1 HOUR) ORDER BY date_time DESC LIMIT 25';
   
     return new Promise((resolve, reject) => {
       db.query(query,  (err, notifications) => {
@@ -49,5 +49,36 @@ exports.getAll = () => {
  
 };
 
+//Get type of notifications
 
-  
+exports.getSumOfTypes = function(callback) {
+  const query = `
+      SELECT Type, COUNT(*) as count
+      FROM MeterNotifications
+      WHERE Type IN ('Pending', 'Critical', 'Success', 'Warning')
+      GROUP BY Type
+  `;
+  db.query(query, (err, results) => {
+      if (err) {
+          console.log('Error Querying the database:', err);
+          return callback({ error: 'Database query failed', details: err });
+      }
+
+      // Initialize counts to 0
+      const counts = {
+          'Pending': 0,
+          'Critical': 0,
+          'Success': 0,
+          'Warning': 0
+      };
+
+      results.forEach(row => {
+          counts[row.Type] = row.count;
+      });
+      callback(null, counts);
+  });
+}
+
+
+
+

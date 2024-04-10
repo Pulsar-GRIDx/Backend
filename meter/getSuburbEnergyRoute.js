@@ -72,7 +72,14 @@ router.post('/getSuburbEnergy', async (req, res) => {
   //Monthly Query
   const getMonthlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN  ';
   //Yearly Query
-  const getYearlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 365 DAY GROUP BY DRN ';
+  const getYearlyEnergyByDrn = `SELECT apparent_power 
+  FROM MeteringPower 
+  WHERE DRN = ? 
+    AND date_time >= DATE_FORMAT(NOW() - INTERVAL 12 MONTH, '%Y-01-01') 
+    AND date_time <= NOW()
+  GROUP BY DRN;
+  
+  `;
 
   let suburbsWeekly = {};
   let suburbsMonthly = {};
@@ -93,7 +100,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
             console.log(err);
             reject(err);
           } else {
-            console.log(drnData);
+            
             resolve(drnData.map((record) => record.DRN));
           }
         });
@@ -104,7 +111,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
           connection.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
             else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
-            console.log(energyData);
+            
           });
         });
       }));
@@ -113,8 +120,8 @@ router.post('/getSuburbEnergy', async (req, res) => {
         return new Promise((resolve, reject) => {
           connection.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: 0 });
-            console.log(energyData);
+            else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
+            
           });
         });
       }));
@@ -123,12 +130,14 @@ router.post('/getSuburbEnergy', async (req, res) => {
         return new Promise((resolve, reject) => {
           connection.query(getYearlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { active_energy: 0 });
-            console.log(energyData);
+            else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
+           
           });
         });
       }))
 
+
+      //Calculate weekly totals
       const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
         if (record.apparent_power !== 0) {
           return total + Number(record.apparent_power) ;
@@ -136,7 +145,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
           return total;
         }
       }, 0);
-
+     //Calculate monthly totals
       const totalMonthlyEnergy = monthlyEnergyData.reduce((total, record) => {
         if (record.apparent_power !== 0) {
           return total + Number(record.apparent_power);
@@ -144,7 +153,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
           return total;
         }
       }, 0);
-
+     //Calculate yearly totals
       const totalYearlyEnergy = yearlyEnergyByDrn.reduce((total, record) => {
         if (record.apparent_power !== 0) {
           return total + Number(record.apparent_power);
@@ -156,7 +165,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
       // Round the total energy values to two decimal places
       const roundedWeeklyEnergy = parseFloat(totalWeeklyEnergy.toFixed(2));
       const roundedMonthlyEnergy = parseFloat(totalMonthlyEnergy.toFixed(2));
-      const roundedYearlyEnergy = parseFloat(totalYearlyEnergy.toFixed(2));
+      const roundedYearlyEnergy = parseFloat(totalYearlyEnergy.toFixed(6));
 
       const result = { weekly: roundedWeeklyEnergy, monthly: roundedMonthlyEnergy, yearly: roundedYearlyEnergy };
 

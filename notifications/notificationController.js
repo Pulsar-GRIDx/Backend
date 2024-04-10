@@ -43,3 +43,18 @@ exports.getAll = (req, res) =>{
   res.status(500).json({error: 'Failed to fetch notifictions'});
  });
 };
+
+//Get notifications types
+
+
+exports.getMeterNotificationsByType = function(req, res) {
+  notificationService.getSumOfTypes((err, data) => {
+        if (err) {
+            console.error('Error querying MySQL:', err);
+            res.status(404).send('No data found');
+            return;
+        }
+
+        res.json(data);
+    });
+}

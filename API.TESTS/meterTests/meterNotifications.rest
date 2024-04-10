@@ -13,3 +13,7 @@ Content-Type: application/json
 ###
 get https://backend2.gridxmeter.com/getAll
 Content-Type: application/json
+
+###
+get http://localhost:4000/notificationTypes
+Content-Type: application/json
