@@ -18,7 +18,13 @@ exports.getNotificationsByDRN = (DRN) => {
 
 
   exports.getAllCriticalNotifications = () => {
-    const query = 'SELECT Alarm, DRN, date_time FROM MeterNotifications WHERE date_time >= DATE_SUB(NOW() AND Type = "Critical", INTERVAL 1 HOUR) ORDER BY date_time DESC LIMIT 25';
+    const query = `SELECT Alarm, DRN, date_time 
+    FROM MeterNotifications 
+    WHERE date_time >= DATE_SUB(NOW(), INTERVAL 1 HOUR) 
+      AND Type = 'Critical' 
+    ORDER BY date_time DESC 
+    LIMIT 25;
+    `;
   
     return new Promise((resolve, reject) => {
       db.query(query,  (err, notifications) => {

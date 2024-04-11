@@ -38,6 +38,9 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.use('/healthCheck', (req, res) => {
+  res.status(200).send('Healthy');
+});
 
 
 app.use(cors(corsOptions));

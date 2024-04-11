@@ -757,3 +757,31 @@ exports.getWeeklyDataForCurrentAndLastWeek = () => {
     });
   });
 };
+
+//Get hourly power consumption
+exports.getApparentPowerSum = function(callback) {
+  const query = `
+      SELECT HOUR(date_time) as hour, SUM(apparent_power) as sum
+      FROM (
+          SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN, HOUR(date_time) ORDER BY date_time DESC) as rn
+          FROM MeteringPower
+          WHERE DATE(date_time) = CURDATE()
+      ) t
+      WHERE t.rn = 1
+      GROUP BY hour
+  `;
+  db.query(query, (err, results) => {
+      if (err) {
+          console.log('Error Querying the database:', err);
+          return callback({ error: 'Database query failed', details: err });
+      }
+
+      // Initialize sums to 0 for each hour
+      const sums = new Array(24).fill(0);
+
+      results.forEach(row => {
+          sums[row.hour] = row.sum;
+      });
+      callback(null, sums);
+  });
+}

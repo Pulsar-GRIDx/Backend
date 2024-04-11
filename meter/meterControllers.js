@@ -104,7 +104,7 @@ exports.getTotalEnergyAmount = (req, res) => {
       res.json(response);
     })
     .catch(err => {
-      console.log('Error querying the database:', err);
+      console.error('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
@@ -155,7 +155,7 @@ exports.getEnergyAmount = (req, res) => {
 
       res.json(response);
     } catch (err) {
-      console.log('Error processing the data:', err);
+      console.error('Error processing the data:', err);
       return res.status(500).send({ error: 'Data processing failed', details: err });
     }
   })
@@ -173,7 +173,7 @@ exports.getCurrentDayEnergy = (req, res) => {
       res.json({ totalEnergy  });
     })
     .catch(err => {
-      console.log('Error querying the database:', err);
+      console.error('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
@@ -187,7 +187,7 @@ exports.insertData = (req, res) => {
       return res.status(500).json({ error: 'Database insertion failed', details: err });
       // console.log(data);
     });
-    console.log(data);
+    // console.log(data);
 };
 
 //------------------------------------------------------totalEnergyPerSuburb--------------------------------------------------------//
@@ -483,5 +483,20 @@ Date.prototype.getWeek = function() {
   const week1 = new Date(date.getFullYear(), 0, 4);
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 };
+//Get hourly power consumption
+
+
+
+exports.getHourlyPowerConsumption = function(req, res) {
+    energyService.getApparentPowerSum((err, data) => {
+        if (err) {
+            console.error('Error querying MySQL:', err);
+            res.status(404).send('No data found');
+            return;
+        }
+
+        res.json({sums: data});
+    });
+}
 
 

@@ -184,70 +184,67 @@ router.post('/getSuburbEnergy', async (req, res) => {
 });
 
 
+//Hourly consumption for suburbs
 
+router.get('/getSuburbHourlyEnergy', async (req, res) => {
+  const suburbs = req.body.suburbs;
 
+  if (!Array.isArray(suburbs)) {
+    return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
+  }
 
-// Function to get active energy totals
-async function getActiveEnergyTotalsAndVoltageCurrent(startDate, endDate) {
-  return new Promise((resolve, reject) => {
-      const energyQuery = 'SELECT DATE(date_time) as date, SUM(apparent_power) as total FROM MeteringPower WHERE date_time BETWEEN ? AND ? GROUP BY DATE(date_time)';
-      const voltageAndCurrentQuery = "SELECT voltage, current, DATE(date_time) as date_time FROM MeteringPower WHERE date_time BETWEEN ? AND ?";
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+  const getHourlyEnergyByDrn = `
+    SELECT HOUR(date_time) as hour, apparent_power
+    FROM (
+      SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN, HOUR(date_time) ORDER BY date_time DESC) as rn
+      FROM MeteringPower
+      WHERE DRN = ? AND DATE(date_time) = CURDATE()
+    ) t
+    WHERE t.rn = 1
+  `;
 
-      connection.query(energyQuery, [startDate, endDate], (error, energyResults) => {
-          if (error) {
-              reject(error);
+  let hourlyEnergy = new Array(24).fill(0);
+
+  try {
+    await Promise.all(suburbs.map(async (suburb) => {
+      const drns = await new Promise((resolve, reject) => {
+        connection.query(getDrnsBySuburb, [suburb], (err, drnData) => {
+          if (err) {
+            console.log(err);
+            reject(err);
           } else {
-              connection.query(voltageAndCurrentQuery, [startDate, endDate], (error, voltageAndCurrentResults) => {
-                  if (error) {
-                      reject(error);
-                  } else {
-                      const results = energyResults.map(energyRecord => {
-                          const voltageAndCurrentRecord = voltageAndCurrentResults.find(record => record.date_time === energyRecord.date);
-                          return {
-                              date: energyRecord.date,
-                              totalActiveEnergy: energyRecord.total,
-                              voltage: voltageAndCurrentRecord ? voltageAndCurrentRecord.voltage : 0,
-                              current: voltageAndCurrentRecord ? voltageAndCurrentRecord.current : 0,
-                          };
-                      });
-                      resolve(results);
-                  }
-              });
+            resolve(drnData.map((record) => record.DRN));
           }
+        });
       });
-  });
-}
 
+      await Promise.all(drns.map(async (drn) => {
+        const energyData = await new Promise((resolve, reject) => {
+          connection.query(getHourlyEnergyByDrn, [drn], (err, data) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
+        });
 
+        energyData.forEach(record => {
+          hourlyEnergy[record.hour] += Number(record.apparent_power);
+        });
+      }));
+    }));
 
-async function getActiveEnergy(startDate, endDate) {
-  return new Promise((resolve, reject) => {
-      const query = `SELECT DATE(date_time) as day, SUM(apparent_power) as total_apparent_power FROM MeteringPower WHERE date_time >= ? AND date_time < ? GROUP BY day`;
-      connection.query(query, [startDate, endDate], (err, results) => {
-          if (err) return reject(err);
-          resolve(results);
-      });
-  });
-}
+    // Round the total energy values to two decimal places
+    hourlyEnergy = hourlyEnergy.map(value => parseFloat(value.toFixed(2)));
 
-router.get('/active-energy', async (req, res) => {
-  const now = new Date();
-  const startOfCurrentWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
-  const startOfLastWeek = new Date(startOfCurrentWeek - 7 * 24 * 60 * 60 * 1000);
-  const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-
-  const activeEnergyThisWeek = await getActiveEnergy(startOfCurrentWeek, now);
-  const activeEnergyLastWeek = await getActiveEnergy(startOfLastWeek, startOfCurrentWeek);
-  const activeEnergyThisMonth = await getActiveEnergy(startOfCurrentMonth, now);
-  const activeEnergyLastMonth = await getActiveEnergy(startOfLastMonth, startOfCurrentMonth);
-
-  res.json({
-      thisWeek: activeEnergyThisWeek,
-      lastWeek: activeEnergyLastWeek,
-      thisMonth: activeEnergyThisMonth,
-      lastMonth: activeEnergyLastMonth
-  });
+    res.json({ data: hourlyEnergy });
+  } catch (err) {
+    console.log('Error querying the database:', err);
+    return res.status(500).send({ error: 'Database query failed', details: err.message || err });
+  }
 });
 
 module.exports = router;

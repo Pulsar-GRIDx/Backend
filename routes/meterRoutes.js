@@ -38,5 +38,7 @@ router.get("/energy-time-periods", energyController.getEnergyData);
 router.get('/yearly/currentAndLastYearMonthEnergyTotal' ,energyController.getMonthlyEnergyForCurrentAndLastYear);
 //CurrentAndLastWeek With the day starting on Monday 
 router.get('/weekly/currentAndLastWeekEnergyTotal' ,energyController.getWeeklyEnergyForCurrentAndLastWeek);
+//Get hourly power consumption
+router.get('/hourlyPowerConsumption', energyController.getHourlyPowerConsumption);
 
 module.exports = router;
