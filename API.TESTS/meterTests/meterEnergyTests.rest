@@ -1,18 +1,18 @@
 ###--------------PotentialIssue-----------####
-get http://localhost:4000/totalEnergyAmount
+get https://backend2.gridxmeter.com/totalEnergyAmount
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 ###
 ###--------------PotentialIssue-----------####
-get http://localhost:4000/weeklyDataAmount
+get https://backend2.gridxmeter.com/weeklyDataAmount
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 ###
-get http://localhost:4000/currentDayEnergy
+get https://backend2.gridxmeter.com/currentDayEnergy
 Content-Type: application/json
 ###
 
-post http://localhost:4000/getSuburbEnergy
+post https://backend2.gridxmeter.com/getSuburbEnergy
 Content-Type: application/json
 
 {
@@ -61,24 +61,24 @@ Content-Type: application/json
 
 ###
 
-get http://localhost:4000/energy-time-periods
+get https://backend2.gridxmeter.com/energy-time-periods
 Content-Type: application/json
 ####
 get http://localhost:4000/yearly/currentAndLastYearMonthEnergyTotal
 
 Content-Type: application/json
 ####
-get http://localhost:4000/weekly/currentAndLastWeekEnergyTotal
+get https://backend2.gridxmeter.com/weekly/currentAndLastWeekEnergyTotal
 
 Content-Type: application/json
 ####
 
-get http://localhost:4000/hourlyPowerConsumption 
+get https://backend2.gridxmeter.com/hourlyPowerConsumption 
 
 Content-Type: application/json
 ####
 
-get http://localhost:4000/getSuburbHourlyEnergy
+get https://backend2.gridxmeter.com/getSuburbHourlyEnergy 
 Content-Type: application/json
 
 {

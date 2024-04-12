@@ -26,7 +26,7 @@ exports.getMonthlyTokenAmountForCurrentAndLastYear = (req, res) => {
         monthlyTokenAmount[yearKey][monthIndex] = Number(record.total_token_amount);
       });
 
-      res.json({ monthlyTokenAmount });
+      res.json( monthlyTokenAmount );
     })
     .catch(err => {
       console.log('Error querying the database:', err);

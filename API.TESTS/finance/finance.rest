@@ -6,7 +6,7 @@ get http://localhost:4000/finance/currentAndLastYearMonthRevenueTotal
 Content-Type: application/json
 
 ###
-get http://localhost:4000/finance/currentAndLastWeek
+get https://backend2.gridxmeter.com/finance/currentAndLastWeek
 Content-Type: application/json
 
 ####

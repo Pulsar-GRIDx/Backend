@@ -445,7 +445,7 @@ exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
         monthlyEnergy[yearKey][monthIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
       });
 
-      res.json({ monthlyEnergy });
+      res.json(monthlyEnergy);
     })
     .catch(err => {
       console.log('Error querying the database:', err);
