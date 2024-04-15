@@ -786,6 +786,68 @@ exports.getApparentPowerSum = function(callback) {
       results.forEach(row => {
           sums[row.hour] = row.sum;
       });
-      callback(null, sums);
+      callback(null,{sums});
   });
 }
+
+
+//Current hour avarage voltage and current totals
+exports.getAverageCurrentAndVoltage = function(callback) {
+  const query = `
+      SELECT AVG(current) as avg_current, AVG(voltage) as avg_voltage
+      FROM (
+          SELECT DRN, current, voltage, date_time, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
+          FROM MeteringPower
+          WHERE DATE(date_time) = CURDATE() AND HOUR(date_time) = HOUR(NOW())
+      ) t
+      WHERE t.rn = 1
+  `;
+  db.query(query, (err, results) => {
+      if (err) {
+          console.log('Error Querying the database:', err);
+          return callback({ error: 'Database query failed', details: err });
+      }
+
+      if (results.length === 0) {
+          console.log('No data found');
+          return callback(null, { avg_current: 0, avg_voltage: 0 });
+      }
+
+      const avg_current = results[0].avg_current;
+      const avg_voltage = results[0].avg_voltage;
+      callback(null, { avg_current, avg_voltage });
+  });
+}
+
+
+
+//Hourly energy
+exports.getSumApparentPower = function(callback) {
+  const query = `
+      SELECT SUM(apparent_power) as sum
+      FROM (
+          SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
+          FROM MeteringPower
+          WHERE DATE(date_time) = CURDATE() AND HOUR(date_time) = HOUR(NOW())
+      ) t
+      WHERE t.rn = 1
+  `;
+  db.query(query, (err, results) => {
+      if (err) {
+          console.log('Error Querying the database:', err);
+          return callback({ error: 'Database query failed', details: err });
+      }
+
+      if (results === 0){
+        console.log('No data found');
+        return callback(null, {sum: 0});
+      }
+
+     
+      
+
+      const sum = results[0].sum;
+      callback(0, { sum});
+  });
+}
+

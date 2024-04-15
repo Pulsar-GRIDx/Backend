@@ -73,12 +73,12 @@ get https://backend2.gridxmeter.com/weekly/currentAndLastWeekEnergyTotal
 Content-Type: application/json
 ####
 
-get https://backend2.gridxmeter.com/hourlyPowerConsumption 
+get http://localhost:4000/hourlyPowerConsumption 
 
 Content-Type: application/json
 ####
 
-get https://backend2.gridxmeter.com/getSuburbHourlyEnergy 
+get http://localhost:4000/getSuburbHourlyEnergy 
 Content-Type: application/json
 
 {
@@ -124,4 +124,14 @@ Content-Type: application/json
        "Windhoek West" 
     ]}
 
+####
+
+get http://localhost:4000/average-current-voltage
+
+Content-Type: application/json
+####
+
+get http://localhost:4000/last-apparent-power
+
+Content-Type: application/json
 ####

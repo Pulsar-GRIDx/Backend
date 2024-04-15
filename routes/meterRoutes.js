@@ -40,5 +40,9 @@ router.get('/yearly/currentAndLastYearMonthEnergyTotal' ,energyController.getMon
 router.get('/weekly/currentAndLastWeekEnergyTotal' ,energyController.getWeeklyEnergyForCurrentAndLastWeek);
 //Get hourly power consumption
 router.get('/hourlyPowerConsumption', energyController.getHourlyPowerConsumption);
+//Current hour average voltage and current 
+router.get('/average-current-voltage', energyController.getAverageCurrentAndVoltage);
+//Hourly energy
+router.get('/last-apparent-power', energyController.getSumApparentPower);
 
 module.exports = router;

@@ -498,8 +498,32 @@ exports.getHourlyPowerConsumption = function(req, res) {
             return;
         }
 
-        res.json({sums: data});
+        res.json(data);
     });
 }
 
+//Current hour avrage voltage and current 
+exports.getAverageCurrentAndVoltage = function(req, res) {
+  energyService.getAverageCurrentAndVoltage((err, data) => {
+      if (err) {
+          console.error('Error querying MySQL:', err);
+          res.status(404).send('No data found');
+          return;
+      }
+
+      res.json(data);
+  });
+}
+//Hourly energy
+exports.getSumApparentPower = function(req, res) {
+  energyService.getSumApparentPower((err, data) => {
+      if (err) {
+          console.error('Error querying MySQL:', err);
+          res.status(404).send('No data found');
+          return;
+      }
+
+      res.json(data);
+  });
+}
 
