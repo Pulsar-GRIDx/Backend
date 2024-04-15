@@ -808,7 +808,7 @@ exports.getAverageCurrentAndVoltage = function(callback) {
           return callback({ error: 'Database query failed', details: err });
       }
 
-      if (results.length === 0) {
+  if (results.length === 0) {
           console.log('No data found');
           return callback(null, { avg_current: 0, avg_voltage: 0 });
       }
