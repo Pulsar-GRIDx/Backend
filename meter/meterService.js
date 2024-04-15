@@ -626,46 +626,50 @@ exports.getGridTopologyActivePower = (meterDRN) => {
 exports.fetchDRNs = async (city) => {
   return new Promise((resolve, reject) => {
     const query = `
-        SELECT TI.LocationName, TI.Name AS TransformerName, MLIT.DRN AS MeterDRN
-        FROM TransformerInformation TI
-        LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
-        WHERE TI.city = ?
+      SELECT TI.LocationName, TI.Name AS TransformerName, MLIT.DRN AS MeterDRN
+      FROM TransformerInformation TI
+      LEFT JOIN MeterLocationInfoTable MLIT ON TI.DRN = MLIT.PowerSupply
+      WHERE TI.city = ?
     `;
-    db.query(query, [city], (error, results , fields) => {
+    db.query(query, [city], async (error, results) => {
       if (error) {
         reject(error);
       } else {
-        const data = {};
-        const promises = results.map(async row => {
-          const locationName = row.LocationName;
-          const transformerName = row.TransformerName;
-          const meterDRN = row.MeterDRN;
-          if (!data.hasOwnProperty(locationName)) {
-            data[locationName] = { transformers: {}, active_energy: 0 / 1000};
-          }
-          if (!data[locationName].transformers.hasOwnProperty(transformerName)) {
-            data[locationName].transformers[transformerName] = { meters: [], active_energy: 0 };
-          }
-          if (meterDRN) {
-            let activeEnergy = await exports.getGridTopologyActivePower(meterDRN);
-            activeEnergy = isNaN(activeEnergy) ? 0 : activeEnergy; // Treat NaN as 0
-            const meterData = { DRN: meterDRN, active_energy: activeEnergy };
-            data[locationName].transformers[transformerName].meters.push(meterData);
-            if (isNaN(data[locationName].transformers[transformerName].active_energy)) {
-              data[locationName].transformers[transformerName].active_energy = 0;
+        try {
+          const data = {};
+          for (const row of results) {
+            const locationName = row.LocationName;
+            const transformerName = row.TransformerName;
+            const meterDRN = row.MeterDRN;
+            
+            // Initialize active energy to 0
+            if (!data.hasOwnProperty(locationName)) {
+              data[locationName] = { transformers: {}, active_energy: 0 };
             }
-            if (isNaN(data[locationName].active_energy)) {
-              data[locationName].active_energy = 0;
+            if (!data[locationName].transformers.hasOwnProperty(transformerName)) {
+              data[locationName].transformers[transformerName] = { meters: [], active_energy: 0 };
             }
-            data[locationName].transformers[transformerName].active_energy += activeEnergy;
-            data[locationName].active_energy += activeEnergy;
+            
+            if (meterDRN) {
+              let activeEnergy = await exports.getGridTopologyActivePower(meterDRN);
+              activeEnergy = isNaN(activeEnergy) ? 0 : activeEnergy; // Treat NaN as 0
+              
+              // Update active energy for meters, transformers, and location
+              const meterData = { DRN: meterDRN, active_energy: activeEnergy };
+              data[locationName].transformers[transformerName].meters.push(meterData);
+              data[locationName].transformers[transformerName].active_energy += activeEnergy;
+              data[locationName].active_energy += activeEnergy;
+            }
           }
-        });
-        Promise.all(promises).then(() => resolve(data));
+          resolve(data);
+        } catch (err) {
+          reject(err);
+        }
       }
     });
   });
 };
+
 
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {

@@ -1,10 +1,10 @@
 ###--------------PotentialIssue-----------####
-get https://backend2.gridxmeter.com/totalEnergyAmount
+get http://localhost:4000/totalEnergyAmount
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 ###
 ###--------------PotentialIssue-----------####
-get https://backend2.gridxmeter.com/weeklyDataAmount
+get http://localhost:4000/weeklyDataAmount
 Content-Type: application/json
 ###--------------PotentialIssue-----------####
 ###
@@ -64,7 +64,7 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/energy-time-periods
 Content-Type: application/json
 ####
-get http://localhost:4000/yearly/currentAndLastYearMonthEnergyTotal
+get https://backend2.gridxmeter.com/yearly/currentAndLastYearMonthEnergyTotal
 
 Content-Type: application/json
 ####

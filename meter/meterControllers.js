@@ -350,6 +350,9 @@ exports.insertTransformerData = (req, res) => {
 
 
 // GridTopology
+
+
+
 function convertDataToMockTree(data) {
   let mockTreeData = [];
 
@@ -366,22 +369,22 @@ function convertDataToMockTree(data) {
         const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
           key: `${transformerName}`,
-          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.apparent_power).toFixed(2)} kWh`,
+          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy)} kWh`,
           children: [],
         };
 
         transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
-            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.apparent_power ).toFixed(2)} kWh`,
+            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy )} kWh`,
           });
         });
 
         locationNode.children.push(transformerNode);
-        locationActiveEnergy += transformerData.apparent_power;
+        locationActiveEnergy += transformerData.active_energy;
       }
 
-      locationNode.title += `, Active Energy: ${(locationActiveEnergy ).toFixed(2)} kWh`;
+      locationNode.title += `, Active Energy: ${(locationActiveEnergy )} kWh`;
       mockTreeData.push(locationNode);
     }
   }
