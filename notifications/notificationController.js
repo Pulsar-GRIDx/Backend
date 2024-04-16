@@ -58,3 +58,23 @@ exports.getMeterNotificationsByType = function(req, res) {
         res.json(data);
     });
 }
+
+//Notification types by DRN
+//Get notifications types
+
+
+exports.getMeterNotificationsByTypeByDRN = function(req, res) {
+
+  const DRN = req.params.DRN;
+
+  notificationService.getSumOfTypesByDRN(DRN,(err, data) => {
+        if (err) {
+            console.error('Error querying MySQL:', err);
+            res.status(404).send('No data found');
+            return;
+        }
+
+        res.json(data);
+    });
+}
+

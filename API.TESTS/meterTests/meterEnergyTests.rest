@@ -81,6 +81,8 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/getSuburbHourlyEnergy 
 Content-Type: application/json
 
+
+
 {
     "suburbs":[
      "Academia" ,

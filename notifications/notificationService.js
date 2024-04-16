@@ -57,11 +57,11 @@ exports.getAll = () => {
 
 //Get type of notifications
 
-exports.getSumOfTypes = function(callback) {
+exports.getSumOfTypes = function(DRN,callback) {
   const query = `
       SELECT Type, COUNT(*) as count
       FROM MeterNotifications
-      WHERE Type IN ('Pending', 'Critical', 'Success', 'Warning')
+      WHERE Type IN ('Pending', 'Critical', 'Success', 'Warning') AND DRN =?
       GROUP BY Type
   `;
   db.query(query, (err, results) => {
@@ -85,6 +85,31 @@ exports.getSumOfTypes = function(callback) {
   });
 }
 
+//Notification types for specific meter
+exports.getSumOfTypesByDRN = function(DRN,callback) {
+  const query = `
+      SELECT Type, COUNT(*) as count
+      FROM MeterNotifications
+      WHERE Type IN ('Pending', 'Critical', 'Success', 'Warning') AND DRN = ?
+      GROUP BY Type
+  `;
+  db.query(query,[DRN], (err, results) => {
+      if (err) {
+          console.log('Error Querying the database:', err);
+          return callback({ error: 'Database query failed', details: err });
+      }
 
+      // Initialize counts to 0
+      const counts = {
+          'Pending': 0,
+          'Critical': 0,
+          'Success': 0,
+          'Warning': 0
+      };
 
-
+      results.forEach(row => {
+          counts[row.Type] = row.count;
+      });
+      callback(null, counts);
+  });
+}

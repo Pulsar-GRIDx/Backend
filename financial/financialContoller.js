@@ -55,3 +55,57 @@ exports.getWeeklyTokenAmountForCurrentAndLastWeek = (req, res) => {
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
+//Hourly revenue
+exports.getTotalRevenuePerHour = function(req, res) {
+  financialService.getTotalRevenuePerHour((err, revenues) => {
+    if (err) {
+      console.error('Error getting total revenue:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    res.json({ revenues });
+  });
+}
+
+
+//Suburb time periods
+exports.getRevenueBySuburb = function(req, res) {
+  const { suburbs } = req.body;
+
+  financialService.getRevenueBySuburb(suburbs, (err, result) => {
+    if (err) {
+      console.error('Error getting revenue by suburb:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    res.json(result);
+  });
+}
+
+//Weekly suburb revenues
+exports.getWeeklyRevenueBySuburb = function(req, res) {
+  const suburbs = req.body.suburbs; // assuming you're sending the suburbs in the request body
+
+  financialService.getRevenueBySuburb(suburbs, (err, results) => {
+    if (err) {
+      console.error('Error getting the revenue:', err);
+      return res.status(500).send({ error: 'Failed to get the revenue', details: err });
+    }
+
+    res.send(results);
+  });
+}
+
+//Yearly Suburb revenue
+exports.getRevenueBySuburb = function(req, res) {
+  const suburbs = req.body.suburbs; // assuming you're sending the suburbs in the request body
+
+  financialService.getRevenueBySuburb(suburbs, (err, results) => {
+    if (err) {
+      console.error('Error getting the revenue:', err);
+      return res.status(500).send({ error: 'Failed to get the revenue', details: err });
+    }
+
+    res.send(results);
+  });
+}

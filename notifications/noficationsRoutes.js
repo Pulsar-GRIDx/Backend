@@ -25,6 +25,7 @@ router.get('/notificationsByDRN/:DRN', notificationController.getAllNotification
 router.get('/criticalNotifications' , notificationController.getAllCriticalNotifications) ;
 router.get('/getAll',notificationController.getAll);
 router.get('/notificationTypes',notificationController.getMeterNotificationsByType);
+router.get('/notificationsTypesByDRN/:DRN',notificationController.getMeterNotificationsByTypeByDRN);
 
 module.exports = router;
 
