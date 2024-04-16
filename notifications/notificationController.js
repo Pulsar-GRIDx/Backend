@@ -40,6 +40,41 @@ exports.getAll = (req, res) =>{
   })
  .catch(err =>{
   console.error(err);
-  res.status(500).json({error: 'Failed to fetch notifictions'});
+  res.status(500).json({error: 'Failed to fetch notifications'});
  });
 };
+
+//Get notifications types
+
+
+exports.getMeterNotificationsByType = function(req, res) {
+  notificationService.getSumOfTypes((err, data) => {
+        if (err) {
+            console.error('Error querying MySQL:', err);
+            res.status(404).send('No data found');
+            return;
+        }
+
+        res.json(data);
+    });
+}
+
+//Notification types by DRN
+//Get notifications types
+
+
+exports.getMeterNotificationsByTypeByDRN = function(req, res) {
+
+  const DRN = req.params.DRN;
+
+  notificationService.getSumOfTypesByDRN(DRN,(err, data) => {
+        if (err) {
+            console.error('Error querying MySQL:', err);
+            res.status(404).send('No data found');
+            return;
+        }
+
+        res.json(data);
+    });
+}
+

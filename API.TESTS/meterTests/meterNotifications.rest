@@ -4,12 +4,16 @@ Content-Type: application/json
 
 ####
 
-get http://localhost:4000/notificationsByDRN0260066545641
+get http://localhost:4000/notificationsByDRN/0260066545641
 Content-Type: application/json
 ###
-get https://backend2.gridxmeter.com/criticalNotifications
+get http://localhost:4000/criticalNotifications
 Content-Type: application/json
 
 ###
-get http://localhost:4000/getAll
+get https://backend2.gridxmeter.com/getAll
+Content-Type: application/json
+
+###
+get https://backend2.gridxmeter.com/notificationTypes
 Content-Type: application/json

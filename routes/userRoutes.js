@@ -1,25 +1,34 @@
-const express = require('express');
-const router = express.Router();
-const authController = require('../contollers/authContollers');
+const jwt = require('jsonwebtoken');
+const sessionStorage = require('sessionstorage');
+const dotenv = require('dotenv');
 
-router.post('/AdminSignin', authController.signIn);
-router.get('/protected', authenticateToken, authController.protected);
+// Configure dotenv
+dotenv.config();
+const environment = process.env;
 
 function authenticateToken(req, res, next) {
-    const token = sessionStorage.getItem('token');
+    try {
+        const token = sessionStorage.getItem('token');
 
-    if (token == null) {
-        return res.sendStatus(401);
-    }
-
-    jwt.verify(token, environment.SECRET_KEY, (err, user) => {
-        if (err) {
-            return res.sendStatus(403);
+        if (!token) {
+            return res.sendStatus(401); // Unauthorized
         }
 
-        req.user = user;
-        next();
-    });
+        jwt.verify(token, environment.SECRET_KEY, (err, user) => {
+            if (err) {
+                if (err.name === 'TokenExpiredError') {
+                    return res.status(403).send({ error: 'Token expired' }); // Forbidden
+                }
+                return res.status(403).send({ error: 'Failed to authenticate token' }); // Forbidden
+            }
+
+            req.user = user;
+            next();
+        });
+    } catch (error) {
+        console.error('Error authenticating token:', error);
+        return res.status(500).send({ error: 'Internal Server Error' }); // Internal Server Error
+    }
 }
 
-module.exports = router;
+module.exports = authenticateToken;

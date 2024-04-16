@@ -6,7 +6,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
     if (err) {
       console.error('Error querying MySQL:', err);
-      res.status(500).send('No active Meters');
+      res.status(404).send('No active Meters');
       return;
     }
 
@@ -104,7 +104,7 @@ exports.getTotalEnergyAmount = (req, res) => {
       res.json(response);
     })
     .catch(err => {
-      console.log('Error querying the database:', err);
+      console.error('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
@@ -155,7 +155,7 @@ exports.getEnergyAmount = (req, res) => {
 
       res.json(response);
     } catch (err) {
-      console.log('Error processing the data:', err);
+      console.error('Error processing the data:', err);
       return res.status(500).send({ error: 'Data processing failed', details: err });
     }
   })
@@ -169,11 +169,11 @@ exports.getCurrentDayEnergy = (req, res) => {
   
   energyService.getCurrentDayData()
     .then(currentDayData => {
-      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.active_energy), 0) ;
-      res.json({ totalEnergy });
+      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.apparent_power), 0) / 1000;
+      res.json({ totalEnergy  });
     })
     .catch(err => {
-      console.log('Error querying the database:', err);
+      console.error('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
@@ -187,7 +187,7 @@ exports.insertData = (req, res) => {
       return res.status(500).json({ error: 'Database insertion failed', details: err });
       // console.log(data);
     });
-    console.log(data);
+    // console.log(data);
 };
 
 //------------------------------------------------------totalEnergyPerSuburb--------------------------------------------------------//
@@ -199,7 +199,7 @@ exports.getSuburbEnergy = (req, res) => {
     .then(energyData => {
       console.log('Energy data for suburb', suburb, ':', energyData);
       const totalEnergy = energyData.reduce((total, record) => {
-        const activeEnergy = record.active_energy;
+        const activeEnergy = record.apparent_power;
         console.log('Active Energy:', activeEnergy);
         
         if (activeEnergy !== null && activeEnergy !== undefined && typeof activeEnergy === 'string') {
@@ -294,7 +294,7 @@ exports.getDailyMeterEnergy =(req,res)=>{
     energyService.getDailyMeterEnergy(DRN)
   ])
   .then(([meterData])=>{
-    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.active_energy), 0) ;
+    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.apparent_power), 0) / 1000 ;
     res.json({ dailyTotalEnergy });
   })
   .catch((err) =>{
@@ -350,6 +350,9 @@ exports.insertTransformerData = (req, res) => {
 
 
 // GridTopology
+
+
+
 function convertDataToMockTree(data) {
   let mockTreeData = [];
 
@@ -366,14 +369,14 @@ function convertDataToMockTree(data) {
         const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
           key: `${transformerName}`,
-          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy).toFixed(2)} kWh`,
+          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy)} kWh`,
           children: [],
         };
 
         transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
-            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy ).toFixed(2)} kWh`,
+            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy )} kWh`,
           });
         });
 
@@ -381,7 +384,7 @@ function convertDataToMockTree(data) {
         locationActiveEnergy += transformerData.active_energy;
       }
 
-      locationNode.title += `, Active Energy: ${(locationActiveEnergy ).toFixed(2)} kWh`;
+      locationNode.title += `, Active Energy: ${(locationActiveEnergy )} kWh`;
       mockTreeData.push(locationNode);
     }
   }
@@ -408,58 +411,63 @@ exports.fetchDRNs = async (req, res) => {
 };
 
 
-//----------------------------------------------------------------CurrentMonth---------------------------------------------//
-exports.getCurrentMonthEnergy = (req, res) => {
-  energyService.getCurrentMonthData()
-    .then(currentMonthData => {
-      const totalEnergy = currentMonthData.reduce((total, record) => total + Number(record.active_energy / 1000), 0) ;
-      res.json({ totalEnergy });
+//----------------------------------------------------------------All time periods ---------------------------------------------//
+exports.getEnergyData = (req, res) => {
+  energyService.getEnergyData()
+    .then(energyData => {
+      // Check if energyData is an object and has the required properties
+      if (typeof energyData === 'object' && energyData.day !== undefined && energyData.month !== undefined && energyData.year !== undefined) {
+        const roundedEnergyData = {
+          day: parseFloat(energyData.day).toFixed(2),
+          month: parseFloat(energyData.month).toFixed(2),
+          year: parseFloat(energyData.year).toFixed(2)
+        };
+        res.json(roundedEnergyData);
+      } else {
+        console.log('Error: energyData is not a valid object:', energyData);
+        return res.status(500).send({ error: 'Data format error', details: 'Expected an object with day, month, and year for energyData' });
+      }
     })
     .catch(err => {
       console.log('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
-//-----------------------------------------------------------------CurrentYear----------------------------------------------------------------/
-exports.getCurrentYearEnergy = (req, res) => {
-  energyService.getCurrentYearData()
-    .then(currentYearData => {
-      const totalEnergy = currentYearData.reduce((total, record) => total + Number(record.active_energy / 1000), 0) ;
-      res.json({ totalEnergy });
-    })
-    .catch(err => {
-      console.log('Error querying the database:', err);
-      return res.status(500).send({ error: 'Database query failed', details: err });
-    });
-};
+
+
 //-------------------------------------------------------------CurrentAndLastYearData For all the current and last months------------------------//
 exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
   energyService.getMonthlyDataForCurrentAndLastYear()
     .then(monthlyData => {
-      const monthlyEnergy = monthlyData.reduce((acc, record) => {
-        if (!acc[record.year]) {
-          acc[record.year] = {};
-        }
-        acc[record.year][record.month] = Number(record.total_active_energy / 1000);
-        return acc;
-      }, {});
-      res.json({ monthlyEnergy });
+      const monthlyEnergy = { Last: new Array(12).fill(0), Current: new Array(12).fill(0) };
+      const currentYear = new Date().getFullYear();
+      
+      monthlyData.forEach(record => {
+        const yearKey = record.year === currentYear ? 'Current' : 'Last';
+        const monthIndex = record.month - 1;
+        monthlyEnergy[yearKey][monthIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
+      });
+
+      res.json(monthlyEnergy);
     })
     .catch(err => {
       console.log('Error querying the database:', err);
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
+
 ///-------------------------------------------------------------CurrentAndLastWeek With the day starting on Monday -------------------------------------//
 exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
   energyService.getWeeklyDataForCurrentAndLastWeek()
     .then(weeklyData => {
-      const weeklyEnergy = { lastweek: {}, currentweek: {} };
+      const weeklyEnergy = { lastweek: new Array(7).fill(0), currentweek: new Array(7).fill(0) };
       const currentWeekNumber = new Date().getWeek();
+      const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       
       weeklyData.forEach(record => {
         const weekKey = record.week === currentWeekNumber ? 'currentweek' : 'lastweek';
-        weeklyEnergy[weekKey][record.day] = Number(record.total_active_energy / 1000);
+        const dayIndex = daysOfWeek.indexOf(record.day);
+        weeklyEnergy[weekKey][dayIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
       });
 
       res.json(weeklyEnergy);
@@ -469,6 +477,7 @@ exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
       return res.status(500).send({ error: 'Database query failed', details: err });
     });
 };
+
 //getWeek method 
 Date.prototype.getWeek = function() {
   const date = new Date(this.getTime());
@@ -477,5 +486,44 @@ Date.prototype.getWeek = function() {
   const week1 = new Date(date.getFullYear(), 0, 4);
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 };
+//Get hourly power consumption
 
+
+
+exports.getHourlyPowerConsumption = function(req, res) {
+    energyService.getApparentPowerSum((err, data) => {
+        if (err) {
+            console.error('Error querying MySQL:', err);
+            res.status(404).send('No data found');
+            return;
+        }
+
+        res.json(data);
+    });
+}
+
+//Current hour avrage voltage and current 
+exports.getAverageCurrentAndVoltage = function(req, res) {
+  energyService.getAverageCurrentAndVoltage((err, data) => {
+      if (err) {
+          console.error('Error querying MySQL:', err);
+          res.status(404).send('No data found');
+          return;
+      }
+
+      res.json(data);
+  });
+}
+//Hourly energy
+exports.getSumApparentPower = function(req, res) {
+  energyService.getSumApparentPower((err, data) => {
+      if (err) {
+          console.error('Error querying MySQL:', err);
+          res.status(404).send('No data found');
+          return;
+      }
+
+      res.json(data);
+  });
+}
 
