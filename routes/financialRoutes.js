@@ -15,11 +15,11 @@ router.get('/currentAndLastWeek', financialContoller.getWeeklyTokenAmountForCurr
 //Hourly Revenue for the current day
 router.get('/hourlyRevenue',financialContoller.getTotalRevenuePerHour);
 //Suburb time periods 
-router.get('/suburbTimePeriod', financialContoller.getRevenueBySuburb);
+router.get('/suburbTimePeriod', financialContoller.getTimePeriodRevenueBySuburb);
 //suburbWeeklyRevenue
 router.get('/suburbWeeklyRevenue',financialContoller.getWeeklyRevenueBySuburb);
 //Yearly suburb revenue
-router.get('/suburbYearlyRevenue', financialContoller.getRevenueBySuburb);
+router.get('/suburbYearlyRevenue', financialContoller.getYearlyRevenueBySuburb);
 
 
 module.exports = router;

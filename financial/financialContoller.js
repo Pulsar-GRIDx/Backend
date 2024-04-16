@@ -69,10 +69,10 @@ exports.getTotalRevenuePerHour = function(req, res) {
 
 
 //Suburb time periods
-exports.getRevenueBySuburb = function(req, res) {
+exports.getTimePeriodRevenueBySuburb = function(req, res) {
   const { suburbs } = req.body;
 
-  financialService.getRevenueBySuburb(suburbs, (err, result) => {
+  financialService.getRevenueByTimePeriodsBySuburb(suburbs, (err, result) => {
     if (err) {
       console.error('Error getting revenue by suburb:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -86,7 +86,7 @@ exports.getRevenueBySuburb = function(req, res) {
 exports.getWeeklyRevenueBySuburb = function(req, res) {
   const suburbs = req.body.suburbs; // assuming you're sending the suburbs in the request body
 
-  financialService.getRevenueBySuburb(suburbs, (err, results) => {
+  financialService.getWeeklyRevenueBySuburb(suburbs, (err, results) => {
     if (err) {
       console.error('Error getting the revenue:', err);
       return res.status(500).send({ error: 'Failed to get the revenue', details: err });
@@ -97,10 +97,10 @@ exports.getWeeklyRevenueBySuburb = function(req, res) {
 }
 
 //Yearly Suburb revenue
-exports.getRevenueBySuburb = function(req, res) {
+exports.getYearlyRevenueBySuburb = function(req, res) {
   const suburbs = req.body.suburbs; // assuming you're sending the suburbs in the request body
 
-  financialService.getRevenueBySuburb(suburbs, (err, results) => {
+  financialService.getYearlyRevenueBySuburb(suburbs, (err, results) => {
     if (err) {
       console.error('Error getting the revenue:', err);
       return res.status(500).send({ error: 'Failed to get the revenue', details: err });
