@@ -11,7 +11,7 @@ get https://backend2.gridxmeter.com/finance/currentAndLastWeek
 Content-Type: application/json
 
 ####
-post http://localhost:4000/finance/hourlyRevenue
+get http://localhost:4000/finance/hourlyRevenue
 Content-Type: application/json
 
 ###
