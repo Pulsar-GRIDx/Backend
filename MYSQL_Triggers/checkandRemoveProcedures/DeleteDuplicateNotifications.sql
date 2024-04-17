@@ -14,3 +14,17 @@ END;
 //
 
 DELIMITER ;
+
+
+DELIMITER //
+
+CREATE EVENT IF NOT EXISTS DeleteDuplicateNotificationsEvent
+ON SCHEDULE EVERY 3 MINUTE
+STARTS CURRENT_TIMESTAMP
+ENDS CURRENT_TIMESTAMP + INTERVAL 1 YEAR
+DO
+BEGIN
+    CALL your_database_name.DeleteDuplicateNotifications();
+END //
+
+DELIMITER ;

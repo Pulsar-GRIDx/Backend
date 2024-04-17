@@ -1,13 +1,14 @@
 // Configure dotenv
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+// const cookieParser = require('cookie-parser');
 const validator = require('validator');
 
 dotenv.config();
 
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  const token = req.query.token || req.headers['authorization']?.split(' ')[1];
+  const token = req.cookies.accessToken;
 
   if (!token) {
     return res.status(401).send('Unauthorized');
