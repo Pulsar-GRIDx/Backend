@@ -186,7 +186,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
 //Hourly consumption for suburbs
 
-router.get('/getSuburbHourlyEnergy', async (req, res) => {
+router.post('/getSuburbHourlyEnergy', async (req, res) => {
   const suburbs = req.body.suburbs;
 
   if (!Array.isArray(suburbs)) {

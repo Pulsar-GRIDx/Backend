@@ -57,11 +57,11 @@ exports.getAll = () => {
 
 //Get type of notifications
 
-exports.getSumOfTypes = function(DRN,callback) {
+exports.getSumOfTypes = function(callback) {
   const query = `
       SELECT Type, COUNT(*) as count
       FROM MeterNotifications
-      WHERE Type IN ('Pending', 'Critical', 'Success', 'Warning') AND DRN =?
+      WHERE Type IN ('Pending', 'Critical', 'Success', 'Warning')
       GROUP BY Type
   `;
   db.query(query, (err, results) => {
