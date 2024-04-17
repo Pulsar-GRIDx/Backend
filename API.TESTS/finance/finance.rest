@@ -11,21 +11,11 @@ get https://backend2.gridxmeter.com/finance/currentAndLastWeek
 Content-Type: application/json
 
 ####
-get http://localhost:4000/finance/hourlyRevenue
+post http://localhost:4000/finance/hourlyRevenue
 Content-Type: application/json
 
 ###
-get http://localhost:4000/finance/suburbTimePeriod
-Content-Type: application/json
-
-{
-    "suburbs":[
-     "Academia" 
-    ]
-}
-
-###
-get http://localhost:4000/finance/suburbWeeklyRevenue 
+post http://localhost:4000/finance/suburbTimePeriod
 Content-Type: application/json
 
 {
@@ -33,8 +23,18 @@ Content-Type: application/json
      "Academia" 
     ]
 }
+
 ###
-get http://localhost:4000/finance/suburbYearlyRevenue
+post http://localhost:4000/finance/suburbWeeklyRevenue 
+Content-Type: application/json
+
+{
+    "suburbs":[
+     "Academia" 
+    ]
+}
+###
+post http://localhost:4000/finance/suburbYearlyRevenue
 Content-Type: application/json
 
 {

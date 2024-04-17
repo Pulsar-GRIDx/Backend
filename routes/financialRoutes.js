@@ -13,13 +13,13 @@ router.get('/currentAndLastYearMonthRevenueTotal', financialContoller.getMonthly
 //Get current and last week finacial data //
 router.get('/currentAndLastWeek', financialContoller.getWeeklyTokenAmountForCurrentAndLastWeek);
 //Hourly Revenue for the current day
-router.get('/hourlyRevenue',financialContoller.getTotalRevenuePerHour);
+router.post('/hourlyRevenue',financialContoller.getTotalRevenuePerHour);
 //Suburb time periods 
-router.get('/suburbTimePeriod', financialContoller.getTimePeriodRevenueBySuburb);
+router.post('/suburbTimePeriod', financialContoller.getTimePeriodRevenueBySuburb);
 //suburbWeeklyRevenue
-router.get('/suburbWeeklyRevenue',financialContoller.getWeeklyRevenueBySuburb);
+router.post('/suburbWeeklyRevenue',financialContoller.getWeeklyRevenueBySuburb);
 //Yearly suburb revenue
-router.get('/suburbYearlyRevenue', financialContoller.getYearlyRevenueBySuburb);
+router.post('/suburbYearlyRevenue', financialContoller.getYearlyRevenueBySuburb);
 
 
 module.exports = router;

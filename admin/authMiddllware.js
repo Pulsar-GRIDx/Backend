@@ -9,7 +9,8 @@ const environment = process.env;
 
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  const token = req.cookies.accessToken;
+  // const token = req.cookies.accessToken;
+  const token = req.query.token || req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
     return res.status(401).send('Unauthorized');
