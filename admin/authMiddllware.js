@@ -8,7 +8,7 @@ dotenv.config();
 
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  const token = req.cookies.accessToken;
+  const token = req.query.accessToken;
 
   if (!token) {
     return res.status(401).send('Unauthorized');
