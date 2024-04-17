@@ -238,9 +238,9 @@ router.get('/getSuburbHourlyEnergy', async (req, res) => {
     }));
 
     // Round the total energy values to two decimal places
-    hourlyEnergy = hourlyEnergy.map(value => parseFloat(value.toFixed(2)));
+    hourlyEnergy = hourlyEnergy.map(value => parseFloat((value / 1000).toFixed(2)));
 
-    res.json({ data: hourlyEnergy });
+    res.json({ data: hourlyEnergy});
   } catch (err) {
     console.log('Error querying the database:', err);
     return res.status(500).send({ error: 'Database query failed', details: err.message || err });

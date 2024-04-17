@@ -478,6 +478,7 @@ exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
     });
 };
 
+
 //getWeek method 
 Date.prototype.getWeek = function() {
   const date = new Date(this.getTime());

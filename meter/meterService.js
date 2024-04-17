@@ -675,12 +675,13 @@ exports.fetchDRNs = async (city) => {
 exports.getEnergyData = () => {
   const getCurrentDayData =`
   SELECT SUM(COALESCE(apparent_power, 0)) as total_apparent_power
-  FROM (
-    SELECT apparent_power, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
-    FROM MeteringPower
-    WHERE DATE(date_time) = CURDATE() AND HOUR(date_time) = HOUR(NOW())
-  ) t
-  WHERE t.rn = 1`;
+FROM (
+  SELECT apparent_power, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
+  FROM MeteringPower
+  WHERE DATE(date_time) = CURDATE()
+) t
+WHERE t.rn = 1
+`;
   
   const getCurrentMonthData = "SELECT COALESCE(SUM(apparent_power), 0) as total_apparent_power FROM MeteringPower WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())";
   const getCurrentYearData = "SELECT COALESCE(SUM(apparent_power), 0) as total_apparent_power FROM MeteringPower WHERE YEAR(date_time) = YEAR(CURRENT_DATE())";
@@ -742,16 +743,24 @@ exports.getWeeklyDataForCurrentAndLastWeek = () => {
       WEEK(date_time, 1) as week,
       DAYNAME(date_time) as day,
       DATE(date_time) as date,
-      SUM(apparent_power) as total_apparent_power
-    FROM 
-      MeteringPower 
-    WHERE 
-      WEEK(date_time, 1) IN (WEEK(CURRENT_DATE(), 1), WEEK(CURRENT_DATE(), 1) - 1)
+      SUM(last_apparent_power) as total_apparent_power
+    FROM (
+      SELECT 
+        date_time,
+        DRN,
+        apparent_power as last_apparent_power,
+        ROW_NUMBER() OVER (PARTITION BY DATE(date_time), DRN ORDER BY date_time DESC) as rn
+      FROM 
+        MeteringPower 
+      WHERE 
+        WEEK(date_time, 1) IN (WEEK(CURRENT_DATE(), 1), WEEK(CURRENT_DATE(), 1) - 1)
+    ) t
+    WHERE t.rn = 1
     GROUP BY 
-      YEAR(date_time),
-      WEEK(date_time, 1),
-      DAYNAME(date_time),
-      DATE(date_time)
+      YEAR(t.date_time),
+      WEEK(t.date_time, 1),
+      DAYNAME(t.date_time),
+      DATE(t.date_time)
   `;
   return new Promise((resolve, reject) => {
     db.query(getWeeklyDataForCurrentAndLastWeek,
@@ -761,6 +770,8 @@ exports.getWeeklyDataForCurrentAndLastWeek = () => {
     });
   });
 };
+
+
 
 //Get hourly power consumption
 exports.getApparentPowerSum = function(callback) {
@@ -784,9 +795,9 @@ exports.getApparentPowerSum = function(callback) {
       const sums = new Array(24).fill(0);
 
       results.forEach(row => {
-          sums[row.hour] = row.sum;
+          sums[row.hour] = row.sum / 1000;
       });
-      callback(null,{sums});
+      callback(null,{sums} );
   });
 }
 
@@ -846,8 +857,8 @@ exports.getSumApparentPower = function(callback) {
      
       
 
-      const sum = results[0].sum;
-      callback(0, { sum});
+      const sum = results[0].sum / 1000;
+      callback(0, { sum });
   });
 }
 
