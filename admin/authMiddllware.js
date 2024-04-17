@@ -5,16 +5,17 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 
 dotenv.config();
+const environment = process.env;
 
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  const token = req.query.accessToken;
+  const token = req.cookies.accessToken;
 
   if (!token) {
     return res.status(401).send('Unauthorized');
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+  jwt.verify(token, environment.SECRET_KEY, (err, user) => {
     if (err) {
       return res.status(403).send('Forbidden');
     }
