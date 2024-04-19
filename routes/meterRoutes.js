@@ -4,6 +4,8 @@ const energyController = require('../meter/meterControllers');
 // const convertDataToMockTree = require('../meter/meterControllers');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 
+
+
 //Get all ProcessedTokens By DRN//
 router.get('/allProcessedTokensByDRN:DRN', energyController.getAllProcessedTokens);
 //Weekly and Monthly data for the entire system//
@@ -14,6 +16,8 @@ router.get('/getAllProcessedTokensByDRN:DRN' , energyController.getAllProcessedT
 router.get('/meterDataByDRN:DRN' , energyController.getDailyMeterEnergy);
 //Getting all active and inactive meters/// 
 router.get('/activeInactiveMeters' , energyController.getAllActiveAndInactiveMeters);
+//Get total meters
+router.get('/totalMeters' , energyController.getTotalMeters);
 //Getting the token amount in the system//
 router.get('/tokenAmount', energyController.getTokenAmount);
 //Getting the total tokens bought in the system//

@@ -7,7 +7,7 @@ Content-Type: application/json
     ]
 }
 ###
-post http://localhost:4000/search-by-weekly-power
+post https://backend2.gridxmeter.com/search-by-weekly-power
 Content-Type: application/json
 
 {
@@ -16,7 +16,7 @@ Content-Type: application/json
     ]
 }
 ###
-post http://localhost:4000/search-by-monthly-power
+post https://backend2.gridxmeter.com/search-by-monthly-power
 Content-Type: application/json
 
 {

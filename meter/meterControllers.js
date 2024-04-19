@@ -1,4 +1,14 @@
 const energyService = require('./meterService');
+//Total Meters
+exports.getTotalMeters = async (req, res) => {
+  try {
+    const totalMeters = await energyService.getAllTotalMeters();
+    res.json(totalMeters);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while processing your request.' });
+  }
+};
 
 //ActiveAndInactiveMeters
 

@@ -12,6 +12,9 @@ Content-Type: application/json
 get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
 ###
+get http://localhost:4000/totalMeters
+Content-Type: application/json
+###
 get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
 ###

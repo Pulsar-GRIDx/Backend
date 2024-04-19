@@ -1,5 +1,21 @@
 const db = require('../config/db');
+//Total meters
+exports.getAllTotalMeters = function() {
+  const getAllTotalMeters = `SELECT COUNT(DISTINCT DRN) as totalMeters FROM MeterProfileReal`;
 
+  return new Promise((resolve, reject) => {
+    db.query(getAllTotalMeters, (err, results) => {
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err); // Reject the promise with the error
+      } else if (results.length === 0) {
+        resolve({ totalMeters: 0 }); // Resolve the promise with 0 if no results
+      } else {
+        resolve(results[0]); // Resolve the promise with the first result
+      }
+    });
+  });
+};
 
 
 ///-------------------------------------Active Inactive meters-----------------------------------------------------///
@@ -683,8 +699,39 @@ FROM (
 WHERE t.rn = 1
 `;
   
-  const getCurrentMonthData = "SELECT COALESCE(SUM(apparent_power), 0) as total_apparent_power FROM MeteringPower WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())";
-  const getCurrentYearData = "SELECT COALESCE(SUM(apparent_power), 0) as total_apparent_power FROM MeteringPower WHERE YEAR(date_time) = YEAR(CURRENT_DATE())";
+  const getCurrentMonthData = `SELECT 
+  SUM(t.apparent_power) / 1000 as total_apparent_power
+FROM (
+  SELECT m.DRN, DATE(m.date_time) as date, m.apparent_power
+  FROM MeteringPower m
+  INNER JOIN (
+    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
+    FROM MeteringPower
+    WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())
+    GROUP BY DRN, DATE(date_time)
+  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+) t
+`;
+  const getCurrentYearData = `SELECT 
+  YEAR(t.date_time) as year,
+  MONTH(t.date_time) as month,
+  SUM(t.apparent_power) / 1000 as monthly_total_apparent_power,
+  SUM(SUM(t.apparent_power)) OVER (PARTITION BY YEAR(t.date_time)) / 1000 as total_apparent_power
+FROM (
+  SELECT m.DRN, m.date_time, m.apparent_power
+  FROM MeteringPower m
+  INNER JOIN (
+    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
+    FROM MeteringPower
+    WHERE YEAR(date_time) = YEAR(CURRENT_DATE())
+    GROUP BY DRN, DATE(date_time)
+  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+) t
+GROUP BY YEAR(t.date_time), MONTH(t.date_time)
+ORDER BY YEAR(t.date_time), MONTH(t.date_time);
+
+
+`;
 
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData, (err, currentDayData) => {
@@ -698,8 +745,8 @@ WHERE t.rn = 1
               else {
                 resolve({
                   day: currentDayData[0].total_apparent_power / 1000,
-                  month: currentMonthData[0].total_apparent_power / 1000,
-                  year: currentYearData[0].total_apparent_power / 1000
+                  month: currentMonthData[0].total_apparent_power,
+                  year: currentYearData[0].total_apparent_power
                 });
               }
             });
@@ -714,17 +761,24 @@ WHERE t.rn = 1
 //----------------------------------------CurrentAnd Last year energy for all the months---------------------------------------//
 exports.getMonthlyDataForCurrentAndLastYear = () => {
   const getMonthlyDataForCurrentAndLastYear = `
-    SELECT 
-      YEAR(date_time) as year,
-      MONTH(date_time) as month,
-      SUM(apparent_power) as total_apparent_power
-    FROM 
-      MeteringPower 
-    WHERE 
-      YEAR(date_time) IN (YEAR(CURRENT_DATE()), YEAR(CURRENT_DATE()) - 1)
-    GROUP BY 
-      YEAR(date_time),
-      MONTH(date_time)
+  SELECT 
+  YEAR(t.date_time) as year,
+  MONTH(t.date_time) as month,
+  SUM(t.apparent_power) as total_apparent_power
+FROM (
+  SELECT m.DRN, m.date_time, m.apparent_power
+  FROM MeteringPower m
+  INNER JOIN (
+    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
+    FROM MeteringPower
+    WHERE YEAR(date_time) IN (YEAR(CURRENT_DATE()), YEAR(CURRENT_DATE()) - 1)
+    GROUP BY DRN, DATE(date_time)
+  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+) t
+GROUP BY 
+  YEAR(t.date_time),
+  MONTH(t.date_time)
+
   `;
   return new Promise((resolve, reject) => {
     db.query(getMonthlyDataForCurrentAndLastYear,
@@ -870,21 +924,23 @@ exports.getApparentPowerByTimePeriodsBySuburb = function(suburbs, callback) {
     SUM(IF(DATE(t.date_time) = CURDATE(), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentDayApparentPower,
     SUM(IF(MONTH(t.date_time) = MONTH(CURDATE()) AND YEAR(t.date_time) = YEAR(CURDATE()), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentMonthApparentPower,
     SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentYearApparentPower
-  FROM (
+FROM (
     SELECT m.DRN, m.date_time, m.apparent_power
     FROM MeteringPower m
     INNER JOIN (
       SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
       FROM MeteringPower
-      WHERE DATE(date_time) BETWEEN DATE_FORMAT(NOW() ,'%Y-%m-01') AND NOW()
+      WHERE YEAR(date_time) = YEAR(CURDATE())
       GROUP BY DRN, DATE(date_time)
     ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
-  ) t
-  WHERE t.DRN IN (
+) t
+WHERE t.DRN IN (
     SELECT DRN
     FROM MeterLocationInfoTable
     WHERE Suburb IN (?)
-  )
+)
+
+
   `;
 
   db.query(query, [suburbs], (err, results) => {
