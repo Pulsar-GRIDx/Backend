@@ -44,5 +44,11 @@ router.get('/hourlyPowerConsumption', energyController.getHourlyPowerConsumption
 router.get('/average-current-voltage', energyController.getAverageCurrentAndVoltage);
 //Hourly energy
 router.get('/last-apparent-power', energyController.getSumApparentPower);
+//Get surburb time periods
+router.post('/surburb-time-periods', energyController.getTimePeriodApparentPowerBySuburb);
+//serach by weekly power
+router.post('/search-by-weekly-power', energyController.getWeeklyApparentPowerBySuburb);
+//search by Surburb monthly power
+router.post('/search-by-monthly-power', energyController.getYearlyApparentPowerBySuburb);
 
 module.exports = router;

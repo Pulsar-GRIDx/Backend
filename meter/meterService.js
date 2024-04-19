@@ -862,3 +862,155 @@ exports.getSumApparentPower = function(callback) {
   });
 }
 
+//Suburb Apparent Power Time Periods
+exports.getApparentPowerByTimePeriodsBySuburb = function(suburbs, callback) {
+  console.log(suburbs);
+  const query = `
+  SELECT 
+    SUM(IF(DATE(t.date_time) = CURDATE(), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentDayApparentPower,
+    SUM(IF(MONTH(t.date_time) = MONTH(CURDATE()) AND YEAR(t.date_time) = YEAR(CURDATE()), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentMonthApparentPower,
+    SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentYearApparentPower
+  FROM (
+    SELECT m.DRN, m.date_time, m.apparent_power
+    FROM MeteringPower m
+    INNER JOIN (
+      SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
+      FROM MeteringPower
+      WHERE DATE(date_time) BETWEEN DATE_FORMAT(NOW() ,'%Y-%m-01') AND NOW()
+      GROUP BY DRN, DATE(date_time)
+    ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+  ) t
+  WHERE t.DRN IN (
+    SELECT DRN
+    FROM MeterLocationInfoTable
+    WHERE Suburb IN (?)
+  )
+  `;
+
+  db.query(query, [suburbs], (err, results) => {
+    if (err) {
+      console.error('Error querying the database:', err);
+      return callback({ error: 'Database query failed', details: err });
+    }
+
+    if (results.length === 0) {
+      return callback(null, { currentDayApparentPower: 0, currentMonthApparentPower: 0, currentYearApparentPower: 0 });
+    }
+
+    callback(null, results[0]);
+  });
+}
+
+
+//Weekly Suburb Apparent Power
+exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
+  const query = `
+  SELECT 
+  DAYOFWEEK(t.date_time) as dayOfWeek,
+  SUM(IF(WEEK(t.date_time, 1) = WEEK(CURDATE(), 1), t.apparent_power, 0)) as currentWeekApparentPower,
+  SUM(IF(WEEK(t.date_time, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(t.date_time) = YEAR(CURDATE()), t.apparent_power, 0)) as lastWeekApparentPower
+FROM (
+  SELECT 
+    DRN, 
+    date_time, 
+    apparent_power
+  FROM 
+    MeteringPower
+  WHERE 
+    (DRN, date_time) IN (
+      SELECT 
+        DRN, 
+        MAX(date_time)
+      FROM 
+        MeteringPower
+      WHERE 
+        DRN IN (
+          SELECT 
+            DRN
+          FROM 
+            MeterLocationInfoTable
+          WHERE 
+            Suburb IN (?)
+        )
+      GROUP BY 
+        DRN, 
+        DAYOFWEEK(date_time)
+    )
+) t
+GROUP BY 
+  DAYOFWEEK(t.date_time)
+ORDER BY 
+  DAYOFWEEK(t.date_time)
+
+  `;
+
+  db.query(query, [suburbs], (err, results) => {
+    if (err) {
+      console.error('Error querying the database:', err);
+      return callback({ error: 'Database query failed', details: err });
+    }
+
+    // Initialize arrays for current and last week apparent power
+    let currentWeekApparentPower = Array(7).fill(0);
+    let lastWeekApparentPower = Array(7).fill(0);
+
+    // Fill the arrays with the query results
+    results.forEach(result => {
+      let dayOfWeek = (result.dayOfWeek + 5) % 7;
+      currentWeekApparentPower[dayOfWeek] = result.currentWeekApparentPower / 1000;
+      lastWeekApparentPower[dayOfWeek] = result.lastWeekApparentPower / 1000;
+    });
+
+    callback(null, { currentWeekApparentPower , lastWeekApparentPower });
+  });
+}
+
+//Yearly Suburb Apparent Power
+exports.getYearlyApparentPowerBySuburb = function(suburbs, callback) {
+  const query = `
+  SELECT 
+  MONTH(t.date_time) as month,
+  SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()), t.apparent_power, 0)) / 1000 as currentYearApparentPower,
+  SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()) - 1, t.apparent_power, 0)) / 1000 as lastYearApparentPower
+FROM (
+  SELECT m.DRN, m.date_time, m.apparent_power
+  FROM MeteringPower m
+  INNER JOIN (
+    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
+    FROM MeteringPower
+    WHERE YEAR(date_time) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
+    GROUP BY DRN, MONTH(date_time), YEAR(date_time)
+  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+) t
+WHERE t.DRN IN (
+  SELECT DRN
+  FROM MeterLocationInfoTable
+  WHERE Suburb IN (?)
+)
+GROUP BY MONTH(t.date_time), YEAR(t.date_time)
+ORDER BY YEAR(t.date_time), MONTH(t.date_time);
+
+  `;
+
+  db.query(query, [suburbs], (err, results) => {
+    if (err) {
+      console.error('Error querying the database:', err);
+      return callback({ error: 'Database query failed', details: err });
+    }
+
+    // Initialize arrays for current and last year apparent power
+    let currentYearApparentPower = Array(12).fill(0);
+    let lastYearApparentPower = Array(12).fill(0);
+
+    // Fill the arrays with the query results
+    results.forEach(result => {
+      // MySQL's MONTH function returns 1 for January, 2 for February, ..., 12 for December
+      let month = result.month - 1; // Adjust it to make January be 0, February be 1, ..., December be 11
+      currentYearApparentPower[month] = result.currentYearApparentPower ;
+      lastYearApparentPower[month] = result.lastYearApparentPower ;
+    });
+
+    callback(null, { currentYearApparentPower, lastYearApparentPower });
+  });
+}
+

@@ -528,3 +528,46 @@ exports.getSumApparentPower = function(req, res) {
   });
 }
 
+
+//Suburb Apparent Power Time Periods
+exports.getTimePeriodApparentPowerBySuburb = function(req, res) {
+  const suburbs = req.body.suburbs;
+
+  energyService.getApparentPowerByTimePeriodsBySuburb(suburbs, (err, results) => {
+    if (err) {
+      console.error('Error getting apparent power by suburb:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    res.json(results);
+  });
+}
+
+//Weekly Suburb Apparent Power
+exports.getWeeklyApparentPowerBySuburb = function(req, res) {
+  const suburbs = req.body.suburbs; // assuming you're sending the suburbs in the request body
+
+  energyService.getWeeklyApparentPowerBySuburb(suburbs, (err, results) => {
+    if (err) {
+      console.error('Error getting the apparent power:', err);
+      return res.status(500).send({ error: 'Failed to get the apparent power', details: err });
+    }
+
+    res.send(results);
+  });
+}
+
+//Yearly Suburb Apparent Power
+exports.getYearlyApparentPowerBySuburb = function(req, res) {
+  const suburbs = req.body.suburbs; // assuming you're sending the suburbs in the request body
+
+  energyService.getYearlyApparentPowerBySuburb(suburbs, (err, results) => {
+    if (err) {
+      console.error('Error getting the apparent power:', err);
+      return res.status(500).send({ error: 'Failed to get the apparent power', details: err });
+    }
+
+    res.send(results);
+  });
+}
+

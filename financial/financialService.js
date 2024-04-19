@@ -114,6 +114,7 @@ exports.getTotalRevenuePerHour = function(callback) {
 
 //Suburb Time periods
 exports.getRevenueByTimePeriodsBySuburb = function(suburbs, callback) {
+  console.log(suburbs);
   const query = `
     SELECT 
       SUM(IF(DATE(date_time) = CURDATE(), token_amount, 0)) as currentDayRevenue,
@@ -143,6 +144,7 @@ exports.getRevenueByTimePeriodsBySuburb = function(suburbs, callback) {
 
 //Weekly Suburb Revenue
 exports.getWeeklyRevenueBySuburb = function(suburbs, callback) {
+  
   const query = `
     SELECT 
       DAYOFWEEK(date_time) as dayOfWeek,
