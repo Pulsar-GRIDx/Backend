@@ -186,65 +186,80 @@ router.post('/getSuburbEnergy', async (req, res) => {
 
 //Hourly consumption for suburbs
 
-router.post('/getSuburbHourlyEnergy', async (req, res) => {
-  const suburbs = req.body.suburbs;
+// 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+//   const getHourlyEnergyByDrn = `
+//     SELECT HOUR(date_time) as hour, apparent_power
+//     FROM (
+//       SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN, HOUR(date_time) ORDER BY date_time DESC) as rn
+//       FROM MeteringPower
+//       WHERE DRN = ? AND DATE(date_time) = CURDATE()
+//     ) t
+//     WHERE t.rn = 1
+//   `;
 
-  if (!Array.isArray(suburbs)) {
-    return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
-  }
-
-  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
-  const getHourlyEnergyByDrn = `
+  router.post('/getSuburbHourlyEnergy', async (req, res) => {
+    const suburbs = req.body.suburbs;
+  
+    if (!Array.isArray(suburbs)) {
+      return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
+    }
+  
+    const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+    const getEnergyByDrn = `
     SELECT HOUR(date_time) as hour, apparent_power
-    FROM (
-      SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN, HOUR(date_time) ORDER BY date_time DESC) as rn
-      FROM MeteringPower
-      WHERE DRN = ? AND DATE(date_time) = CURDATE()
-    ) t
-    WHERE t.rn = 1
-  `;
-
-  let hourlyEnergy = new Array(24).fill(0);
-
-  try {
-    await Promise.all(suburbs.map(async (suburb) => {
-      const drns = await new Promise((resolve, reject) => {
-        connection.query(getDrnsBySuburb, [suburb], (err, drnData) => {
-          if (err) {
-            console.log(err);
-            reject(err);
-          } else {
-            resolve(drnData.map((record) => record.DRN));
-          }
-        });
-      });
-
-      await Promise.all(drns.map(async (drn) => {
-        const energyData = await new Promise((resolve, reject) => {
-          connection.query(getHourlyEnergyByDrn, [drn], (err, data) => {
+        FROM (
+          SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN, HOUR(date_time) ORDER BY date_time DESC) as rn
+          FROM MeteringPower
+          WHERE DRN = ? AND DATE(date_time) = CURDATE()
+        ) t
+      WHERE t.rn = 1
+    `;
+  
+    let suburbEnergy = {};
+  
+    try {
+      await Promise.all(suburbs.map(async (suburb) => {
+        let totalEnergy = 0;
+  
+        const drns = await new Promise((resolve, reject) => {
+          connection.query(getDrnsBySuburb, [suburb], (err, drnData) => {
             if (err) {
               console.log(err);
               reject(err);
             } else {
-              resolve(data);
+              resolve(drnData.map((record) => record.DRN));
             }
           });
         });
-
-        energyData.forEach(record => {
-          hourlyEnergy[record.hour] += Number(record.apparent_power);
-        });
+  
+        await Promise.all(drns.map(async (drn) => {
+          const energyData = await new Promise((resolve, reject) => {
+            connection.query(getEnergyByDrn, [drn], (err, data) => {
+              if (err) {
+                console.log(err);
+                reject(err);
+              } else {
+                resolve(data);
+              }
+            });
+          });
+  
+          energyData.forEach(record => {
+            totalEnergy += Number(record.apparent_power);
+          });
+        }));
+  
+        // Round the total energy value to two decimal places
+        totalEnergy = parseFloat((totalEnergy / 1000).toFixed(2));
+  
+        suburbEnergy[suburb] = totalEnergy;
       }));
-    }));
-
-    // Round the total energy values to two decimal places
-    hourlyEnergy = hourlyEnergy.map(value => parseFloat((value / 1000).toFixed(2)));
-
-    res.json({ data: hourlyEnergy});
-  } catch (err) {
-    console.log('Error querying the database:', err);
-    return res.status(500).send({ error: 'Database query failed', details: err.message || err });
-  }
-});
-
+  
+      res.json({ data: suburbEnergy});
+    } catch (err) {
+      console.log('Error querying the database:', err);
+      return res.status(500).send({ error: 'Database query failed', details: err.message || err });
+    }
+  });
+  
 module.exports = router;
