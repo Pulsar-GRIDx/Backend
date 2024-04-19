@@ -45,7 +45,7 @@ router.get('/average-current-voltage', energyController.getAverageCurrentAndVolt
 //Hourly energy
 router.get('/last-apparent-power', energyController.getSumApparentPower);
 //Get surburb time periods
-router.post('/surburb-time-periods', energyController.getTimePeriodApparentPowerBySuburb);
+router.post('/suburb-time-periods', energyController.getTimePeriodApparentPowerBySuburb);
 //serach by weekly power
 router.post('/search-by-weekly-power', energyController.getWeeklyApparentPowerBySuburb);
 //search by Surburb monthly power
