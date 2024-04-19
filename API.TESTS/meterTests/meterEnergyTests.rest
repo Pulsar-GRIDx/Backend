@@ -64,16 +64,16 @@ Content-Type: application/json
 get http://localhost:4000/energy-time-periods
 Content-Type: application/json
 ####
-get http://localhost:4000/yearly/currentAndLastYearMonthEnergyTotal
+get https://backend2.gridxmeter.com/yearly/currentAndLastYearMonthEnergyTotal
 
 Content-Type: application/json
 ####
-get http://localhost:4000/weekly/currentAndLastWeekEnergyTotal
+get https://backend2.gridxmeter.com/weekly/currentAndLastWeekEnergyTotal
 
 Content-Type: application/json
 ####
 
-get http://localhost:4000/hourlyPowerConsumption 
+get https://backend2.gridxmeter.com/hourlyPowerConsumption 
 
 Content-Type: application/json
 ####
