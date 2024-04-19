@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const { authenticateToken } = require('../admin/authMiddllware');
 
 
 //Import dotenv
@@ -11,7 +11,8 @@ const connection = require("../config/db");
 
 //Configure dotenv
 dotenv.config();
-
+// Protected routes
+router.use(authenticateToken);
 
 router.get('/meter_change', (req, res) => {
   const now = new Date();

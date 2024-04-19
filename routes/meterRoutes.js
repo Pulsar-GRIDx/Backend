@@ -3,6 +3,10 @@ const router = express.Router();
 const energyController = require('../meter/meterControllers');
 // const convertDataToMockTree = require('../meter/meterControllers');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
+const { authenticateToken } = require('../admin/authMiddllware');
+
+//Protected routers
+router.use(authenticateToken);
 
 
 

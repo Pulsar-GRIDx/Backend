@@ -4,8 +4,9 @@ get http://localhost:4000/profile/1
 
 ###
 get http://localhost:4000/allAdmins
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2Nlc3NMZXZlbCI6IjEiLCJpYXQiOjE3MDY1MTI2NDgsImV4cCI6MTcwNjUxNjI0OH0.hFqOblwcBzblS23Tw_e_-kueKQ8jpudOCF2dCWDQdBk
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA
+
 ###
 
 post http://localhost:4000/UserUpdate/1

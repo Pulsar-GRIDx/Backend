@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const winston = require('winston');
 const NodeCache = require('node-cache');
+const { authenticateToken } = require('../admin/authMiddllware');
 
+//Protected routers
+router.use(authenticateToken);
 
 //Import dotenv
 const dotenv = require('dotenv'); // Import dotenv

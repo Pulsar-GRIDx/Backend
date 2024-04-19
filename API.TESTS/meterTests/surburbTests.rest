@@ -1,5 +1,6 @@
 post http://localhost:4000/suburb-time-periods 
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[
@@ -9,6 +10,7 @@ Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/search-by-weekly-power
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[
@@ -18,6 +20,7 @@ Content-Type: application/json
 ###
 post https://backend2.gridxmeter.com/search-by-monthly-power
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[

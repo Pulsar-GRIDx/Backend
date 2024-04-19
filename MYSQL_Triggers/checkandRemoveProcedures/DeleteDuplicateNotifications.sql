@@ -9,7 +9,8 @@ BEGIN
     AND n1.DRN = n2.DRN
     AND n1.AlarmType = n2.AlarmType
     AND n1.Urgency_Type = n2.Urgency_Type
-    AND n1.date_time = n2.date_time;
+    AND n1.date_time = n2.date_time
+    AND n1.Type = n2.Type;
 END;
 //
 
@@ -24,7 +25,7 @@ STARTS CURRENT_TIMESTAMP
 ENDS CURRENT_TIMESTAMP + INTERVAL 1 YEAR
 DO
 BEGIN
-    CALL your_database_name.DeleteDuplicateNotifications();
+    CALL GridxMeterSampledb.DeleteDuplicateNotifications();
 END //
 
 DELIMITER ;

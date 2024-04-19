@@ -9,19 +9,31 @@ const environment = process.env;
 
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  // const token = req.cookies.accessToken;
-  const token = req.query.token || req.headers['authorization']?.split(' ')[1];
-
-  if (!token) {
+  const authHeader = req.headers['authorization'];
+  
+  // Check if Authorization header exists
+  if (!authHeader) {
     return res.status(401).send('Unauthorized');
   }
+
+
+  const tokenParts = authHeader.split(' ');
+
+  
+  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+    return res.status(401).send('Unauthorized');
+  }
+
+ 
+  const token = tokenParts[1];
 
   jwt.verify(token, environment.SECRET_KEY, (err, user) => {
     if (err) {
       return res.status(403).send('Forbidden');
     }
 
-    req.user = user;
+    
+    
     next();
   });
 }

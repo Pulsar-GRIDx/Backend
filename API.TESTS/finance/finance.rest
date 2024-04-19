@@ -1,22 +1,27 @@
-get https://backend2.gridxmeter.com/finance/time-periods
+get http://localhost:4000/finance/time-periods
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 ####
-get https://backend2.gridxmeter.com/finance/currentAndLastYearMonthRevenueTotal 
+get http://localhost:4000/finance/currentAndLastYearMonthRevenueTotal 
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 
 ###
-get https://backend2.gridxmeter.com/finance/currentAndLastWeek
+get http://localhost:4000/finance/currentAndLastWeek
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 ####
-get http://backend2.gridxmeter.com/finance/hourlyRevenue
+get http://localhost:4000/finance/hourlyRevenue
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 ###
 post http://localhost:4000/finance/suburbTimePeriod
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[
@@ -25,8 +30,9 @@ Content-Type: application/json
 }
 
 ###
-post https://backend2.gridxmeter.com/finance/suburbWeeklyRevenue 
+post http://localhost:4000/finance/suburbWeeklyRevenue 
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[
@@ -34,8 +40,9 @@ Content-Type: application/json
     ]
 }
 ###
-post https://backend2.gridxmeter.com/finance/suburbYearlyRevenue
+post http://localhost:4000/finance/suburbYearlyRevenue
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[
@@ -47,6 +54,7 @@ Content-Type: application/json
 
 post http://localhost:4000/finance/getSuburbChartRevenue
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA  
 
 {
     "suburbs":[

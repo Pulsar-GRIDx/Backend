@@ -3,6 +3,11 @@ const express = require('express');
 const router = express.Router();
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 const notificationController = require('./notificationController');
+const { authenticateToken } = require('../admin/authMiddllware');
+
+
+//Protected routes
+router.use(authenticateToken);
 
 
 // DELETE route to delete a notification by ID

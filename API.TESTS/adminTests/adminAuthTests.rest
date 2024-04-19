@@ -1,6 +1,7 @@
 ###
-post http://localhost:4000/signin 
+post http://localhost:4000/signin  
 Content-Type: application/json   
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1MzU1OSwiZXhwIjoxNzEzNTU3MTU5fQ.Jf0c0OFo_2MezTue4IY0LqRAR0Xd_GLhh_nzxjJuqtg
 
 {
     "Email": "admin@pulsar.com",

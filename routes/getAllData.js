@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../config/db");
+const authenticateToken = require('../admin/authMiddllware');
 
 
-router.get('/energy-stats', (req, res) => {
+router.get('/energy-stats', authenticateToken.authenticateToken,(req, res) => {
     const queries = {
       lastWeek: `SELECT DATE(date_time) as date, SUM(active_energy) as total FROM MeterCumulativeEnergyUsage WHERE date_time >= curdate() - INTERVAL DAYOFWEEK(curdate())+6 DAY AND date_time < curdate() - INTERVAL DAYOFWEEK(curdate())-1 DAY GROUP BY date_time`,
       currentWeek: `SELECT DATE(date_time) as date, SUM(active_energy) as total FROM MeterCumulativeEnergyUsage WHERE date_time >= curdate() - INTERVAL DAYOFWEEK(curdate())-1 DAY GROUP BY date_time`,

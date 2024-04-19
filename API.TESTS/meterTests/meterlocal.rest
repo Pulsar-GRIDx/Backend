@@ -5,7 +5,7 @@ Content-Type: application/json
 get https://backend2.gridxmeter.com/meterDataByDRN0260066545641
 Content-Type: application/json
 ###
-###--------------PotentialIssue-----------####
+
 get https://backend2.gridxmeter.com/meterWeekAndMonthData0260066545641
 Content-Type: application/json
 ###
