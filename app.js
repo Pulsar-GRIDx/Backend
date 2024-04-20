@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const app = express();
 const corsOptions = {
   origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001'],
   methods:[['GET'],['POST'],['DELETE'],['PUT']],
@@ -31,7 +33,7 @@ const financialRoutes = require('./routes/financialRoutes');
 const suburbFinance = require('./financial/surburbFinance');
 
 
-const app = express();
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -50,6 +52,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 // Middleware for handling errors
 app.use((err, req, res, next) => {
  

@@ -5,36 +5,34 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 
 dotenv.config();
-const environment = process.env;
 
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  
-  // Check if Authorization header exists
-  if (!authHeader) {
-    return res.status(401).send('Unauthorized');
+  const token = req.cookies.accessToken;
+
+  if (!token) {
+      return res.status(401).send('Unauthorized');
   }
 
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) {
+          if (err.name === 'TokenExpiredError') {
+              return res.status(401).send('Token expired');
+          } else {
+              return res.status(403).send('Forbidden');
+          }
+      }
 
-  const tokenParts = authHeader.split(' ');
+      // Token is valid
+      // Check if token is expired
+      if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+          return res.status(401).send('Token expired');
+      }
 
-  
-  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
-    return res.status(401).send('Unauthorized');
-  }
+      // Token is not expired, attach user object to request for future use
+      req.user = decoded;
 
- 
-  const token = tokenParts[1];
-
-  jwt.verify(token, environment.SECRET_KEY, (err, user) => {
-    if (err) {
-      return res.status(403).send('Forbidden');
-    }
-
-    
-    
-    next();
+      next();
   });
 }
 

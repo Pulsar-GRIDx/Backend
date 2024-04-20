@@ -12,9 +12,13 @@ router.post('/signin', adminController.signIn);
 // Protected routes
 router.use(authenticateToken);
 
-// Protected routes below this line will require authentication
+// Route to access protected content
+router.get('/protected', (req, res) => {
+  // Implement logic for protected route here
+  res.send('This is a protected route');
+});
 
-// Protected route to access admin profile
+// Route to access admin profile
 router.get('/profile/:UserID', adminController.getUserProfile);
 
 // Route to get all users (requires authentication)

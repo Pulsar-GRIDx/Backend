@@ -29,15 +29,19 @@ exports.signIn = async (req, res) => {
       sameSite: 'None',
     });
     // Set CORS headers
-    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com'); 
+    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com','http://localhost:4000'); 
     res.header('Access-Control-Allow-Credentials', true);
     // Send the response with both token and user data
     res.status(200).json({
       message: 'Admin signed in successfully',
       token: result.token,
       user: result.user,
+
       
-    });
+      
+    }
+  );
+    
   } catch (error) {
     console.error('Error during sign-in:', error);
     res.status(500).json({ error: 'Sign-in failed', details: error.message });

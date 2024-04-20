@@ -5,9 +5,8 @@ const NodeCache = require('node-cache');
 
 const { authenticateToken } = require('../admin/authMiddllware');
 
-//Protected routers
-router.use(authenticateToken);
-//Import dotenv
+
+// Import dotenv
 const dotenv = require('dotenv'); // Import dotenv
 const connection = require("../config/db");
 
@@ -56,7 +55,7 @@ process.on('unhandledRejection', (reason, promise) => {
 // Create a new cache instance
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
-router.post('/getSuburbEnergy', async (req, res) => {
+router.post('/getSuburbEnergy',authenticateToken, async (req, res) => {
   const suburbs = req.body.suburbs;
 
   if (!Array.isArray(suburbs)) {
@@ -200,7 +199,7 @@ router.post('/getSuburbEnergy', async (req, res) => {
 //     WHERE t.rn = 1
 //   `;
 
-  router.post('/getSuburbHourlyEnergy', async (req, res) => {
+  router.post('/getSuburbHourlyEnergy',authenticateToken, async (req, res) => {
     const suburbs = req.body.suburbs;
   
     if (!Array.isArray(suburbs)) {

@@ -1,7 +1,7 @@
 
 ###
-post http://localhost:4000/signin 
-Content-Type: application/json   
+post http://localhost:4000/signin  
+Content-Type: application/json
 
 {
     "Email": "admin@pulsar.com",
