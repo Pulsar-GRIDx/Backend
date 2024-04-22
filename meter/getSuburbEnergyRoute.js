@@ -53,9 +53,10 @@ process.on('unhandledRejection', (reason, promise) => {
 
 
 // Create a new cache instance
+// Create a new cache instance
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
-router.post('/getSuburbEnergy',authenticateToken, async (req, res) => {
+router.post('/getSuburbEnergy', authenticateToken, async (req, res) => {
   const suburbs = req.body.suburbs;
 
   if (!Array.isArray(suburbs)) {
@@ -68,20 +69,54 @@ router.post('/getSuburbEnergy',authenticateToken, async (req, res) => {
     cache.set(suburb, result);
   };
 
-  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
-  //Weekly Query
-  const getWeeklyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 6 DAY GROUP BY DRN ';
-  //Monthly Query
-  const getMonthlyEnergyByDrn = 'SELECT apparent_power FROM MeteringPower WHERE DRN = ? AND date_time >= CURDATE() - INTERVAL 30 DAY GROUP BY DRN  ';
-  //Yearly Query
-  const getYearlyEnergyByDrn = `SELECT apparent_power 
-  FROM MeteringPower 
-  WHERE DRN = ? 
-    AND date_time >= DATE_FORMAT(NOW() - INTERVAL 12 MONTH, '%Y-01-01') 
-    AND date_time <= NOW()
-  GROUP BY DRN;
-  
-  `;
+
+  // Query to get DRNs by suburb
+const getDrnsBySuburb = 'SELECT DISTINCT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
+
+// Weekly Query
+const getWeeklyEnergyByDrn = `
+  SELECT 
+    DATE(date_time) as record_date,
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    DRN = ? AND 
+    date_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND CURDATE()
+  GROUP BY 
+    DATE(date_time)
+`;
+
+// Monthly Query
+const getMonthlyEnergyByDrn = `
+  SELECT 
+    DATE(date_time) as record_date,
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    DRN = ? AND 
+    date_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND CURDATE()
+  GROUP BY 
+    DATE(date_time)
+`;
+
+// Yearly Query
+const getYearlyEnergyByDrn = `
+  SELECT 
+    DATE(date_time) as record_date,
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    DRN = ? AND 
+    date_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND CURDATE()
+  GROUP BY 
+    DATE(date_time)
+`;
 
   let suburbsWeekly = {};
   let suburbsMonthly = {};
@@ -102,66 +137,54 @@ router.post('/getSuburbEnergy',authenticateToken, async (req, res) => {
             console.log(err);
             reject(err);
           } else {
-            
             resolve(drnData.map((record) => record.DRN));
           }
         });
       });
-//Weekly data
+
+      // Weekly data
       const weeklyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
           connection.query(getWeeklyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
-            
+            else resolve(energyData.length > 0 ? energyData[0] : { initial_units: 0, final_units: 0 });
           });
         });
       }));
-//Monthly data
+
+      // Monthly data
       const monthlyEnergyData = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
           connection.query(getMonthlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
-            
+            else resolve(energyData.length > 0 ? energyData[0] : { initial_units: 0, final_units: 0 });
           });
         });
       }));
-//Yearly data
+
+      // Yearly data
       const yearlyEnergyByDrn = await Promise.all(drns.map(async (drn) => {
         return new Promise((resolve, reject) => {
           connection.query(getYearlyEnergyByDrn, [drn], (err, energyData) => {
             if (err) reject(err);
-            else resolve(energyData.length > 0 ? energyData[0] : { apparent_power: 0 });
-           
+            else resolve(energyData.length > 0 ? energyData[0] : { initial_units: 0, final_units: 0 });
           });
         });
-      }))
+      }));
 
-
-      //Calculate weekly totals
+      // Calculate weekly totals
       const totalWeeklyEnergy = weeklyEnergyData.reduce((total, record) => {
-        if (record.apparent_power !== 0) {
-          return total + Number(record.apparent_power) ;
-        } else {
-          return total;
-        }
+        return total + Number(record.final_units) - Number(record.initial_units);
       }, 0);
-     //Calculate monthly totals
+
+      // Calculate monthly totals
       const totalMonthlyEnergy = monthlyEnergyData.reduce((total, record) => {
-        if (record.apparent_power !== 0) {
-          return total + Number(record.apparent_power);
-        } else {
-          return total;
-        }
+        return total + Number(record.final_units) - Number(record.initial_units);
       }, 0);
-     //Calculate yearly totals
+
+      // Calculate yearly totals
       const totalYearlyEnergy = yearlyEnergyByDrn.reduce((total, record) => {
-        if (record.apparent_power !== 0) {
-          return total + Number(record.apparent_power);
-        } else {
-          return total;
-        }
+        return total + Number(record.final_units) - Number(record.initial_units);
       }, 0);
 
       // Round the total energy values to two decimal places
@@ -178,12 +201,13 @@ router.post('/getSuburbEnergy',authenticateToken, async (req, res) => {
       setCachedResult(suburb, result);
     }));
 
-    res.json({ suburbsWeekly, suburbsMonthly ,suburbsYearly});
+    res.json({ suburbsWeekly, suburbsMonthly, suburbsYearly });
   } catch (err) {
     console.log('Error querying the database:', err);
-    return res.status(500).send({ error: 'Database query failed', details: err.message || err });
+    return res.status(500).json({ error: 'An error occurred while querying the database.' });
   }
 });
+
 
 
 //Hourly consumption for suburbs
@@ -199,69 +223,81 @@ router.post('/getSuburbEnergy',authenticateToken, async (req, res) => {
 //     WHERE t.rn = 1
 //   `;
 
-  router.post('/getSuburbHourlyEnergy',authenticateToken, async (req, res) => {
-    const suburbs = req.body.suburbs;
+
+
+router.post('/getSuburbHourlyEnergy', authenticateToken, async (req, res) => {
+  const suburbs = req.body.suburbs;
+
+  if (!Array.isArray(suburbs)) {
+    return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
+  }
+
+  const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
   
-    if (!Array.isArray(suburbs)) {
-      return res.status(400).json({ error: 'Invalid suburbs data. Expecting an array.' });
-    }
-  
-    const getDrnsBySuburb = 'SELECT DRN FROM MeterLocationInfoTable WHERE Suburb = ?';
-    const getEnergyByDrn = `
-    SELECT HOUR(date_time) as hour, apparent_power
-        FROM (
-          SELECT DRN, apparent_power, date_time, ROW_NUMBER() OVER (PARTITION BY DRN, HOUR(date_time) ORDER BY date_time DESC) as rn
-          FROM MeteringPower
-          WHERE DRN = ? AND DATE(date_time) = CURDATE()
-        ) t
-      WHERE t.rn = 1
-    `;
-  
-    let suburbEnergy = {};
-  
-    try {
-      await Promise.all(suburbs.map(async (suburb) => {
-        let totalEnergy = 0;
-  
-        const drns = await new Promise((resolve, reject) => {
-          connection.query(getDrnsBySuburb, [suburb], (err, drnData) => {
+  const getEnergyByDrn = `
+    SELECT HOUR(date_time) as hour, final_units - initial_units as power_consumption
+    FROM (
+      SELECT 
+        DRN,
+        date_time,
+        MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+        MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+      FROM 
+        MeterCumulativeEnergyUsage
+      WHERE 
+        DRN = ? AND 
+        DATE(date_time) = CURDATE()
+      GROUP BY 
+        HOUR(date_time)
+    ) t
+  `;
+
+  let suburbEnergy = {};
+
+  try {
+    await Promise.all(suburbs.map(async (suburb) => {
+      let totalEnergy = 0;
+
+      const drns = await new Promise((resolve, reject) => {
+        connection.query(getDrnsBySuburb, [suburb], (err, drnData) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          } else {
+            resolve(drnData.map((record) => record.DRN));
+          }
+        });
+      });
+
+      await Promise.all(drns.map(async (drn) => {
+        const energyData = await new Promise((resolve, reject) => {
+          connection.query(getEnergyByDrn, [drn], (err, data) => {
             if (err) {
               console.log(err);
               reject(err);
             } else {
-              resolve(drnData.map((record) => record.DRN));
+              resolve(data);
             }
           });
         });
-  
-        await Promise.all(drns.map(async (drn) => {
-          const energyData = await new Promise((resolve, reject) => {
-            connection.query(getEnergyByDrn, [drn], (err, data) => {
-              if (err) {
-                console.log(err);
-                reject(err);
-              } else {
-                resolve(data);
-              }
-            });
-          });
-  
-          energyData.forEach(record => {
-            totalEnergy += Number(record.apparent_power);
-          });
-        }));
-  
-        // Round the total energy value to two decimal places
-        totalEnergy = parseFloat((totalEnergy / 1000).toFixed(2));
-  
-        suburbEnergy[suburb] = totalEnergy;
+
+        energyData.forEach(record => {
+          totalEnergy += Number(record.power_consumption);
+        });
       }));
-  
-      res.json({ data: suburbEnergy});
-    } catch (err) {
-      console.log('Error querying the database:', err);
-      return res.status(500).send({ error: 'Database query failed', details: err.message || err });
-    }
-  });
+
+      // Round the total energy value to two decimal places
+      totalEnergy = parseFloat(totalEnergy.toFixed(2));
+
+      suburbEnergy[suburb] = totalEnergy;
+    }));
+
+    res.json({ data: suburbEnergy });
+  } catch (err) {
+    console.log('Error querying the database:', err);
+    return res.status(500).send({ error: 'Database query failed', details: err.message || err });
+  }
+});
+
   
 module.exports = router;

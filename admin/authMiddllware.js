@@ -6,37 +6,34 @@ const validator = require('validator');
 
 dotenv.config();
 
+
 // Using `process.env` directly
 function authenticateToken(req, res, next) {
-  const token = req.cookies.accessToken;
-
-  if (!token) {
+    const authHeader = req.header('Authorization');
+  
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).send('Unauthorized');
-  }
-
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    }
+  
+    const token = authHeader.split(' ')[1];
+  
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if (err) {
-          if (err.name === 'TokenExpiredError') {
-              return res.status(401).send('Token expired');
-          } else {
-              return res.status(403).send('Forbidden');
-          }
-      }
-
-      // Token is valid
-      // Check if token is expired
-      if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+        if (err.name === 'TokenExpiredError') {
           return res.status(401).send('Token expired');
+        } else {
+          return res.status(403).send('Forbidden');
+        }
       }
-
-      // Token is not expired, attach user object to request for future use
+  
+      // Token is valid, attach user object to request for future use
       req.user = decoded;
-
       next();
-  });
-}
+    });
+  }
+  
 
 // Email Validation
-const validateEmail = (Email) => validator.isEmail(Email);
+const validateEmail = (email) => validator.isEmail(email);
 
 module.exports = { authenticateToken, validateEmail };

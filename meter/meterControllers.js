@@ -455,7 +455,7 @@ exports.getMonthlyEnergyForCurrentAndLastYear = (req, res) => {
       monthlyData.forEach(record => {
         const yearKey = record.year === currentYear ? 'Current' : 'Last';
         const monthIndex = record.month - 1;
-        monthlyEnergy[yearKey][monthIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
+        monthlyEnergy[yearKey][monthIndex] = Number((record.total_apparent_power));
       });
 
       res.json(monthlyEnergy);
@@ -477,7 +477,7 @@ exports.getWeeklyEnergyForCurrentAndLastWeek = (req, res) => {
       weeklyData.forEach(record => {
         const weekKey = record.week === currentWeekNumber ? 'currentweek' : 'lastweek';
         const dayIndex = daysOfWeek.indexOf(record.day);
-        weeklyEnergy[weekKey][dayIndex] = Number((record.total_apparent_power / 1000).toFixed(2));
+        weeklyEnergy[weekKey][dayIndex] = Number((record.total_apparent_power));
       });
 
       res.json(weeklyEnergy);

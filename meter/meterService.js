@@ -690,45 +690,50 @@ exports.fetchDRNs = async (city) => {
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {
   const getCurrentDayData =`
-  SELECT SUM(COALESCE(apparent_power, 0)) as total_apparent_power
+  SELECT 
+    record_date AS date,
+    SUM(initial_units) - SUM(final_units) AS total_apparent_power
 FROM (
-  SELECT apparent_power, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
-  FROM MeteringPower
-  WHERE DATE(date_time) = CURDATE()
-) t
-WHERE t.rn = 1
+    SELECT 
+        DRN,
+        DATE(date_time) AS record_date,
+        MIN(units) AS initial_units,
+        MAX(units) AS final_units
+    FROM MeterCumulativeEnergyUsage
+    WHERE DATE(date_time) = CURDATE()
+    GROUP BY DRN, DATE(date_time)
+) AS t
+GROUP BY record_date
 `;
+
+
+
+
   
   const getCurrentMonthData = `SELECT 
-  SUM(t.apparent_power) / 1000 as total_apparent_power
+  MONTH(record_date) AS month,
+  YEAR(record_date) AS year,
+  SUM(total_apparent_power) AS total_apparent_power
 FROM (
-  SELECT m.DRN, DATE(m.date_time) as date, m.apparent_power
-  FROM MeteringPower m
-  INNER JOIN (
-    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
-    FROM MeteringPower
-    WHERE YEAR(date_time) = YEAR(CURRENT_DATE()) AND MONTH(date_time) = MONTH(CURRENT_DATE())
-    GROUP BY DRN, DATE(date_time)
-  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
-) t
+  SELECT 
+      DATE(date_time) AS record_date,
+      SUM(CAST(final_units AS DECIMAL(10,2))) - SUM(CAST(initial_units AS DECIMAL(10,2))) AS total_apparent_power
+  FROM (
+      SELECT 
+          DRN,
+          date_time,
+          MIN(units) AS initial_units,
+          MAX(units) AS final_units
+      FROM MeterCumulativeEnergyUsage
+      WHERE MONTH(date_time) = MONTH(CURRENT_DATE()) AND YEAR(date_time) = YEAR(CURRENT_DATE())
+      GROUP BY DRN, DATE(date_time)
+  ) AS t
+  GROUP BY record_date
+) AS t2
+GROUP BY month, year
+
 `;
-  const getCurrentYearData = `SELECT 
-  YEAR(t.date_time) as year,
-  MONTH(t.date_time) as month,
-  SUM(t.apparent_power) / 1000 as monthly_total_apparent_power,
-  SUM(SUM(t.apparent_power)) OVER (PARTITION BY YEAR(t.date_time)) / 1000 as total_apparent_power
-FROM (
-  SELECT m.DRN, m.date_time, m.apparent_power
-  FROM MeteringPower m
-  INNER JOIN (
-    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
-    FROM MeteringPower
-    WHERE YEAR(date_time) = YEAR(CURRENT_DATE())
-    GROUP BY DRN, DATE(date_time)
-  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
-) t
-GROUP BY YEAR(t.date_time), MONTH(t.date_time)
-ORDER BY YEAR(t.date_time), MONTH(t.date_time);
+  const getCurrentYearData = `SELECT SUM(daily_power_consumption) as total_apparent_power FROM DailyPowerConsumption where year(date) = year(curdate());
 
 
 `;
@@ -762,22 +767,17 @@ ORDER BY YEAR(t.date_time), MONTH(t.date_time);
 exports.getMonthlyDataForCurrentAndLastYear = () => {
   const getMonthlyDataForCurrentAndLastYear = `
   SELECT 
-  YEAR(t.date_time) as year,
-  MONTH(t.date_time) as month,
-  SUM(t.apparent_power) as total_apparent_power
-FROM (
-  SELECT m.DRN, m.date_time, m.apparent_power
-  FROM MeteringPower m
-  INNER JOIN (
-    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
-    FROM MeteringPower
-    WHERE YEAR(date_time) IN (YEAR(CURRENT_DATE()), YEAR(CURRENT_DATE()) - 1)
-    GROUP BY DRN, DATE(date_time)
-  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
-) t
+    YEAR(date) AS year,
+    MONTH(date) AS month,
+    SUM(daily_power_consumption) AS total_apparent_power
+FROM 
+    DailyPowerConsumption
+WHERE 
+    YEAR(date) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
 GROUP BY 
-  YEAR(t.date_time),
-  MONTH(t.date_time)
+    YEAR(date), MONTH(date)
+ORDER BY 
+    YEAR(date), MONTH(date);
 
   `;
   return new Promise((resolve, reject) => {
@@ -789,32 +789,37 @@ GROUP BY
   });
 };
 
+
 //----------------------------------------CurrentAndLastWeek With the day starting on Monday --------------------------------------------------------------//
 exports.getWeeklyDataForCurrentAndLastWeek = () => {
   const getWeeklyDataForCurrentAndLastWeek = `
-    SELECT 
-      YEAR(date_time) as year,
-      WEEK(date_time, 1) as week,
-      DAYNAME(date_time) as day,
-      DATE(date_time) as date,
-      SUM(last_apparent_power) as total_apparent_power
-    FROM (
-      SELECT 
-        date_time,
-        DRN,
-        apparent_power as last_apparent_power,
-        ROW_NUMBER() OVER (PARTITION BY DATE(date_time), DRN ORDER BY date_time DESC) as rn
-      FROM 
-        MeteringPower 
-      WHERE 
-        WEEK(date_time, 1) IN (WEEK(CURRENT_DATE(), 1), WEEK(CURRENT_DATE(), 1) - 1)
-    ) t
-    WHERE t.rn = 1
-    GROUP BY 
-      YEAR(t.date_time),
-      WEEK(t.date_time, 1),
-      DAYNAME(t.date_time),
-      DATE(t.date_time)
+  SELECT 
+  YEAR(record_date) as year,
+  WEEK(record_date, 1) as week,
+  DAYNAME(record_date) as day,
+  record_date as date,
+  SUM(final_units - initial_units) as total_apparent_power
+FROM (
+  SELECT 
+    DRN,
+    DATE(date_time) as record_date,
+    MIN(units) as initial_units,
+    MAX(units) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    WEEK(date_time, 1) IN (WEEK(CURRENT_DATE(), 1), WEEK(CURRENT_DATE(), 1) - 1)
+    AND YEAR(date_time) IN (YEAR(CURRENT_DATE()), YEAR(CURRENT_DATE()) - 1)
+  GROUP BY 
+    DRN, 
+    DATE(date_time)
+) t
+GROUP BY 
+  YEAR(record_date),
+  WEEK(record_date, 1),
+  DAYNAME(record_date),
+  record_date;
+
   `;
   return new Promise((resolve, reject) => {
     db.query(getWeeklyDataForCurrentAndLastWeek,
@@ -921,18 +926,22 @@ exports.getApparentPowerByTimePeriodsBySuburb = function(suburbs, callback) {
   console.log(suburbs);
   const query = `
   SELECT 
-    SUM(IF(DATE(t.date_time) = CURDATE(), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentDayApparentPower,
-    SUM(IF(MONTH(t.date_time) = MONTH(CURDATE()) AND YEAR(t.date_time) = YEAR(CURDATE()), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentMonthApparentPower,
-    SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()), CAST(t.apparent_power AS DECIMAL), 0)) / 1000 as currentYearApparentPower
+  SUM(IF(DATE(record_date) = CURDATE(), final_units - initial_units, 0)) as currentDayTotal,
+  SUM(IF(MONTH(record_date) = MONTH(CURDATE()) AND YEAR(record_date) = YEAR(CURDATE()), final_units - initial_units, 0)) as currentMonthTotal,
+  SUM(IF(YEAR(record_date) = YEAR(CURDATE()), final_units - initial_units, 0)) as currentYearTotal
 FROM (
-    SELECT m.DRN, m.date_time, m.apparent_power
-    FROM MeteringPower m
-    INNER JOIN (
-      SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
-      FROM MeteringPower
-      WHERE YEAR(date_time) = YEAR(CURDATE())
-      GROUP BY DRN, DATE(date_time)
-    ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+  SELECT 
+    DRN,
+    DATE(date_time) as record_date,
+    MIN(CAST(units AS DECIMAL)) as initial_units,
+    MAX(CAST(units AS DECIMAL)) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    YEAR(date_time) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
+  GROUP BY 
+    DRN, 
+    DATE(date_time)
 ) t
 WHERE t.DRN IN (
     SELECT DRN
@@ -940,8 +949,7 @@ WHERE t.DRN IN (
     WHERE Suburb IN (?)
 )
 
-
-  `;
+`;
 
   db.query(query, [suburbs], (err, results) => {
     if (err) {
@@ -950,7 +958,7 @@ WHERE t.DRN IN (
     }
 
     if (results.length === 0) {
-      return callback(null, { currentDayApparentPower: 0, currentMonthApparentPower: 0, currentYearApparentPower: 0 });
+      return callback(null, { currentDayTotal: 0, currentMonthTotal: 0, currentYearTotal: 0 });
     }
 
     callback(null, results[0]);
@@ -960,44 +968,46 @@ WHERE t.DRN IN (
 
 //Weekly Suburb Apparent Power
 exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
-  const query = `
-  SELECT 
-  DAYOFWEEK(t.date_time) as dayOfWeek,
-  SUM(IF(WEEK(t.date_time, 1) = WEEK(CURDATE(), 1), t.apparent_power, 0)) as currentWeekApparentPower,
-  SUM(IF(WEEK(t.date_time, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(t.date_time) = YEAR(CURDATE()), t.apparent_power, 0)) as lastWeekApparentPower
-FROM (
-  SELECT 
-    DRN, 
-    date_time, 
-    apparent_power
-  FROM 
-    MeteringPower
-  WHERE 
-    (DRN, date_time) IN (
-      SELECT 
-        DRN, 
-        MAX(date_time)
-      FROM 
-        MeteringPower
-      WHERE 
-        DRN IN (
-          SELECT 
-            DRN
-          FROM 
-            MeterLocationInfoTable
-          WHERE 
-            Suburb IN (?)
-        )
-      GROUP BY 
-        DRN, 
-        DAYOFWEEK(date_time)
-    )
-) t
-GROUP BY 
-  DAYOFWEEK(t.date_time)
-ORDER BY 
-  DAYOFWEEK(t.date_time)
+  console.log(suburbs);
 
+  const query = `
+    SELECT 
+      CASE WHEN DAYOFWEEK(t.record_date) = 1 THEN 7 ELSE DAYOFWEEK(t.record_date) - 1 END AS dayOfWeek,
+      SUM(IF(WEEK(t.record_date, 1) = WEEK(CURDATE(), 1), t.daily_power_consumption, 0)) AS currentWeekTotal,
+      SUM(IF(WEEK(t.record_date, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(t.record_date) = YEAR(CURDATE()), t.daily_power_consumption, 0)) AS lastWeekTotal
+    FROM (
+      SELECT 
+        record_date,
+        SUM(initial_units) - SUM(final_units) AS daily_power_consumption
+      FROM (
+        SELECT 
+          DRN,
+          DATE(date_time) AS record_date,
+          MIN(CAST(units AS DECIMAL(10, 2))) AS initial_units,
+          MAX(CAST(units AS DECIMAL(10, 2))) AS final_units
+        FROM 
+          MeterCumulativeEnergyUsage
+        WHERE 
+          DRN IN (
+            SELECT 
+              DISTINCT DRN
+            FROM 
+              MeterLocationInfoTable
+            WHERE 
+              Suburb IN (?)
+          )
+        GROUP BY 
+          DRN, 
+          DATE(date_time)
+      ) AS t
+      GROUP BY 
+        record_date
+    ) t
+    WHERE WEEK(t.record_date, 1) IN (WEEK(CURDATE(), 1), WEEK(CURDATE(), 1) - 1)
+    GROUP BY 
+      dayOfWeek
+    ORDER BY 
+      dayOfWeek;
   `;
 
   db.query(query, [suburbs], (err, results) => {
@@ -1007,44 +1017,64 @@ ORDER BY
     }
 
     // Initialize arrays for current and last week apparent power
-    let currentWeekApparentPower = Array(7).fill(0);
-    let lastWeekApparentPower = Array(7).fill(0);
+    let currentWeekTotal = Array(7).fill(0);
+    let lastWeekTotal = Array(7).fill(0);
 
     // Fill the arrays with the query results
     results.forEach(result => {
+      // Adjust dayOfWeek to start from 0 (Sunday) instead of 1 (Monday)
       let dayOfWeek = (result.dayOfWeek + 5) % 7;
-      currentWeekApparentPower[dayOfWeek] = result.currentWeekApparentPower / 1000;
-      lastWeekApparentPower[dayOfWeek] = result.lastWeekApparentPower / 1000;
+      currentWeekTotal[dayOfWeek] = result.currentWeekTotal;
+      lastWeekTotal[dayOfWeek] = result.lastWeekTotal;
     });
 
-    callback(null, { currentWeekApparentPower , lastWeekApparentPower });
+    callback(null, { currentWeekTotal, lastWeekTotal });
   });
-}
+};
+
 
 //Yearly Suburb Apparent Power
 exports.getYearlyApparentPowerBySuburb = function(suburbs, callback) {
   const query = `
   SELECT 
-  MONTH(t.date_time) as month,
-  SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()), t.apparent_power, 0)) / 1000 as currentYearApparentPower,
-  SUM(IF(YEAR(t.date_time) = YEAR(CURDATE()) - 1, t.apparent_power, 0)) / 1000 as lastYearApparentPower
+  MONTH(t.record_date) as month,
+  SUM(IF(YEAR(t.record_date) = YEAR(CURDATE()), t.monthly_power_consumption, 0)) as currentYearPowerConsumption,
+  SUM(IF(YEAR(t.record_date) = YEAR(CURDATE()) - 1, t.monthly_power_consumption, 0)) as lastYearPowerConsumption
 FROM (
-  SELECT m.DRN, m.date_time, m.apparent_power
-  FROM MeteringPower m
-  INNER JOIN (
-    SELECT DRN, DATE(date_time) as date, MAX(date_time) as maxDateTime
-    FROM MeteringPower
-    WHERE YEAR(date_time) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
-    GROUP BY DRN, MONTH(date_time), YEAR(date_time)
-  ) sub_m ON m.DRN = sub_m.DRN AND m.date_time = sub_m.maxDateTime
+  SELECT 
+    record_date,
+    SUM(final_units) - SUM(initial_units) AS monthly_power_consumption
+  FROM (
+    SELECT 
+      DRN,
+      DATE(date_time) AS record_date,
+      MIN(CAST(units AS DECIMAL(10, 2))) AS initial_units,
+      MAX(CAST(units AS DECIMAL(10, 2))) AS final_units
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      DRN IN (
+        SELECT 
+          DISTINCT DRN
+        FROM 
+          MeterLocationInfoTable
+        WHERE 
+          Suburb = 'Academia'
+      )
+    GROUP BY 
+      DRN, 
+      MONTH(record_date), 
+      YEAR(record_date)
+  ) AS t
+  GROUP BY 
+    record_date
 ) t
-WHERE t.DRN IN (
-  SELECT DRN
-  FROM MeterLocationInfoTable
-  WHERE Suburb IN (?)
-)
-GROUP BY MONTH(t.date_time), YEAR(t.date_time)
-ORDER BY YEAR(t.date_time), MONTH(t.date_time);
+WHERE YEAR(t.record_date) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
+GROUP BY 
+  MONTH(t.record_date)
+ORDER BY 
+  MONTH(t.record_date)
+
 
   `;
 
@@ -1055,18 +1085,18 @@ ORDER BY YEAR(t.date_time), MONTH(t.date_time);
     }
 
     // Initialize arrays for current and last year apparent power
-    let currentYearApparentPower = Array(12).fill(0);
-    let lastYearApparentPower = Array(12).fill(0);
+    let currentYearPowerConsumption = Array(12).fill(0);
+    let lastYearPowerConsumption = Array(12).fill(0);
 
     // Fill the arrays with the query results
     results.forEach(result => {
       // MySQL's MONTH function returns 1 for January, 2 for February, ..., 12 for December
       let month = result.month - 1; // Adjust it to make January be 0, February be 1, ..., December be 11
-      currentYearApparentPower[month] = result.currentYearApparentPower ;
-      lastYearApparentPower[month] = result.lastYearApparentPower ;
+      currentYearPowerConsumption[month] = result.currentYearPowerConsumption ;
+      lastYearPowerConsumption[month] = result.lastYearPowerConsumption ;
     });
 
-    callback(null, { currentYearApparentPower, lastYearApparentPower });
+    callback(null, { currentYearPowerConsumption, lastYearPowerConsumption });
   });
 }
 
