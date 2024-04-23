@@ -311,13 +311,28 @@ exports.getStartDate = () => {
 
 exports.getCurrentDayData = () => {
   const getCurrentDayData = `
-    SELECT DRN, apparent_power
-    FROM (
-      SELECT DRN, apparent_power, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
-      FROM MeteringPower
-      WHERE DATE(date_time) = CURDATE() AND HOUR(date_time) = HOUR(NOW())
-    ) t
-    WHERE t.rn = 1
+  SELECT 
+  t.DRN, 
+  t.final_units - t.initial_units as power_consumption
+FROM (
+  SELECT 
+    DRN, 
+    date_time, 
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units,
+    ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
+  FROM 
+  MeterCumulativeEnergyUsage
+  WHERE 
+    DATE(date_time) = CURDATE() AND 
+    HOUR(date_time) = HOUR(NOW())
+  GROUP BY 
+    DRN, 
+    HOUR(date_time)
+) t
+WHERE 
+  t.rn = 1
+
   `;
   
   return new Promise((resolve, reject) => {
@@ -775,39 +790,65 @@ exports.fetchDRNs = async (city) => {
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {
   const getCurrentDayData = `
-  SELECT SUM(units_change) AS total_energy
-  FROM (
-    SELECT 
-      SUM(units - LAG(units, 1, units) OVER (PARTITION BY DRN ORDER BY date_time)) AS units_change
-    FROM 
-      MeterCumulativeEnergyUsage
-    WHERE 
-      DATE(date_time) = CURDATE()
-  ) AS subquery
+  SELECT 
+  DATE(t.date_time) as date, 
+  SUM(t.final_units - t.initial_units) as total_energy
+FROM (
+  SELECT 
+    DRN, 
+    date_time, 
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    DATE(date_time) = CURDATE()
+  GROUP BY 
+    DRN, 
+    DATE(date_time)
+) t
+
 `;
 
 const getCurrentMonthData = `
-  SELECT SUM(units_change) AS total_energy
-  FROM (
-    SELECT 
-      SUM(units - LAG(units, 1, units) OVER (PARTITION BY DRN ORDER BY date_time)) AS units_change
-    FROM 
-      MeterCumulativeEnergyUsage
-    WHERE 
-      YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE())
-  ) AS subquery
+SELECT 
+SUM(t.final_units - t.initial_units) as total_energy
+FROM (
+SELECT 
+  DRN, 
+  DATE(date_time) as date, 
+  MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+  MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+FROM 
+  MeterCumulativeEnergyUsage
+WHERE 
+  YEAR(date_time) = YEAR(CURDATE()) AND 
+  MONTH(date_time) = MONTH(CURDATE())
+GROUP BY 
+  DRN, 
+  DATE(date_time)
+) t
+
 `;
 
 const getCurrentYearData = `
-  SELECT SUM(units_change) AS total_energy
-  FROM (
-    SELECT 
-      SUM(units - LAG(units, 1, units) OVER (PARTITION BY DRN ORDER BY date_time)) AS units_change
-    FROM 
-      MeterCumulativeEnergyUsage
-    WHERE 
-      YEAR(date_time) = YEAR(CURDATE())
-  ) AS subquery
+SELECT 
+SUM(t.final_units - t.initial_units) as total_energy
+FROM (
+SELECT 
+  DRN, 
+  DATE(date_time) as date, 
+  MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+  MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+FROM 
+  MeterCumulativeEnergyUsage
+WHERE 
+  YEAR(date_time) = YEAR(CURDATE())
+GROUP BY 
+  DRN, 
+  DATE(date_time)
+) t
+
 `;
 
   return new Promise((resolve, reject) => {
@@ -821,9 +862,9 @@ const getCurrentYearData = `
               if (err) reject(err);
               else {
                 resolve({
-                  day: currentDayData[0].total_apparent_power ,
-                  month: currentMonthData[0].total_apparent_power,
-                  year: currentYearData[0].total_apparent_power
+                  day: currentDayData[0].total_energy ,
+                  month: currentMonthData[0].total_energy,
+                  year: currentYearData[0].total_energy
                 });
               }
             });

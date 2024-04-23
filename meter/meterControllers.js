@@ -179,7 +179,7 @@ exports.getCurrentDayEnergy = (req, res) => {
   
   energyService.getCurrentDayData()
     .then(currentDayData => {
-      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.apparent_power), 0) / 1000;
+      const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.power_consumption), 0) ;
       res.json({ totalEnergy  });
     })
     .catch(err => {
