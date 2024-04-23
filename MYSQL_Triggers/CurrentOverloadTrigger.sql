@@ -12,7 +12,7 @@ BEGIN
         FROM MeteringPower
         WHERE DRN = NEW.DRN
         ORDER BY id DESC
-        LIMIT 20
+        LIMIT 10
     ) AS subquery;
     
     -- Check if the sum exceeds the threshold

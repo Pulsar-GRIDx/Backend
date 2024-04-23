@@ -85,7 +85,9 @@ exports.signIn = async (Email, Password, GuestID) => {
         if (err) {
           reject(err);
         } else if (results.length === 0) {
-          reject(new Error('Authentication failed'));
+        const notFoundError = new Error('Email not found');
+        notFoundError.status = 404; // Set a status code for not found
+        reject(notFoundError);
         } else {
           resolve(results[0]);
         }
@@ -93,9 +95,11 @@ exports.signIn = async (Email, Password, GuestID) => {
     });
 
     const isMatch = await bcrypt.compare(Password, admin.Password);
-    if (!isMatch) {
-      throw new Error('Authentication failed');
-    }
+  if (!isMatch) {
+    const mismatchError = new Error('Password mismatch');
+    mismatchError.status = 401; // Unauthorized
+    throw mismatchError; // Throw the custom error
+  }
 
     await new Promise((resolve, reject) => {
       connection.query(updateUserQuery, [admin.Admin_ID], (err, updateResult) => {

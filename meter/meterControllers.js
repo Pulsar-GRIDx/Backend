@@ -270,10 +270,10 @@ exports.getDRNDATA = (req, res) => {
       const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
 
       const response = {
-        currentWeekResult: currentWeekResult.map(value => parseFloat(value.toFixed(2))),
-        lastWeekResult: lastWeekResult.map(value => parseFloat(value.toFixed(2))),
-        currentMonthResult: currentMonthResult.map(value => parseFloat(value.toFixed(2))),
-        lastMonthResult: lastMonthResult.map(value => parseFloat(value.toFixed(2))),
+        currentWeekResult: currentWeekResult.map(value => parseFloat(value)),
+        lastWeekResult: lastWeekResult.map(value => parseFloat(value)),
+        currentMonthResult: currentMonthResult.map(value => parseFloat(value)),
+        lastMonthResult: lastMonthResult.map(value => parseFloat(value)),
         currentweekVoltageTotal,
         currentweekCurrentTotal,
         startDate,

@@ -405,13 +405,29 @@ exports.getEnergyByDrn = (suburb, drn) => {
 
 exports.getCurrentWeekData = (DRN) => {
   const query = `
-    SELECT DATE(date_time) as date, SUM(apparent_power) as total_apparent_power
-    FROM MeteringPower
-    WHERE
-        WEEKDAY(date_time) BETWEEN 0 AND 6 AND
-        WEEK(date_time, 1) = WEEK(CURDATE(), 1) AND
-        DRN = ?
-    GROUP BY date
+   
+SELECT 
+DATE(t.date_time) as date, 
+SUM(t.final_units - t.initial_units) as total_energy_consumption
+FROM (
+SELECT 
+  DRN, 
+  date_time, 
+  MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+  MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+FROM 
+  MeterCumulativeEnergyUsage
+WHERE 
+  DRN = ? AND 
+  WEEKDAY(date_time) BETWEEN 0 AND 6 AND
+  WEEK(date_time, 1) = WEEK(CURDATE(), 1)
+GROUP BY 
+  DRN, 
+  DATE(date_time)
+) t
+GROUP BY 
+DATE(t.date_time)
+
   `;
 
   return new Promise((resolve, reject) => {
@@ -420,6 +436,7 @@ exports.getCurrentWeekData = (DRN) => {
         reject(err);
       } else {
         resolve(data);
+      // console.log(data);
       }
     });
   });
@@ -427,13 +444,28 @@ exports.getCurrentWeekData = (DRN) => {
 
 exports.getLastWeekData = (DRN) => {
   const query = `
-    SELECT DATE(date_time) as date, SUM(apparent_power) as total_apparent_power
-    FROM MeteringPower
-    WHERE
-        WEEKDAY(date_time) BETWEEN 0 AND 6 AND
-        WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 AND
-        DRN = ?
-    GROUP BY date
+  SELECT 
+  DATE(t.date_time) as date, 
+  SUM(t.final_units - t.initial_units) as total_energy_consumption
+FROM (
+  SELECT 
+    DRN, 
+    date_time, 
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+  MeterCumulativeEnergyUsage
+  WHERE 
+    DRN = ? AND 
+    WEEKDAY(date_time) BETWEEN 0 AND 6 AND
+    WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1
+  GROUP BY 
+    DRN, 
+    DATE(date_time)
+) t
+GROUP BY 
+  DATE(t.date_time)
+
   `;
 
   return new Promise((resolve, reject) => {
@@ -447,16 +479,33 @@ exports.getLastWeekData = (DRN) => {
   });
 };
 
-
+//DRN CurrentMonth and LastMonth
 
 exports.getCurrentMonthData = (DRN) => {
   const query = `
-    SELECT DATE(date_time) as date, SUM(apparent_power) as total_apparent_power
-    FROM MeteringPower
-    WHERE
-        YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE())
-        AND DRN = ?
-    GROUP BY date
+    
+SELECT 
+DATE(t.date_time) as date, 
+SUM(t.final_units - t.initial_units) as total_energy_consumption
+FROM (
+SELECT 
+  DRN, 
+  date_time, 
+  MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+  MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+FROM 
+  MeterCumulativeEnergyUsage
+WHERE 
+  DRN = ? AND 
+  YEAR(date_time) = YEAR(CURDATE()) AND 
+  MONTH(date_time) = MONTH(CURDATE())
+GROUP BY 
+  DRN, 
+  DATE(date_time)
+) t
+GROUP BY 
+DATE(t.date_time)
+
   `;
 
   return new Promise((resolve, reject) => {
@@ -472,12 +521,28 @@ exports.getCurrentMonthData = (DRN) => {
 
 exports.getLastMonthData = (DRN) => {
   const query = `
-    SELECT DATE(date_time) as date, SUM(apparent_power) as total_apparent_power
-    FROM MeteringPower
-    WHERE
-        YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH)
-        AND DRN = ?
-    GROUP BY date
+  SELECT 
+  DATE(t.date_time) as date, 
+  SUM(t.final_units - t.initial_units) as total_energy_consumption
+FROM (
+  SELECT 
+    DRN, 
+    date_time, 
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    DRN = ? AND 
+    YEAR(date_time) = YEAR(CURDATE() - INTERVAL 1 MONTH) AND 
+    MONTH(date_time) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+  GROUP BY 
+    DRN, 
+    DATE(date_time)
+) t
+GROUP BY 
+  DATE(t.date_time)
+
   `;
 
   return new Promise((resolve, reject) => {
@@ -496,7 +561,7 @@ exports.getLastMonthData = (DRN) => {
 exports.CalculateDrnData = (allData) => {
   return allData.reduce((acc, record) => {
     const date = record.date.toISOString().split('T')[0];
-    const energy = Number(record.total_apparent_power) / 1000 ;
+    const energy = Number(record.total_energy_consumption) ;
     acc[date] = (acc[date] || 0) + energy;
     return acc;
   }, {});
@@ -555,11 +620,31 @@ exports.calculateDRNVoltageAndCurrent = (readings) => {
 
 
 exports.getDailyMeterEnergy  = (DRN) => {
-  const getMetaData = "SELECT apparent_power FROM MeteringPower WHERE DATE(date_time) = CURDATE() AND DRN = ? ORDER BY date_time DESC LIMIT 1";
+  const getMetaData = `SELECT 
+  t.final_units - t.initial_units as power_consumption
+FROM (
+  SELECT 
+    DRN, 
+    date_time, 
+    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+  FROM 
+    MeterCumulativeEnergyUsage
+  WHERE 
+    DRN = ? AND 
+    DATE(date_time) = CURDATE()
+  GROUP BY 
+    DRN, 
+    HOUR(date_time)
+) t
+ORDER BY 
+  t.date_time DESC
+LIMIT 1
+`;
  return new Promise ((resolve ,reject) =>{
   db.query(getMetaData ,[DRN],(err,meterData) => {
     if (err) reject(err);
-    else resolve(meterData) / 1000;
+    else resolve(meterData);
     
   });
  });
@@ -689,53 +774,40 @@ exports.fetchDRNs = async (city) => {
 
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {
-  const getCurrentDayData =`
-  SELECT 
-    record_date AS date,
-    SUM(initial_units) - SUM(final_units) AS total_apparent_power
-FROM (
-    SELECT 
-        DRN,
-        DATE(date_time) AS record_date,
-        MIN(units) AS initial_units,
-        MAX(units) AS final_units
-    FROM MeterCumulativeEnergyUsage
-    WHERE DATE(date_time) = CURDATE()
-    GROUP BY DRN, DATE(date_time)
-) AS t
-GROUP BY record_date
-`;
-
-
-
-
-  
-  const getCurrentMonthData = `SELECT 
-  MONTH(record_date) AS month,
-  YEAR(record_date) AS year,
-  SUM(total_apparent_power) AS total_apparent_power
-FROM (
-  SELECT 
-      DATE(date_time) AS record_date,
-      SUM(CAST(final_units AS DECIMAL(10,2))) - SUM(CAST(initial_units AS DECIMAL(10,2))) AS total_apparent_power
+  const getCurrentDayData = `
+  SELECT SUM(units_change) AS total_energy
   FROM (
-      SELECT 
-          DRN,
-          date_time,
-          MIN(units) AS initial_units,
-          MAX(units) AS final_units
-      FROM MeterCumulativeEnergyUsage
-      WHERE MONTH(date_time) = MONTH(CURRENT_DATE()) AND YEAR(date_time) = YEAR(CURRENT_DATE())
-      GROUP BY DRN, DATE(date_time)
-  ) AS t
-  GROUP BY record_date
-) AS t2
-GROUP BY month, year
-
+    SELECT 
+      SUM(units - LAG(units, 1, units) OVER (PARTITION BY DRN ORDER BY date_time)) AS units_change
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      DATE(date_time) = CURDATE()
+  ) AS subquery
 `;
-  const getCurrentYearData = `SELECT SUM(daily_power_consumption) as total_apparent_power FROM DailyPowerConsumption where year(date) = year(curdate());
 
+const getCurrentMonthData = `
+  SELECT SUM(units_change) AS total_energy
+  FROM (
+    SELECT 
+      SUM(units - LAG(units, 1, units) OVER (PARTITION BY DRN ORDER BY date_time)) AS units_change
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      YEAR(date_time) = YEAR(CURDATE()) AND MONTH(date_time) = MONTH(CURDATE())
+  ) AS subquery
+`;
 
+const getCurrentYearData = `
+  SELECT SUM(units_change) AS total_energy
+  FROM (
+    SELECT 
+      SUM(units - LAG(units, 1, units) OVER (PARTITION BY DRN ORDER BY date_time)) AS units_change
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      YEAR(date_time) = YEAR(CURDATE())
+  ) AS subquery
 `;
 
   return new Promise((resolve, reject) => {
@@ -749,7 +821,7 @@ GROUP BY month, year
               if (err) reject(err);
               else {
                 resolve({
-                  day: currentDayData[0].total_apparent_power / 1000,
+                  day: currentDayData[0].total_apparent_power ,
                   month: currentMonthData[0].total_apparent_power,
                   year: currentYearData[0].total_apparent_power
                 });
