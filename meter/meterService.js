@@ -965,9 +965,10 @@ exports.getApparentPowerSum = function(callback) {
       WHERE t.rn = 1
       GROUP BY hour
   `;
+  
   db.query(query, (err, results) => {
       if (err) {
-          console.log('Error Querying the database:', err);
+          console.log('Error querying the database:', err);
           return callback({ error: 'Database query failed', details: err });
       }
 
@@ -975,11 +976,17 @@ exports.getApparentPowerSum = function(callback) {
       const sums = new Array(24).fill(0);
 
       results.forEach(row => {
-          sums[row.hour] = row.sum / 1000;
+          // Calculate the sum divided by 1000 and round to two decimal places
+          const sum = (row.sum / 1000).toFixed(2);
+          // Assign the rounded sum to the corresponding hour in the sums array
+          sums[row.hour] = parseFloat(sum);
       });
-      callback(null,{sums} );
+
+      // Pass the sums array to the callback function
+      callback(null, { sums });
   });
 }
+
 
 
 //Current hour avarage voltage and current totals
@@ -1037,7 +1044,8 @@ exports.getSumApparentPower = function(callback) {
      
       
 
-      const sum = results[0].sum / 1000;
+      // Calculate the sum divided by 1000 and round to two decimal places
+        const sum = (results[0].sum / 1000).toFixed(2);
       callback(0, { sum });
   });
 }
