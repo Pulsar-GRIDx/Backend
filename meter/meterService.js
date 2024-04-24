@@ -20,34 +20,49 @@ exports.getAllTotalMeters = function() {
 
 ///-------------------------------------Active Inactive meters-----------------------------------------------------///
 exports.getAllActiveAndInactiveMeters = function(callback) {
+  const getTotal = `SELECT COUNT(DISTINCT DRN) as totalMeters FROM MeterProfileReal`;
   const getAllActiveAndInactiveMeters = `
-  SELECT DRN, mains_state
-  FROM (
-    SELECT DRN, mains_state, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
-    FROM MeterLoadControl
-    WHERE DATE(date_time) = CURDATE()
-  ) t
-  WHERE t.rn = 1`;
-  
+      SELECT DRN, mains_state
+      FROM (
+          SELECT DRN, mains_state, ROW_NUMBER() OVER (PARTITION BY DRN ORDER BY date_time DESC) as rn
+          FROM MeterLoadControl
+          WHERE DATE(date_time) = CURDATE()
+      ) t
+      WHERE t.rn = 1`;
 
   db.query(getAllActiveAndInactiveMeters, (err, results) => {
-    if (err) {
-      console.log('Error Querying the database:', err);
-      return callback({ error: 'Database query failed', details: err });
-    }
+      if (err) {
+          console.log('Error querying the database:', err);
+          return callback({ error: 'Database query failed', details: err });
+      }
 
-    if (results.length === 0) {
-      console.log('No data found',err );
-      return callback({ error: 'No data found', details: err });
-    }
+      if (results.length === 0) {
+          console.log('No data found');
+          return callback({ error: 'No data found' });
+      }
 
-    // Count occurrences of '0' and '1' in the 'state' column
-    const inactiveMetersCount = results.filter(row => row.mains_state === '0').length;
-    const activeMetersCount = results.filter(row => row.mains_state === '1').length;
+      // Count occurrences of '0' and '1' in the 'mains_state' column
+      const inactiveMetersCount = results.filter(row => row.mains_state === '0').length;
+      const activeMetersCount = results.filter(row => row.mains_state === '1').length;
 
-    callback(null,{ inactiveMeters: inactiveMetersCount, activeMeters: activeMetersCount });
+      // Retrieve the total count of meters
+      db.query(getTotal, (err, totalResult) => {
+          if (err) {
+              console.log('Error querying the database:', err);
+              return callback({ error: 'Database query failed', details: err });
+          }
+          
+          const totalMeters = totalResult[0].totalMeters;
+
+          // Calculate the count of inactive meters using the total count
+          const inactiveMeters = totalMeters - activeMetersCount;
+
+          // Pass the counts to the callback function
+          callback(null, { inactiveMeters, activeMeters: activeMetersCount });
+      });
   });
 };
+
 
 //-------------------------------------------TokenAmount Api---------------------------------------//
 exports.getTokenAmount = function(currentDate, callback) {

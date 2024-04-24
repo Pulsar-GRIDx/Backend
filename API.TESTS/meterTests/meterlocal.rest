@@ -11,6 +11,7 @@ Content-Type: application/json
 ###
 get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzk2ODk1MSwiZXhwIjoxNzEzOTcyNTUxfQ.Hwi-5FzsNZ0oDsAb51JHc_QIlqVfuGbuN8wFZdVLSKQ
 ###
 get http://localhost:4000/totalMeters
 Content-Type: application/json
