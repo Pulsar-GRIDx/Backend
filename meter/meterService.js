@@ -724,7 +724,29 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
 // Function to get active power
 exports.getGridTopologyActivePower = (meterDRN) => {
   return new Promise((resolve, reject) => {
-    const getActiveEnergy = 'SELECT apparent_power FROM MeteringPower WHERE DATE(date_time) = CURDATE() AND DRN = ? ORDER BY date_time DESC LIMIT 1';
+    const getActiveEnergy = `SELECT 
+    t.DRN, 
+    t.date, 
+    (t.final_units - t.initial_units) as total_power_consumption
+  FROM (
+    SELECT 
+      DRN, 
+      DATE(date_time) as date, 
+      MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+      MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      DATE(date_time) = CURDATE() AND 
+      DRN = ?
+    GROUP BY 
+      DRN, 
+      DATE(date_time)
+  ) t
+  ORDER BY 
+    t.date DESC 
+  LIMIT 1;
+  `;
 
     db.query(getActiveEnergy, [meterDRN], (err, results) => {
       if (err) {

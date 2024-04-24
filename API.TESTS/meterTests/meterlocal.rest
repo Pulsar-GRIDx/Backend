@@ -139,6 +139,7 @@ Content-Type: application/json
 ####
 post https://backend2.gridxmeter.com/gridTopology
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzk1ODM0NiwiZXhwIjoxNzEzOTYxOTQ2fQ.QC2zBL2A7nrApmSAdRvKsYWNWMfaa-O-o_GIDcWRljg
 
 {
   "cities":[
