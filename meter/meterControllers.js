@@ -371,7 +371,8 @@ function convertDataToMockTree(data) {
       let locationActiveEnergy = 0;
       const locationNode = {
         key: `${locationName}`,
-        title: `Location: ${locationName}`,
+        name: `Location: ${locationName}`,
+        value:`kwh: ${(locationActiveEnergy).toFixed(2)}`,
         children: [],
       };
 
@@ -379,14 +380,16 @@ function convertDataToMockTree(data) {
         const transformerData = data[city][locationName].transformers[transformerName];
         const transformerNode = {
           key: `${transformerName}`,
-          title: `Transformer: ${transformerName}, Active Energy: ${(transformerData.active_energy / 1000).toFixed(2)} kWh`,
+          name: `Transformer: ${transformerName}`,
+          value: `kwh: ${(transformerData.active_energy).toFixed(2)}`,
           children: [],
         };
 
         transformerData.meters.forEach(meterData => {
           transformerNode.children.push({
             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
-            title: `DRN: ${meterData.DRN}, Active Energy: ${(meterData.active_energy / 1000 ).toFixed(2)} kWh`,
+            name: `DRN: ${meterData.DRN}`,
+            value: `kwh: ${(meterData.active_energy).toFixed(2)}`,
           });
         });
 
@@ -394,7 +397,7 @@ function convertDataToMockTree(data) {
         locationActiveEnergy += transformerData.active_energy;
       }
 
-      locationNode.title += `, Active Energy: ${(locationActiveEnergy / 1000 ).toFixed(2)} kWh`;
+      locationNode.value;
       mockTreeData.push(locationNode);
     }
   }
