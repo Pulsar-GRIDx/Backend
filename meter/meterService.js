@@ -832,22 +832,7 @@ GROUP BY
 `;
 
 const getCurrentYearData = `
-SELECT 
-SUM(t.final_units - t.initial_units) as total_energy
-FROM (
-SELECT 
-  DRN, 
-  DATE(date_time) as date, 
-  MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
-  MAX(CAST(units AS DECIMAL(10, 2))) as final_units
-FROM 
-  MeterCumulativeEnergyUsage
-WHERE 
-  YEAR(date_time) = YEAR(CURDATE())
-GROUP BY 
-  DRN, 
-  DATE(date_time)
-) t
+SELECT SUM(Daily_power_consumption)as total_energy FROM DailyPowerConsumption WHERE year(date) = year(CURDATE())
 
 `;
 
