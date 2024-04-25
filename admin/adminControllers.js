@@ -25,8 +25,11 @@ exports.signIn = async (req, res) => {
     if (!emailRegex.test(Email)) {
       // Email is invalid
       return res.status(400).json({ error: 'Invalid email syntax' });
-  }
+    }
+
     const result = await adminService.signIn(Email, Password);
+
+    // Set the access token in a cookie
     res.cookie('accessToken', result.token, {
       httpOnly: false,
       secure: true, // Set this to true for HTTPS
@@ -35,25 +38,32 @@ exports.signIn = async (req, res) => {
       path: '/',
       sameSite: 'None',
     });
+
     // Set CORS headers
-    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com','https://admin.gridxmeter.com','http://localhost:4000'); 
+    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com', 'https://admin.gridxmeter.com', 'http://localhost:4000');
     res.header('Access-Control-Allow-Credentials', true);
+
     // Send the response with both token and user data
     res.status(200).json({
       message: 'Admin signed in successfully',
       token: result.token,
       user: result.user,
-
-      
-      
-    }
-  );
-    
+    });
   } catch (error) {
     console.error('Error during sign-in:', error);
-    res.status(500).json({ error: 'Sign-in failed', details: error.message });
+
+    // Handle specific error statuses and send them to the front end
+    if (error.status === 404) {
+      return res.status(404).json({ error: 'Email not found' });
+    } else if (error.status === 401) {
+      return res.status(401).json({ error: 'Incorrect Password' });
+    } else {
+      // Send a generic 500 error if the error status is not explicitly handled
+      res.status(500).json({ error: 'Sign-in failed', details: error.message });
+    }
   }
 };
+
 
 exports.protected = (req, res) => {
   res.json({ message: 'Protected resource accessed' });
