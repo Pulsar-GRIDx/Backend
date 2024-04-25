@@ -297,11 +297,11 @@ exports.calculateSystemVoltageAndCurrent = (readings) => {
 
   // Calculate the average voltage
   const totalVoltage = result.totalVoltage / result.count;
-  const totalCurrent = result.totalCurrent / result.count;
+  const totalCurrent = (result.totalCurrent / result.count).toFixed(2);
 
   return {
     totalVoltage,
-    totalCurrent,
+    totalCurrent:parseFloat(totalCurrent),
   };
 };
 

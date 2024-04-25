@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
     "Email": "admin@pulsar.com",
-    "Password": "Admin@1234"
+    "Password": "Admin@123"
     
     
     
