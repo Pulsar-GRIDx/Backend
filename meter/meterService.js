@@ -827,6 +827,8 @@ exports.fetchDRNs = async (city) => {
 
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {
+
+  
   const getCurrentDayData = `
   SELECT 
   DATE(t.date_time) as date, 
@@ -1122,7 +1124,7 @@ exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
     FROM (
       SELECT 
         record_date,
-        SUM(initial_units) - SUM(final_units) AS daily_power_consumption
+        SUM(final_units) - SUM(initial_units) AS daily_power_consumption
       FROM (
         SELECT 
           DRN,

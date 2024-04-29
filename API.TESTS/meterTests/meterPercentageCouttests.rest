@@ -10,3 +10,18 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 get http://localhost:4000/inactive_state_count
 Content-Type: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzU1NDIxMCwiZXhwIjoxNzEzNTU3ODEwfQ.JZ9aI69CkEsSQkb4HSV9CBLkg4Y7u2ycFT7PmFHSxCA
+###
+get http://localhost:4000/powerIncreaseOrDecrease
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDM3NDEzMywiZXhwIjoxNzE0Mzc3NzMzfQ.uUNlTuAXJqP5t_e_qXxxlU4SVDRZIYh2r0EA0suPFDQ
+###
+get http://localhost:4000/suburbIncreaseOrDecrease
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDM4NzMyNiwiZXhwIjoxNzE0MzkwOTI2fQ.sNUlbsFBgGkmnmXpiJq3LK1YcjM6zgfiTkX4hS8EySw
+
+
+{
+    "suburbs":[
+     "Academia" 
+    ]
+}

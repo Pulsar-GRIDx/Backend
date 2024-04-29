@@ -16,11 +16,17 @@ function authenticateToken(req, res, next) {
     }
   
     const token = authHeader.split(' ')[1];
+    // // Skip authentication for the /signin route
+    // if (req.path === '/signin') {
+    // return next();
+    // }
   
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if (err) {
         if (err.name === 'TokenExpiredError') {
-          return res.status(401).send('Token expired');
+          console.error('Token has expired');
+          return res.status(401).send('Token Expired')
+        // return res.status(401).redirect('/signin');
         } else {
           return res.status(403).send('Forbidden');
         }

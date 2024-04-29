@@ -31,6 +31,7 @@ const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
 const financialRoutes = require('./routes/financialRoutes');
 const suburbFinance = require('./financial/surburbFinance');
+const settingsRoutes = require('./settings/settingsRoutes');
 
 
 
@@ -71,6 +72,7 @@ app.use('/', notificationRoutes);
 app.use('/', meterPercentageRoutes);
 app.use('/finance', financialRoutes);
 app.use('/finance',suburbFinance);
+app.use('/settings', settingsRoutes);
 
 
 //Export the app server configuration
