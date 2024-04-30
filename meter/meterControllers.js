@@ -55,7 +55,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
       res.json({
         allData: allData.map(record => Number(record.token_amount)),
         startDate: new Date(startDateResult[0].startDate).toISOString().split('T')[0],
-        grandTotal: grandTotal
+        grandTotal: (grandTotal).toFixed(2),
       });
     });
   };
@@ -334,8 +334,8 @@ exports.getAllProcessedTokens = (req, res) => {
         kwh: parseFloat(token.token_amount) / 2.5,
       }));
 
-      const total = kwkData.reduce((total, record) => total + record.token_amount, 0);
-      const kwhTotal = kwkData.reduce((total, record) => total + record.kwh , 0);
+      const total = kwkData.reduce((total, record) => total + record.token_amount, 0).toFixed(2);
+      const kwhTotal = kwkData.reduce((total, record) => total + record.kwh , 0).toFixed(2);
 
       res.json({ data: kwkData, total ,kwhTotal});
     })
