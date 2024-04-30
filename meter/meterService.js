@@ -634,17 +634,19 @@ exports.calculateDRNVoltageAndCurrent = (readings) => {
     acc.count = (acc.count || 0) + 1;
 
     return acc;
-    
   }, {});
 
-  // Calculate the average voltage
-  const totalVoltage = result.totalVoltage / result.count;
-  const totalCurrent = result.totalCurrent / result.count;
+  // Calculate the average voltage and current
+  const averageVoltage = result.totalVoltage / result.count;
+  const averageCurrent = result.totalCurrent / result.count;
+  
+  // Return the average values
   return {
-    totalVoltage,
-    totalCurrent,
+    totalVoltage: averageVoltage,
+    totalCurrent: parseFloat(averageCurrent.toFixed(2)) // Convert to float and round to 2 decimal places
   };
 };
+
 
 ////
 

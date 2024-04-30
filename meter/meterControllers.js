@@ -267,17 +267,18 @@ exports.getDRNDATA = (req, res) => {
       const lastMonthResult = Object.values(lastMonthTotals);
 
       const currentweekVoltageTotal = voltageAndCurrentTotals.totalVoltage;
-      const currentweekCurrentTotal = voltageAndCurrentTotals.totalCurrent;
+      const currentweekCurrentTotal = parseFloat(voltageAndCurrentTotals.totalCurrent).toFixed(2); // Convert to float and round to 2 decimal places
 
-      const response = {
-        currentWeekResult: currentWeekResult.map(value => parseFloat(value)),
-        lastWeekResult: lastWeekResult.map(value => parseFloat(value)),
-        currentMonthResult: currentMonthResult.map(value => parseFloat(value)),
-        lastMonthResult: lastMonthResult.map(value => parseFloat(value)),
-        currentweekVoltageTotal,
-        currentweekCurrentTotal,
-        startDate,
-      };
+const response = {
+  currentWeekResult: currentWeekResult.map(value => parseFloat(value)),
+  lastWeekResult: lastWeekResult.map(value => parseFloat(value)),
+  currentMonthResult: currentMonthResult.map(value => parseFloat(value)),
+  lastMonthResult: lastMonthResult.map(value => parseFloat(value)),
+  currentweekVoltageTotal,
+  currentweekCurrentTotal, // Parse the string to float
+  startDate,
+};
+
 
       res.json(response);
     } catch (err) {
@@ -304,7 +305,7 @@ exports.getDailyMeterEnergy =(req,res)=>{
     energyService.getDailyMeterEnergy(DRN)
   ])
   .then(([meterData])=>{
-    const dailyTotalEnergy = meterData.reduce((total, record) => total + Number(record.apparent_power), 0) / 1000 ;
+    const dailyTotalEnergy = (meterData.reduce((total, record) => total + Number(record.power_consumption), 0) / 1000).toFixed(2);
     res.json({ dailyTotalEnergy });
   })
   .catch((err) =>{
