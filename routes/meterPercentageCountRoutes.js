@@ -604,4 +604,35 @@ function calculatePercentageChange(currentValue, previousValue) {
 }
 
 
+router.get('/ratioUnitsBoughtAndUsedThisMonth', (req, res) => {
+  const query = `SELECT 
+  COALESCE(SUM(token_amount), 0) as tokensBoughtMonth,
+  COALESCE(SUM(units), 0) as unitsUsedMonth
+FROM 
+  STSTokesInfo
+LEFT JOIN
+  MeterCumulativeEnergyUsage
+ON
+  DATE(STSTokesInfo.date_time) = DATE(MeterCumulativeEnergyUsage.date_time)
+WHERE 
+  YEAR(STSTokesInfo.date_time) = YEAR(CURDATE()) 
+  AND MONTH(STSTokesInfo.date_time) = MONTH(CURDATE())`;
+
+  executeQuery(query)
+    .then(results => {
+      const tokensBoughtMonth = results[0].tokensBoughtMonth;
+      const unitsUsedMonth = results[0].unitsUsedMonth;
+      
+      // Calculate the ratio
+      const ratio = unitsUsedMonth !== 0 ? tokensBoughtMonth / unitsUsedMonth : 0;
+
+      res.json({ tokensBoughtMonth, unitsUsedMonth, ratio });
+    })
+    .catch(error => {
+      console.error('Error querying the database:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});
+
+
 module.exports = router;

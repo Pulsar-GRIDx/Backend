@@ -25,3 +25,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
      "Academia" 
     ]
 }
+
+###
+get http://localhost:4000/ratioUnitsBoughtAndUsedThisMonth
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDM5NjQ1MywiZXhwIjoxNzE0NDAwMDUzfQ.-zVnGYLHgzVvcu7yc3K9oCzyZkw6AlGh5Tim_EowXZc

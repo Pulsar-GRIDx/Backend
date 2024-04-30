@@ -1,11 +1,11 @@
 const db = require('../config/db')
 
 //Service to get meter reset history
-exports.getMeterResetHistory =()=>{
-  const getMeterResetHistory = `SELECT * FROM Reset`;
+exports.getMeterResetHistory =(DRN)=>{
+  const getMeterResetHistory = `SELECT * FROM Reset WHERE DRN = ?`;
 
   return new Promise((resolve,reject)=>{
-    db.query(getMeterResetHistory,(error,results)=>{
+    db.query(getMeterResetHistory,[DRN],(error,results)=>{
       if (error) {
         reject(error);
         
@@ -20,11 +20,11 @@ exports.getMeterResetHistory =()=>{
 
 //Service to get meter calibration history 
 
-exports.getMeterCalibrationHistory =()=>{
-  const getMeterCalibrationHistory = `SELECT * FROM Calibration`;
+exports.getMeterCalibrationHistory =(DRN)=>{
+  const getMeterCalibrationHistory = `SELECT * FROM Calibration WHERE DRN = ?`;
 
   return new Promise((resolve, reject)=>{
-    db.query(getMeterCalibrationHistory,(err,results)=>{
+    db.query(getMeterCalibrationHistory,[DRN],(err,results)=>{
       if (err) {
         reject(err);
         
@@ -38,10 +38,10 @@ exports.getMeterCalibrationHistory =()=>{
 
 //Service to get Meter Mains Control History Data
 
-exports.getMeterMainsControlHistory =()=>{
-  const getMeterMainsControlHistory = `SELECT * FROM MeterMainsControlTable`;
+exports.getMeterMainsControlHistory =(DRN)=>{
+  const getMeterMainsControlHistory = `SELECT * FROM MeterMainsControlTable WHERE DRN = ?`;
   return new Promise((resolve, reject)=>{
-    db.query(getMeterMainsControlHistory,(err,results)=>{
+    db.query(getMeterMainsControlHistory,[DRN],(err,results)=>{
       if (err) {
         reject(err);
         
@@ -54,10 +54,10 @@ exports.getMeterMainsControlHistory =()=>{
 }
 
 //Service to get Meter Mains State History Data
-exports.getMeterMainsStateHistory =()=>{
-  const getMeterMainsStateHistory = `SELECT * FROM MeterMainsStateTable`;
+exports.getMeterMainsStateHistory =(DRN)=>{
+  const getMeterMainsStateHistory = `SELECT * FROM MeterMainsStateTable WHERE DRN = ?`;
   return new Promise((resolve, reject)=>{
-    db.query(getMeterMainsStateHistory,(err,results)=>{
+    db.query(getMeterMainsStateHistory,[DRN],(err,results)=>{
       if (err) {
         reject(err);
         
@@ -71,10 +71,10 @@ exports.getMeterMainsStateHistory =()=>{
 
 //Meter Heater Control History Data
 
-exports.getMeterHeaterControlHistory =()=>{
-  const getMeterHeaterControlHistory = `SELECT * FROM MeterHeaterControlTable`;
+exports.getMeterHeaterControlHistory =(DRN)=>{
+  const getMeterHeaterControlHistory = `SELECT * FROM MeterHeaterControlTable WHERE DRN = ?`;
   return new Promise((resolve, reject)=>{
-    db.query(getMeterHeaterControlHistory,(err,results)=>{
+    db.query(getMeterHeaterControlHistory,[DRN],(err,results)=>{
       if (err) {
         reject(err);
         
@@ -88,10 +88,10 @@ exports.getMeterHeaterControlHistory =()=>{
 
 //Meter Heater State History Data
 
-exports.getMeterHeaterStateHistory =()=>{
-  const getMeterHeaterStateHistory = `SELECT * FROM MeterHeaterStateTable`;
+exports.getMeterHeaterStateHistory =(DRN)=>{
+  const getMeterHeaterStateHistory = `SELECT * FROM MeterHeaterStateTable WHERE DRN = ?`;
   return new Promise((resolve, reject)=>{
-    db.query(getMeterHeaterStateHistory,(err,results)=>{
+    db.query(getMeterHeaterStateHistory,[DRN],(err,results)=>{
       if (err) {
         reject(err);
         
@@ -105,10 +105,10 @@ exports.getMeterHeaterStateHistory =()=>{
 
 //Meter STS Token history
 
-exports.getMeterSTSTokenHistory =()=>{
-  const getMeterSTSTokenHistory = `SELECT * FROM SendSTSToken`;
+exports.getMeterSTSTokenHistory =(DRN)=>{
+  const getMeterSTSTokenHistory = `SELECT * FROM SendSTSToken WHERE DRN = ?`;
   return new Promise((resolve, reject)=>{
-    db.query(getMeterSTSTokenHistory,(err,results)=>{
+    db.query(getMeterSTSTokenHistory,[DRN],(err,results)=>{
       if (err) {
         reject(err);
         
@@ -120,5 +120,21 @@ exports.getMeterSTSTokenHistory =()=>{
   })
 }
 
+exports.getTokenInformation = (DRN) =>{
 
+  const getTokenInformation = `SELECT * FROM  STSTokesInfo WHERE DRN = ?`
+
+  return new Promise((resolve, reject) =>{
+    db.query(getTokenInformation,[DRN],(err,results) =>{
+      if (err) {
+        reject(err);
+
+        
+      } else {
+        resolve(results);
+        
+      }
+    })
+  })
+}
 
