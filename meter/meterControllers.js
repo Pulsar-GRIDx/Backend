@@ -16,7 +16,7 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
     if (err) {
       console.error('Error querying MySQL:', err);
-      res.status(404).send('No active Meters');
+      res.json(0);
       return;
     }
 

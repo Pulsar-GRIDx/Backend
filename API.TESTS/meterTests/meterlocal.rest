@@ -11,7 +11,7 @@ Content-Type: application/json
 ###
 get http://localhost:4000/activeInactiveMeters
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzk2ODk1MSwiZXhwIjoxNzEzOTcyNTUxfQ.Hwi-5FzsNZ0oDsAb51JHc_QIlqVfuGbuN8wFZdVLSKQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDY0MDUwMiwiZXhwIjoxNzE0NjQ0MTAyfQ.8QFSP2wXMMEL0f7H3H7NQz3fcQVps-qtU1h-lbg5G-Q
 ###
 get http://localhost:4000/totalMeters
 Content-Type: application/json
@@ -27,6 +27,7 @@ Content-Type: application/json
 ###
 get http://localhost:4000/weeklyDataAmount
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDY0MDUwMiwiZXhwIjoxNzE0NjQ0MTAyfQ.8QFSP2wXMMEL0f7H3H7NQz3fcQVps-qtU1h-lbg5G-Q
 ###
 get https://backend2.gridxmeter.com/currentDayEnergy
 Content-Type: application/json
