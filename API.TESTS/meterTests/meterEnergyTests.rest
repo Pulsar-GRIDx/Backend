@@ -68,10 +68,9 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 
 ###
 
-get http://backend2.gridxmeter.com/energy-time-periods 
+get http://localhost:4000/energy-time-periods 
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzk0MjAxNiwiZXhwIjoxNzEzOTQ1NjE2fQ.p-FDAxh4BWVEkCJRIqxZtal1kz96pB2UG2D2IMs9yss
-
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDY0MjExMCwiZXhwIjoxNzE0NjQ1NzEwfQ.6gK4DeQVg1oGvQiuDBC1gSAs9fHhykkPQde0z3DcxzI
 ####
 get http://localhost:4000/yearly/currentAndLastYearMonthEnergyTotal
 Content-Type: application/json

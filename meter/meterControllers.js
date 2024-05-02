@@ -436,6 +436,9 @@ exports.getEnergyData = (req, res) => {
           month: parseFloat(energyData.month).toFixed(2),
           year: parseFloat(energyData.year).toFixed(2)
         };
+        if(energyData.length === 0){
+          res.json(0);
+        }
         res.json(roundedEnergyData);
       } else {
         console.log('Error: energyData is not a valid object:', energyData);

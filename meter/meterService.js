@@ -829,70 +829,72 @@ exports.fetchDRNs = async (city) => {
 
 //-----------------------------------------All time periods -------------------------------------------------------------------//
 exports.getEnergyData = () => {
-
-  
   const getCurrentDayData = `
-  SELECT 
-  DATE(t.date_time) as date, 
-  SUM(t.final_units - t.initial_units) as total_energy
-FROM (
-  SELECT 
-    DRN, 
-    date_time, 
-    MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
-    MAX(CAST(units AS DECIMAL(10, 2))) as final_units
-  FROM 
-    MeterCumulativeEnergyUsage
-  WHERE 
-    DATE(date_time) = CURDATE()
-  GROUP BY 
-    DRN, 
-    DATE(date_time)
-) t
+    SELECT 
+      DATE(t.date_time) as date, 
+      SUM(t.final_units - t.initial_units) as total_energy
+    FROM (
+      SELECT 
+        DRN, 
+        date_time, 
+        MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+        MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+      FROM 
+        MeterCumulativeEnergyUsage
+      WHERE 
+        DATE(date_time) = CURDATE()
+      GROUP BY 
+        DRN, 
+        DATE(date_time)
+    ) t
+  `;
 
-`;
+  const getCurrentMonthData = `
+    SELECT 
+      SUM(t.final_units - t.initial_units) as total_energy
+    FROM (
+      SELECT 
+        DRN, 
+        DATE(date_time) as date, 
+        MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+        MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+      FROM 
+        MeterCumulativeEnergyUsage
+      WHERE 
+        YEAR(date_time) = YEAR(CURDATE()) AND 
+        MONTH(date_time) = MONTH(CURDATE())
+      GROUP BY 
+        DRN, 
+        DATE(date_time)
+    ) t
+  `;
 
-const getCurrentMonthData = `
-SELECT 
-SUM(t.final_units - t.initial_units) as total_energy
-FROM (
-SELECT 
-  DRN, 
-  DATE(date_time) as date, 
-  MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
-  MAX(CAST(units AS DECIMAL(10, 2))) as final_units
-FROM 
-  MeterCumulativeEnergyUsage
-WHERE 
-  YEAR(date_time) = YEAR(CURDATE()) AND 
-  MONTH(date_time) = MONTH(CURDATE())
-GROUP BY 
-  DRN, 
-  DATE(date_time)
-) t
-
-`;
-
-const getCurrentYearData = `
-SELECT SUM(Daily_power_consumption)as total_energy FROM DailyPowerConsumption WHERE year(date) = year(CURDATE())
-
-`;
+  const getCurrentYearData = `
+    SELECT 
+      SUM(Daily_power_consumption) as total_energy
+    FROM 
+      DailyPowerConsumption
+    WHERE 
+      YEAR(date) = YEAR(CURDATE())
+  `;
 
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData, (err, currentDayData) => {
       if (err) reject(err);
       else {
+        const dayEnergy = currentDayData.length > 0 ? parseFloat(currentDayData[0].total_energy || 0) : 0;
+
         db.query(getCurrentMonthData, (err, currentMonthData) => {
           if (err) reject(err);
           else {
+            const monthEnergy = currentMonthData.length > 0 ? parseFloat(currentMonthData[0].total_energy || 0) : 0;
+
             db.query(getCurrentYearData, (err, currentYearData) => {
               if (err) reject(err);
               else {
-                resolve({
-                  day: currentDayData[0].total_energy ,
-                  month: currentMonthData[0].total_energy,
-                  year: currentYearData[0].total_energy
-                });
+                const yearEnergy = currentYearData.length > 0 ? parseFloat(currentYearData[0].total_energy || 0) : 0;
+
+                resolve({ day: dayEnergy, month: monthEnergy, year: yearEnergy });
               }
             });
           }
@@ -1071,33 +1073,31 @@ exports.getSumApparentPower = function(callback) {
 
 //Suburb Apparent Power Time Periods
 exports.getApparentPowerByTimePeriodsBySuburb = function(suburbs, callback) {
-  console.log(suburbs);
   const query = `
-  SELECT 
-  SUM(IF(DATE(record_date) = CURDATE(), final_units - initial_units, 0)) as currentDayTotal,
-  SUM(IF(MONTH(record_date) = MONTH(CURDATE()) AND YEAR(record_date) = YEAR(CURDATE()), final_units - initial_units, 0)) as currentMonthTotal,
-  SUM(IF(YEAR(record_date) = YEAR(CURDATE()), final_units - initial_units, 0)) as currentYearTotal
-FROM (
-  SELECT 
-    DRN,
-    DATE(date_time) as record_date,
-    MIN(CAST(units AS DECIMAL)) as initial_units,
-    MAX(CAST(units AS DECIMAL)) as final_units
-  FROM 
-    MeterCumulativeEnergyUsage
-  WHERE 
-    YEAR(date_time) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
-  GROUP BY 
-    DRN, 
-    DATE(date_time)
-) t
-WHERE t.DRN IN (
-    SELECT DRN
-    FROM MeterLocationInfoTable
-    WHERE Suburb IN (?)
-)
-
-`;
+    SELECT 
+      COALESCE(SUM(IF(DATE(record_date) = CURDATE(), final_units - initial_units, 0)), 0) as currentDayTotal,
+      COALESCE(SUM(IF(MONTH(record_date) = MONTH(CURDATE()) AND YEAR(record_date) = YEAR(CURDATE()), final_units - initial_units, 0)), 0) as currentMonthTotal,
+      COALESCE(SUM(IF(YEAR(record_date) = YEAR(CURDATE()), final_units - initial_units, 0)), 0) as currentYearTotal
+    FROM (
+      SELECT 
+        DRN,
+        DATE(date_time) as record_date,
+        MIN(CAST(units AS DECIMAL)) as initial_units,
+        MAX(CAST(units AS DECIMAL)) as final_units
+      FROM 
+        MeterCumulativeEnergyUsage
+      WHERE 
+        YEAR(date_time) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)
+      GROUP BY 
+        DRN, 
+        DATE(date_time)
+    ) t
+    WHERE t.DRN IN (
+        SELECT DRN
+        FROM MeterLocationInfoTable
+        WHERE Suburb IN (?)
+    )
+  `;
 
   db.query(query, [suburbs], (err, results) => {
     if (err) {
@@ -1105,13 +1105,16 @@ WHERE t.DRN IN (
       return callback({ error: 'Database query failed', details: err });
     }
 
-    if (results.length === 0) {
-      return callback(null, { currentDayTotal: 0, currentMonthTotal: 0, currentYearTotal: 0 });
-    }
+    const { currentDayTotal, currentMonthTotal, currentYearTotal } = results[0];
 
-    callback(null, results[0]);
+    callback(null, {
+      currentDayTotal: currentDayTotal || 0,
+      currentMonthTotal: currentMonthTotal || 0,
+      currentYearTotal: currentYearTotal || 0
+    });
   });
 }
+
 
 
 //Weekly Suburb Apparent Power

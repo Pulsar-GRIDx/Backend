@@ -60,6 +60,21 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
+// Define global error handling middleware
+const errorHandler = (err, req, res, next) => {
+  console.error('Global error handler caught an error:', err);
+
+  // Check if the error is a known type and handle it accordingly
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Bad request, invalid JSON' });
+  }
+
+  // For other types of errors, respond with a generic 500 error message
+  res.status(500).json({ error: 'An unexpected error occurred' });
+};
+
+// Apply the global error handling middleware
+app.use(errorHandler);
 
 
 // Use our routes
