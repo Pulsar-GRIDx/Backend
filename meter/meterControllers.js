@@ -323,6 +323,7 @@ exports.getAllProcessedTokens = (req, res) => {
     .then(([processedTokens]) => {
       if (!processedTokens || !Array.isArray(processedTokens)) {
         // Handle the case where processedTokens or data array is null or not present
+        res.json(0);
         return res.status(404).json({ error: 'Processed tokens not found' });
       }
 
@@ -588,3 +589,28 @@ exports.getYearlyApparentPowerBySuburb = function(req, res) {
   });
 }
 
+///------------------------------------------------------SystemProcessedTokens --------------------------------------//
+exports.getAllSystemProcessedTokensController = (req, res) => {
+  energyService.getAllSystemProcessedTokens()
+    .then((processedTokens) => {
+      if (!processedTokens || !Array.isArray(processedTokens)) {
+        return res.status(404).json({ error: 'Processed tokens not found' });
+      }
+
+      const kwkData = processedTokens.map((token) => ({
+        token_id: token.token_id,
+        date_time: token.date_time,
+        token_amount: parseFloat(token.token_amount),
+        kwh: parseFloat(token.token_amount) / 2.5,
+      }));
+
+      const total = kwkData.reduce((total, record) => total + record.token_amount, 0).toFixed(2);
+      const kwhTotal = kwkData.reduce((total, record) => total + record.kwh, 0).toFixed(2);
+
+      res.json({ data: kwkData, total, kwhTotal });
+    })
+    .catch((err) => {
+      console.log('Error querying the database:', err.message);
+      res.status(500).json({ error: 'Database query failed, try again', details: err.message });
+    });
+};

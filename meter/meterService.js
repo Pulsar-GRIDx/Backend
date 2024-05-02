@@ -1251,3 +1251,13 @@ ORDER BY
   });
 }
 
+//---------------------------------------------------SystemProccessedTokens -----------------------------------//
+exports.getAllSystemProcessedTokens = () => {
+  const getAllProcessedTokens = "SELECT token_id, date_time, token_amount FROM STSTokesInfo WHERE display_msg = 'Accept'";
+  return new Promise((resolve, reject) => {
+    db.query(getAllProcessedTokens, (err, processedTokens) => {
+      if (err) reject(err);
+      else resolve(processedTokens);
+    });
+  });
+};
