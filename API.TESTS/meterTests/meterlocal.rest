@@ -141,7 +141,7 @@ Content-Type: application/json
 ####
 post http://localhost:4000/gridTopology
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzk2MTc5NiwiZXhwIjoxNzEzOTY1Mzk2fQ.bckVaPGdLVrTyRSuuOI2gMVxVuMlqydOdHNIMtzOACs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDk3OTA4MSwiZXhwIjoxNzE0OTgyNjgxfQ.NGtiiot7xNI1CJxAr1ehCgjbPKlqzWXIi5Wi7WDvtzA
 
 {
   "cities":[
