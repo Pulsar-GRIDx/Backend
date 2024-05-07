@@ -365,47 +365,47 @@ exports.insertTransformerData = (req, res) => {
 
 
 
-function convertDataToMockTree(data) {
-  let mockTreeData = [];
+// function convertDataToMockTree(data) {
+//   let mockTreeData = [];
 
-  for (const city in data) {
-    for (const locationName in data[city]) {
-      let locationActiveEnergy = 0;
-      const locationNode = {
-        key: `${locationName}`,
-        name: `Location: ${locationName}`,
-        value:`kwh: ${(locationActiveEnergy).toFixed(2)}`,
-        children: [],
-      };
+//   for (const city in data) {
+//     for (const locationName in data[city]) {
+//       let locationActiveEnergy = 0;
+//       const locationNode = {
+//         key: `${locationName}`,
+//         name: `Location: ${locationName}`,
+//         value:`kwh: ${(locationActiveEnergy).toFixed(2)}`,
+//         children: [],
+//       };
 
-      for (const transformerName in data[city][locationName].transformers) {
-        const transformerData = data[city][locationName].transformers[transformerName];
-        const transformerNode = {
-          key: `${transformerName}`,
-          name: `Transformer: ${transformerName}`,
-          value: `kwh: ${(transformerData.active_energy).toFixed(2)}`,
-          children: [],
-        };
+//       for (const transformerName in data[city][locationName].transformers) {
+//         const transformerData = data[city][locationName].transformers[transformerName];
+//         const transformerNode = {
+//           key: `${transformerName}`,
+//           name: `Transformer: ${transformerName}`,
+//           value: `kwh: ${(transformerData.active_energy).toFixed(2)}`,
+//           children: [],
+//         };
 
-        transformerData.meters.forEach(meterData => {
-          transformerNode.children.push({
-            key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
-            name: `DRN: ${meterData.DRN}`,
-            value: `kwh: ${(meterData.active_energy).toFixed(2)}`,
-          });
-        });
+//         transformerData.meters.forEach(meterData => {
+//           transformerNode.children.push({
+//             key: `${city}-${locationName}-${transformerName}-${meterData.DRN}`,
+//             name: `DRN: ${meterData.DRN}`,
+//             value: `kwh: ${(meterData.active_energy).toFixed(2)}`,
+//           });
+//         });
 
-        locationNode.children.push(transformerNode);
-        locationActiveEnergy += transformerData.active_energy;
-      }
+//         locationNode.children.push(transformerNode);
+//         locationActiveEnergy += transformerData.active_energy;
+//       }
 
-      locationNode.value;
-      mockTreeData.push(locationNode);
-    }
-  }
+//       locationNode.value;
+//       mockTreeData.push(locationNode);
+//     }
+//   }
 
-  return mockTreeData;
-}
+//   return mockTreeData;
+// }
 
 
 
@@ -416,9 +416,9 @@ exports.fetchDRNs = async (req, res) => {
     const result = {};
     for (const city of cities) {
       const data = await energyService.fetchDRNs(city);
-      result[city] = data; // No need to convert data to mockTreeData here
+      result[city] = data; 
     }
-    res.status(200).json({ mockTreeData: convertDataToMockTree(result) }); // Convert the final result to mockTreeData
+    res.status(200).json({ result });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while fetching data' });
