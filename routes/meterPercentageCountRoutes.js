@@ -302,7 +302,7 @@ function calculatePercentageChange(currentValue, previousValue) {
 
 
 //Suburb percentage increases
-router.get('/suburbIncreaseOrDecrease', (req, res) => {
+router.post('/suburbIncreaseOrDecrease', (req, res) => {
   const suburbs = req.body.suburbs;
 
   // Define SQL queries to fetch current and previous day, month, and year data
