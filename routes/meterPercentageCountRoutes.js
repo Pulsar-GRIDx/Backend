@@ -498,7 +498,7 @@ function calculatePercentageChange(currentValue, previousValue) {
 
 
 //------------------------------------------------------------------------Suburb Token Increase or decrease ----------------------------------------------//
-router.get('/suburbRevenueIncreaseOrDecrease', (req, res) => {
+router.post('/suburbRevenueIncreaseOrDecrease', (req, res) => {
   const suburbs = req.body.suburbs;
 
   // Define SQL query to fetch current and previous day, month, and year data for revenue
