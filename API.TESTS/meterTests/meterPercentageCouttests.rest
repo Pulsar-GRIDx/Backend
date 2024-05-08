@@ -15,9 +15,9 @@ get http://localhost:4000/powerIncreaseOrDecrease
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDk4MTg1MywiZXhwIjoxNzE0OTg1NDUzfQ.0YY4v7Ve7p9E378Za94p0g4YOlJ-zjaC1-T2lLr4N_w
 ###
-get http://localhost:4000/suburbIncreaseOrDecrease
+post http://localhost:4000/suburbAdvancedPowerIncreaseOrDecrease
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDk4MTg1MywiZXhwIjoxNzE0OTg1NDUzfQ.0YY4v7Ve7p9E378Za94p0g4YOlJ-zjaC1-T2lLr4N_w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTE4NDUwNSwiZXhwIjoxNzE1MTg4MTA1fQ.Zr2LzSapWyMvCbyBr0IBdNgyYryEKDT0gNnS5xS9je4
 
 
 {
@@ -42,3 +42,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 get http://localhost:4000/monthRatios
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTA5MjEwOSwiZXhwIjoxNzE1MDk1NzA5fQ.BLhjj67HaGkSdXVltYPUeL5L1tzZS9xuGA223gC11Hc
+
+###
+POST http://localhost:4000/suburbRevenueIncreaseOrDecrease
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTE4NDUwNSwiZXhwIjoxNzE1MTg4MTA1fQ.Zr2LzSapWyMvCbyBr0IBdNgyYryEKDT0gNnS5xS9je4
+
+
+{
+    "suburbs":[
+     "Academia" 
+    ]
+}

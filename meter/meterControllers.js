@@ -306,12 +306,12 @@ exports.getDailyMeterEnergyByDRN = (req, res) => {
 
 
       const powerConsumption = parseFloat(power_consumption[0].power_consumption);
-      console.log(power_consumption);
+      // console.log(power_consumption);
 
 
       const dailyTotalEnergy = (powerConsumption / 1000).toFixed(2);
       res.json({ dailyTotalEnergy: powerConsumption });
-      console.log(dailyTotalEnergy);
+      // console.log(dailyTotalEnergy);
     })
     .catch((err) => {
       console.log('Error querying the database:', err.message);
