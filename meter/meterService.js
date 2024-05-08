@@ -651,33 +651,26 @@ exports.calculateDRNVoltageAndCurrent = (readings) => {
 ////
 
 
-exports.getDailyMeterEnergy  = (DRN) => {
-  const getMetaData = `SELECT 
-  SUM(t.final_units - t.initial_units) AS total_power_consumption
-FROM (
-  SELECT 
-    DRN, 
-    MIN(CAST(units AS DECIMAL(10, 2))) AS initial_units,
-    MAX(CAST(units AS DECIMAL(10, 2))) AS final_units
-  FROM 
-    MeterCumulativeEnergyUsage
-  WHERE 
-    DRN = ? AND 
-    DATE(date_time) = CURDATE()
-  GROUP BY 
-    DRN
-) t;
+exports.getDailyMeterEnergyByDRN = (DRN) => {
+  const getMetaData = `
+    SELECT 
+      (MAX(CAST(units AS DECIMAL(10, 2))) - MIN(CAST(units AS DECIMAL(10, 2)))) AS power_consumption
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      DRN = ? AND 
+      DATE(date_time) = CURDATE()
+  `;
 
-`;
- return new Promise ((resolve ,reject) =>{
-  db.query(getMetaData ,[DRN],(err,meterData) => {
-    if (err) reject(err);
-    else resolve(meterData);
-    
+  return new Promise((resolve, reject) => {
+    db.query(getMetaData, [DRN], (err, power_consumption) => {
+      if (err) reject(err);
+      else resolve(power_consumption);
+      
+    });
   });
- });
- 
 };
+
 
 exports.getDRNStartDate = (DRN) => {
   const getStartDate = "SELECT MIN(date_time) AS startDate FROM MeteringPower WHERE DRN = ?";

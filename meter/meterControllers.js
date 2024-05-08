@@ -298,21 +298,28 @@ const response = {
 
 
 
-exports.getDailyMeterEnergy =(req,res)=>{
+exports.getDailyMeterEnergyByDRN = (req, res) => {
   const DRN = req.params.DRN;
 
-  Promise.all([
-    energyService.getDailyMeterEnergy(DRN)
-  ])
-  .then(([meterData])=>{
-    const dailyTotalEnergy = (meterData.reduce((total, record) => total + Number(record.power_consumption), 0) / 1000).toFixed(2);
-    res.json({ dailyTotalEnergy });
-  })
-  .catch((err) =>{
-    console.log('Error quring the database:' , err.message);
-    res.status(500).json({error: 'DataBase query failed', details: err.message});
-  });
+  energyService.getDailyMeterEnergyByDRN(DRN)
+    .then((power_consumption) => {
+
+
+      const powerConsumption = parseFloat(power_consumption[0].power_consumption);
+      console.log(power_consumption);
+
+
+      const dailyTotalEnergy = (powerConsumption / 1000).toFixed(2);
+      res.json({ dailyTotalEnergy: powerConsumption });
+      console.log(dailyTotalEnergy);
+    })
+    .catch((err) => {
+      console.log('Error querying the database:', err.message);
+      res.status(500).json({ error: 'Database query failed', details: err.message });
+    });
 };
+
+
 
 ///-----------------------------------------------------GetAllProcessedTokensByDRN------------------------------------------------------------------------///
 

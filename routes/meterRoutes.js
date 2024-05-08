@@ -29,7 +29,7 @@ router.get('/meterWeekAndMonthData:DRN',  authenticateToken,energyController.get
 router.get('/getAllProcessedTokensByDRN:DRN' ,  authenticateToken,energyController.getAllProcessedTokens);
 
 // Getting the daily energy consumption for a specific meter
-router.get('/meterDataByDRN:DRN' ,  authenticateToken,energyController.getDailyMeterEnergy);
+router.get('/meterDataByDRN:DRN' ,  authenticateToken,energyController.getDailyMeterEnergyByDRN);
 
 // Getting all active and inactive meters
 router.get('/activeInactiveMeters' ,  authenticateToken,energyController.getAllActiveAndInactiveMeters);
