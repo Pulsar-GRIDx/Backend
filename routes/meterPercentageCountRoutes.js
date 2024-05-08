@@ -84,12 +84,12 @@ router.get('/active_state_count', (req, res) => {
   const now = new Date();
   const currentDate = formatDate(now);
   const previousDate = formatDate(new Date(now.getTime() - 24 * 60 * 60 * 1000)); // 24 hours ago
-
+  console.log(currentDate,previousDate);
   // Query to count unique DRNs in active state for the current day
   connection.query(`
     SELECT COUNT(DISTINCT DRN) AS currentDayCount
-    FROM MeterMainsStateTable
-    WHERE state = '1' AND DATE(date_time) = '${currentDate}'
+    FROM MeterLoadControl
+    WHERE mains_state = '1' AND DATE(date_time) = '${currentDate}'
   `, (err, currentResults) => {
     if (err) {
       console.error('Error fetching current day count:', err);
@@ -101,8 +101,8 @@ router.get('/active_state_count', (req, res) => {
     // Query to count unique DRNs in active state for the previous day
     connection.query(`
       SELECT COUNT(DISTINCT DRN) AS previousDayCount
-      FROM MeterMainsStateTable
-      WHERE state = '1' AND DATE(date_time) = '${previousDate}'
+      FROM MeterLoadControl
+      WHERE mains_state = '1' AND DATE(date_time) = '${previousDate}'
     `, (err, previousResults) => {
       if (err) {
         console.error('Error fetching previous day count:', err);
@@ -150,12 +150,13 @@ router.get('/inactive_state_count', (req, res) => {
   const now = new Date();
   const currentDate = formatDate(now);
   const previousDate = formatDate(new Date(now.getTime() - 24 * 60 * 60 * 1000)); // 24 hours ago
+  console.log(currentDate,previousDate);
 
   // Query to count unique DRNs in active state for the current day
   connection.query(`
     SELECT COUNT(DISTINCT DRN) AS currentDayCount
-    FROM MeterMainsStateTable
-    WHERE state = '0' AND DATE(date_time) = '${currentDate}'
+    FROM MeterLoadControl
+    WHERE mains_state = '0' AND DATE(date_time) = '${currentDate}'
   `, (err, currentResults) => {
     if (err) {
       console.error('Error fetching current day count:', err);
@@ -167,8 +168,8 @@ router.get('/inactive_state_count', (req, res) => {
     // Query to count unique DRNs in active state for the previous day
     connection.query(`
       SELECT COUNT(DISTINCT DRN) AS previousDayCount
-      FROM MeterMainsStateTable
-      WHERE state = '0' AND DATE(date_time) = '${previousDate}'
+      FROM MeterLoadControl
+      WHERE mains_state = '0' AND DATE(date_time) = '${previousDate}'
     `, (err, previousResults) => {
       if (err) {
         console.error('Error fetching previous day count:', err);
