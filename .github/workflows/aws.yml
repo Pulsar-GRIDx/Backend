@@ -28,7 +28,7 @@ name: ECS Deployment Workflow
 
 on:
   push:
-    branches: [main]
+    branches: [test]
 
 jobs:
   build-and-deploy:
@@ -55,7 +55,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: adminbackend
+          REPOSITORY: admintest
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -65,7 +65,7 @@ jobs:
       - name: Push Docker image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: adminbackend
+          REPOSITORY: admintest
           IMAGE_TAG: latest
         run: |
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
@@ -83,8 +83,8 @@ jobs:
           
       # - name: Stop running tasks
       #   run: |
-      #     aws ecs update-service --cluster AdminBackendCluster --service Admin_Service --desired-count 0
-      #     while [[ $(aws ecs describe-services --cluster AdminBackendCluster --services Admin_Service --query "services[0].runningCount") != "0" ]]; do
+      #     aws ecs update-service --cluster admintestCluster --service Admin_Service --desired-count 0
+      #     while [[ $(aws ecs describe-services --cluster admintestCluster --services Admin_Service --query "services[0].runningCount") != "0" ]]; do
       #       echo "Waiting for running tasks to be stopped..."
       #       sleep 10
       #     done
@@ -94,5 +94,5 @@ jobs:
       #   with:
       #     task-definition: ${{ steps.task-def.outputs.task-definition }}
       #     service: Admin_Service
-      #     cluster: AdminBackendCluster
+      #     cluster: admintestCluster
       #     wait-for-service-stability: true
