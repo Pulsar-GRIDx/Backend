@@ -87,7 +87,7 @@ app.use('/', notificationRoutes);
 app.use('/', meterPercentageRoutes);
 app.use('/finance', financialRoutes);
 app.use('/finance',suburbFinance);
-app.use('/settings', settingsRoutes);
+app.use('/meterProfile', settingsRoutes);
 
 
 //Export the app server configuration

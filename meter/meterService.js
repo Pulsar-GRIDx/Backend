@@ -1087,7 +1087,7 @@ exports.getApparentPowerByTimePeriodsBySuburb = function(suburbs, callback) {
 
 //Weekly Suburb Apparent Power
 exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
-  console.log(suburbs);
+  
 
   const query = `
     SELECT 
@@ -1113,7 +1113,7 @@ exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
             FROM 
               MeterLocationInfoTable
             WHERE 
-              Suburb IN (?)
+              Suburb  = ?
           )
         GROUP BY 
           DRN, 
@@ -1141,11 +1141,14 @@ exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
 
     // Fill the arrays with the query results
     results.forEach(result => {
-      // Adjust dayOfWeek to start from 0 (Sunday) instead of 1 (Monday)
-      let dayOfWeek = (result.dayOfWeek + 5) % 7;
+      // Adjust dayOfWeek to start from 0 (Monday) instead of 1 (Sunday)
+      let dayOfWeek = result.dayOfWeek - 1; // Adjust to 0-based index
       currentWeekTotal[dayOfWeek] = result.currentWeekTotal;
       lastWeekTotal[dayOfWeek] = result.lastWeekTotal;
     });
+    
+    
+    
 
     callback(null, { currentWeekTotal, lastWeekTotal });
   });
@@ -1178,7 +1181,7 @@ FROM (
         FROM 
           MeterLocationInfoTable
         WHERE 
-          Suburb = 'Academia'
+          Suburb = ?
       )
     GROUP BY 
       DRN, 

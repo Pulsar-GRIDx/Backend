@@ -26,5 +26,12 @@ delete http://localhost:4000/deleteUser/3
 Authorization:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOjMwLCJBY2Nlc3NMZXZlbCI6MSwiaWF0IjoxNjk3MDM4ODkzfQ.ib2Gbym7p6iC_p5gSdY3lNarXeyzsnX_8dWvoMUZbRA
 Content-Type: application/jsonn
 
+###
+post http://localhost:4000/resetPassword/22
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTMyODY1OCwiZXhwIjoxNzE1MzMyMjU4fQ.gO99M0FMiX1g8AuGOn7gd1d3BWWuIP6JjLvPgCQESvc
 
+{
+  "Password":"Admin@123"
+}
 
