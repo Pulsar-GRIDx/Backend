@@ -5,7 +5,7 @@ get http://localhost:4000/profile/1
 ###
 get http://localhost:4000/allAdmins
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzYyNjIyNywiZXhwIjoxNzEzNjI5ODI3fQ.KOdjQewwF_rXVz2R79F6wpbS1uHxIiWFjgHFs8TbInM
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTU4NzUyOSwiZXhwIjoxNzE1NTkxMTI5fQ.ZArv7-sEsq2go5tB6vXHq9A-2iE-t8E0ClWLT0_7dP8
 
 ###
 
