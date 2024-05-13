@@ -1179,7 +1179,7 @@ FROM (
         FROM 
           MeterLocationInfoTable
         WHERE 
-          Suburb = 'Academia'
+        Suburb IN (?)
       )
     GROUP BY 
       DRN, 
