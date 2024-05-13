@@ -879,7 +879,7 @@ exports.getMonthlyDataForCurrentAndLastYear = () => {
   SELECT 
     YEAR(date) AS year,
     MONTH(date) AS month,
-    SUM(daily_power_consumption) AS total_apparent_power
+    ABS(SUM(daily_power_consumption)) AS total_apparent_power
 FROM 
     DailyPowerConsumption
 WHERE 

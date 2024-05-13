@@ -409,6 +409,7 @@ router.post('/suburbAdvancedPowerIncreaseOrDecrease', (req, res) => {
     executeQuery(currentYearAndPreviousYear, [suburbs])
   ])
   .then(results => {
+    console.log(results);
     const currentDayTotal = results[0][0].currentDayTotal;
     const previousDayTotal = results[0][0].previousDayTotal;
     const currentMonthTotal = results[1][0].currentMonthTotal;
