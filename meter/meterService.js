@@ -1179,7 +1179,7 @@ FROM (
         FROM 
           MeterLocationInfoTable
         WHERE 
-        Suburb IN (?)
+        Suburb = ?
       )
     GROUP BY 
       DRN, 
