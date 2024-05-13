@@ -646,9 +646,9 @@ router.get('/time-periods-ratios', (req, res) => {
   IF(tokens.tokensBoughtThisYear = 0, 0, (units.unitsUsedThisYear / tokens.tokensBoughtThisYear) * 100) as percentageUsedThisYear
 FROM (
   SELECT 
-    COALESCE(SUM(IF(DATE(date_time) = CURDATE(), token_amount, 0)), 0) as tokensBoughtToday,
-    COALESCE(SUM(IF(MONTH(date_time) = MONTH(CURDATE()), token_amount, 0)), 0) as tokensBoughtThisMonth,
-    COALESCE(SUM(IF(YEAR(date_time) = YEAR(CURDATE()), token_amount, 0)), 0) as tokensBoughtThisYear
+    ABS(COALESCE(SUM(IF(DATE(date_time) = CURDATE(), token_amount, 0)), 0)) as tokensBoughtToday,
+    ABS(COALESCE(SUM(IF(MONTH(date_time) = MONTH(CURDATE()), token_amount, 0)), 0)) as tokensBoughtThisMonth,
+    ABS(COALESCE(SUM(IF(YEAR(date_time) = YEAR(CURDATE()), token_amount, 0)), 0)) as tokensBoughtThisYear
   FROM 
     STSTokesInfo
   WHERE 
@@ -656,9 +656,9 @@ FROM (
 ) AS tokens,
 (
   SELECT 
-    COALESCE(SUM(IF(DATE(date) = CURDATE(), daily_power_consumption, 0)), 0) as unitsUsedToday,
-    COALESCE(SUM(IF(MONTH(date) = MONTH(CURDATE()), daily_power_consumption, 0)), 0) as unitsUsedThisMonth,
-    COALESCE(SUM(IF(YEAR(date) = YEAR(CURDATE()), daily_power_consumption, 0)), 0) as unitsUsedThisYear
+    ABS(COALESCE(SUM(IF(DATE(date) = CURDATE(), daily_power_consumption, 0)), 0)) as unitsUsedToday,
+    ABS(COALESCE(SUM(IF(MONTH(date) = MONTH(CURDATE()), daily_power_consumption, 0)), 0)) as unitsUsedThisMonth,
+    ABS(COALESCE(SUM(IF(YEAR(date) = YEAR(CURDATE()), daily_power_consumption, 0)), 0)) as unitsUsedThisYear
   FROM 
     DailyPowerConsumption
 ) AS units
@@ -674,64 +674,66 @@ FROM (
 //Ration current week 
 router.get('/WeekRatio', (req, res) => {
   const getCurrentWeekRatio = `
-    SELECT 
-      tokens.date,
-      tokens.tokensBoughtThisDay,
-      units.unitsUsedThisDay,
-      IF(tokens.tokensBoughtThisDay = 0, 0, (units.unitsUsedThisDay / tokens.tokensBoughtThisDay) * 100) as percentageUsedThisDay
-    FROM (
-      SELECT 
-        DATE(date_time) as date,
-        COALESCE(SUM(token_amount), 0) as tokensBoughtThisDay
-      FROM 
-        STSTokesInfo
-      WHERE 
-        display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) AND YEAR(date_time) = YEAR(CURDATE())
-      GROUP BY 
-        DATE(date_time)
-    ) AS tokens
-    LEFT JOIN (
-      SELECT 
-        DATE(date) as date,
-        COALESCE(SUM(daily_power_consumption), 0) as unitsUsedThisDay
-      FROM 
-        DailyPowerConsumption
-      WHERE 
-        WEEK(date, 1) = WEEK(CURDATE(), 1) AND YEAR(date) = YEAR(CURDATE())
-      GROUP BY 
-        DATE(date)
-    ) AS units
-    ON tokens.date = units.date`;
+  SELECT 
+  tokens.date,
+  tokens.tokensBoughtThisDay,
+  units.unitsUsedThisDay,
+  IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100) as percentageUsedThisDay
+FROM (
+  SELECT 
+    DATE(date_time) as date,
+    COALESCE(SUM(token_amount), 0) as tokensBoughtThisDay
+  FROM 
+    STSTokesInfo
+  WHERE 
+    display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) AND YEAR(date_time) = YEAR(CURDATE())
+  GROUP BY 
+    DATE(date_time)
+) AS tokens
+LEFT JOIN (
+  SELECT 
+    DATE(date) as date,
+    ABS(COALESCE(SUM(daily_power_consumption), 0)) as unitsUsedThisDay
+  FROM 
+    DailyPowerConsumption
+  WHERE 
+    WEEK(date, 1) = WEEK(CURDATE(), 1) AND YEAR(date) = YEAR(CURDATE())
+  GROUP BY 
+    DATE(date)
+) AS units
+ON tokens.date = units.date
+`;
 
   const getLastWeekRatio = `
-    SELECT 
-      tokens.date,
-      tokens.tokensBoughtThisDay,
-      units.unitsUsedThisDay,
-      IF(tokens.tokensBoughtThisDay = 0, 0, (units.unitsUsedThisDay / tokens.tokensBoughtThisDay) * 100) as percentageUsedThisDay
-    FROM (
-      SELECT 
-        DATE(date_time) as date,
-        COALESCE(SUM(token_amount), 0) as tokensBoughtThisDay
-      FROM 
-        STSTokesInfo
-      WHERE 
-        display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(date_time) = YEAR(CURDATE())
-      GROUP BY 
-        DATE(date_time)
-    ) AS tokens
-    LEFT JOIN (
-      SELECT 
-        DATE(date) as date,
-        COALESCE(SUM(daily_power_consumption), 0) as unitsUsedThisDay
-      FROM 
-        DailyPowerConsumption
-      WHERE 
-        WEEK(date, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(date) = YEAR(CURDATE())
-      GROUP BY 
-        DATE(date)
-    ) AS units
-    ON tokens.date = units.date`;
+  SELECT 
+  tokens.date,
+  tokens.tokensBoughtThisDay,
+  units.unitsUsedThisDay,
+  IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100) as percentageUsedThisDay
+FROM (
+  SELECT 
+    DATE(date_time) as date,
+    COALESCE(SUM(token_amount), 0) as tokensBoughtThisDay
+  FROM 
+    STSTokesInfo
+  WHERE 
+    display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(date_time) = YEAR(CURDATE())
+  GROUP BY 
+    DATE(date_time)
+) AS tokens
+LEFT JOIN (
+  SELECT 
+    DATE(date) as date,
+    ABS(COALESCE(SUM(daily_power_consumption), 0)) as unitsUsedThisDay
+  FROM 
+    DailyPowerConsumption
+  WHERE 
+    WEEK(date, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(date) = YEAR(CURDATE())
+  GROUP BY 
+    DATE(date)
+) AS units
+ON tokens.date = units.date
+`;
 
   connection.query(getCurrentWeekRatio, (error, currentWeekResults) => {
     if (error) throw error;
@@ -756,63 +758,65 @@ router.get('/monthRatios', (req, res) => {
 
   // All the months of the current year
   const getCurrentYear = `SELECT 
-    tokens.month,
-    tokens.tokensBoughtThisMonth,
-    units.unitsUsedThisMonth,
-    IF(tokens.tokensBoughtThisMonth = 0, 0, (units.unitsUsedThisMonth / tokens.tokensBoughtThisMonth) * 100) as percentageUsedThisMonth
-  FROM (
-    SELECT 
-      MONTH(date_time) as month,
-      COALESCE(SUM(token_amount), 0) as tokensBoughtThisMonth
-    FROM 
-      STSTokesInfo
-    WHERE 
-      display_msg = 'Accept' AND YEAR(date_time) = YEAR(CURDATE())
-    GROUP BY 
-      MONTH(date_time)
-  ) AS tokens
-  LEFT JOIN (
-    SELECT 
-      MONTH(date) as month,
-      COALESCE(SUM(daily_power_consumption), 0) as unitsUsedThisMonth
-    FROM 
-      DailyPowerConsumption
-    WHERE 
-      YEAR(date) = YEAR(CURDATE())
-    GROUP BY 
-      MONTH(date)
-  ) AS units
-  ON tokens.month = units.month`;
+  tokens.month,
+  tokens.tokensBoughtThisMonth,
+  units.unitsUsedThisMonth,
+  IF(COALESCE(tokens.tokensBoughtThisMonth, 0) = 0, 0, (COALESCE(units.unitsUsedThisMonth, 0) / COALESCE(tokens.tokensBoughtThisMonth, 0)) * 100) as percentageUsedThisMonth
+FROM (
+  SELECT 
+    MONTH(date_time) as month,
+    COALESCE(SUM(token_amount), 0) as tokensBoughtThisMonth
+  FROM 
+    STSTokesInfo
+  WHERE 
+    display_msg = 'Accept' AND YEAR(date_time) = YEAR(CURDATE())
+  GROUP BY 
+    MONTH(date_time)
+) AS tokens
+LEFT JOIN (
+  SELECT 
+    MONTH(date) as month,
+    ABS(COALESCE(SUM(daily_power_consumption), 0)) as unitsUsedThisMonth
+  FROM 
+    DailyPowerConsumption
+  WHERE 
+    YEAR(date) = YEAR(CURDATE())
+  GROUP BY 
+    MONTH(date)
+) AS units
+ON tokens.month = units.month
+`;
 
   // All the months of the last year
   const getLastYear = `SELECT 
-    tokens.month,
-    tokens.tokensBoughtThisMonth,
-    units.unitsUsedThisMonth,
-    IF(tokens.tokensBoughtThisMonth = 0, 0, (units.unitsUsedThisMonth / tokens.tokensBoughtThisMonth) * 100) as percentageUsedThisMonth
-  FROM (
-    SELECT 
-      MONTH(date_time) as month,
-      COALESCE(SUM(token_amount), 0) as tokensBoughtThisMonth
-    FROM 
-      STSTokesInfo
-    WHERE 
-      display_msg = 'Accept' AND YEAR(date_time) = YEAR(CURDATE()) - 1
-    GROUP BY 
-      MONTH(date_time)
-  ) AS tokens
-  LEFT JOIN (
-    SELECT 
-      MONTH(date) as month,
-      COALESCE(SUM(daily_power_consumption), 0) as unitsUsedThisMonth
-    FROM 
-      DailyPowerConsumption
-    WHERE 
-      YEAR(date) = YEAR(CURDATE()) - 1
-    GROUP BY 
-      MONTH(date)
-  ) AS units
-  ON tokens.month = units.month`;
+  tokens.month,
+  tokens.tokensBoughtThisMonth,
+  units.unitsUsedThisMonth,
+  IF(COALESCE(tokens.tokensBoughtThisMonth, 0) = 0, 0, (COALESCE(units.unitsUsedThisMonth, 0) / COALESCE(tokens.tokensBoughtThisMonth, 0)) * 100) as percentageUsedThisMonth
+FROM (
+  SELECT 
+    MONTH(date_time) as month,
+    COALESCE(SUM(token_amount), 0) as tokensBoughtThisMonth
+  FROM 
+    STSTokesInfo
+  WHERE 
+    display_msg = 'Accept' AND YEAR(date_time) = YEAR(CURDATE()) - 1
+  GROUP BY 
+    MONTH(date_time)
+) AS tokens
+LEFT JOIN (
+  SELECT 
+    MONTH(date) as month,
+    ABS(COALESCE(SUM(daily_power_consumption), 0)) as unitsUsedThisMonth
+  FROM 
+    DailyPowerConsumption
+  WHERE 
+    YEAR(date) = YEAR(CURDATE()) - 1
+  GROUP BY 
+    MONTH(date)
+) AS units
+ON tokens.month = units.month
+`;
 
   connection.query(getCurrentYear, (error, currentYearResults) => {
     if (error) throw error;
