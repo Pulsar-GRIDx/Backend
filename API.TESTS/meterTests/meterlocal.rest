@@ -15,6 +15,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 ###
 get http://localhost:4000/totalMeters
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTU5NzY4NSwiZXhwIjoxNzE1NjAxMjg1fQ.m7GTYqRiJqA1bfFCVz1Th2_wqsExADkM6qRt6JbUI7o
 ###
 get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json

@@ -218,32 +218,46 @@ router.get('/powerIncreaseOrDecrease', (req, res) => {
 
   // Define SQL queries to fetch current and previous day, month, and year data
   const currentDayAndPreviousDay = `
-    SELECT SUM(daily_power_consumption) AS day_consumption
-    FROM DailyPowerConsumption
-    WHERE DATE(date) = CURDATE()
-  `;
+  SELECT 
+    DATE(t.date_time) as date, 
+    ABS(SUM(t.final_units - t.initial_units)) as day_consumption
+  FROM (
+    SELECT 
+      DRN, 
+      date_time, 
+      MIN(CAST(units AS DECIMAL(10, 2))) as initial_units,
+      MAX(CAST(units AS DECIMAL(10, 2))) as final_units
+    FROM 
+      MeterCumulativeEnergyUsage
+    WHERE 
+      DATE(date_time) = CURDATE()
+    GROUP BY 
+      DRN, 
+      DATE(date_time)
+  ) t
+`;
   const currentMonthAndPreviousMonth = `
-    SELECT SUM(daily_power_consumption) AS month_consumption
+    SELECT ABS(SUM(daily_power_consumption)) AS month_consumption
     FROM DailyPowerConsumption
     WHERE MONTH(date) = MONTH(CURDATE())
   `;
   const currentYearAndPreviousYear = `
-    SELECT SUM(daily_power_consumption) AS year_consumption
+    SELECT ABS(SUM(daily_power_consumption)) AS year_consumption
     FROM DailyPowerConsumption
     WHERE YEAR(date) = YEAR(CURDATE())
   `;
   const previousDay = `
-    SELECT SUM(daily_power_consumption) AS day_consumption
+    SELECT ABS(SUM(daily_power_consumption)) AS day_consumption
     FROM DailyPowerConsumption
     WHERE DATE(date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
   `;
   const previousMonth = `
-    SELECT SUM(daily_power_consumption) AS month_consumption
+    SELECT ABS(SUM(daily_power_consumption)) AS month_consumption
     FROM DailyPowerConsumption
     WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE()) - 1
   `;
   const previousYear = `
-    SELECT SUM(daily_power_consumption) AS year_consumption
+    SELECT ABS(SUM(daily_power_consumption)) AS year_consumption
     FROM DailyPowerConsumption
     WHERE YEAR(date) = YEAR(CURDATE()) - 1
   `;
@@ -256,14 +270,18 @@ router.get('/powerIncreaseOrDecrease', (req, res) => {
     executeQuery(previousDay),
     executeQuery(previousMonth),
     executeQuery(previousYear)
+    
   ])
   .then(results => {
+    // console.log('Query results:', results); 
     const currentDayConsumption = results[0][0].day_consumption;
     const currentMonthConsumption = results[1][0].month_consumption;
     const currentYearConsumption = results[2][0].year_consumption;
     const previousDayConsumption = results[3][0].day_consumption;
     const previousMonthConsumption = results[4][0].month_consumption;
     const previousYearConsumption = results[5][0].year_consumption;
+
+    
 
     const day = calculatePercentageChange(currentDayConsumption, previousDayConsumption);
     const month = calculatePercentageChange(currentMonthConsumption, previousMonthConsumption);
@@ -286,17 +304,19 @@ function executeQuery(query) {
         reject(err);
       } else {
         resolve(results);
+        console.log(results);
       }
     });
   });
 }
 
 // Function to calculate percentage change
+
 function calculatePercentageChange(currentValue, previousValue) {
-  if (previousValue === 0) return 0; // Avoid division by zero
-  const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2)
-  return parseFloat(newValue);
+  return (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
 }
+
+
 
 
 
