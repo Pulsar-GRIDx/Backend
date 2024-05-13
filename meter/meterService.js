@@ -1141,11 +1141,12 @@ exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
 
     // Fill the arrays with the query results
     results.forEach(result => {
-      // Adjust dayOfWeek to start from 0 (Sunday) instead of 1 (Monday)
-      let dayOfWeek = (result.dayOfWeek + 5) % 7;
+      // Adjust dayOfWeek to start from 0 (Monday) instead of 1 (Sunday)
+      let dayOfWeek = result.dayOfWeek - 1; // Adjust to 0-based index
       currentWeekTotal[dayOfWeek] = result.currentWeekTotal;
       lastWeekTotal[dayOfWeek] = result.lastWeekTotal;
     });
+    
 
     callback(null, { currentWeekTotal, lastWeekTotal });
   });

@@ -10,7 +10,7 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 ###
 post http://localhost:4000/search-by-weekly-power 
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDM4NjU3MywiZXhwIjoxNzE0MzkwMTczfQ.wPVddlIyzgdcPMH7F5QGSk0WKNuGYAorAcAvzAE4BDU
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTU4Njk1MiwiZXhwIjoxNzE1NTkwNTUyfQ.UDXC3gVxlV76j14cJ1XYHsMMCXYTPJsELjmOBmUrOZs
 
 {
     "suburbs":[
