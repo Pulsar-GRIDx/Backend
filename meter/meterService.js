@@ -1155,6 +1155,7 @@ exports.getWeeklyApparentPowerBySuburb = function(suburbs, callback) {
 
 //Yearly Suburb Apparent Power
 exports.getYearlyApparentPowerBySuburb = function(suburbs, callback) {
+  
   const query = `
   SELECT 
   MONTH(t.record_date) as month,
