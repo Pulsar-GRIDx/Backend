@@ -16,7 +16,23 @@ exports.getAllTotalMeters = function() {
     });
   });
 };
+//Total tranformers 
 
+exports.getTotalTransformers = () =>{
+  const getTotalTransformers = `SELECT COUNT(DRN) as totalTransformers FROM TransformerInformation`;
+
+  return new Promise((resolve, reject) =>{
+    db.query(getTotalTransformers,(err,results) =>{
+      if (err) {
+        reject(err);
+        
+      } else {
+        resolve(results[0]);
+        
+      }
+    });
+  });
+};
 
 ///-------------------------------------Active Inactive meters-----------------------------------------------------///
 exports.getAllActiveAndInactiveMeters = function(callback) {

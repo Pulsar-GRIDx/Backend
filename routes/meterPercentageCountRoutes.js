@@ -675,7 +675,7 @@ FROM (
 router.get('/WeekRatio', (req, res) => {
   const getCurrentWeekRatio = `
   SELECT 
-  tokens.date,
+  DATE_FORMAT(tokens.date, '%Y-%m-%d') AS date,
   tokens.tokensBoughtThisDay,
   units.unitsUsedThisDay,
   ROUND(IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100),2 ) as percentageUsedThisDay
@@ -706,7 +706,7 @@ ON tokens.date = units.date
 
   const getLastWeekRatio = `
   SELECT 
-  tokens.date,
+  DATE_FORMAT(tokens.date, '%Y-%m-%d') AS date,
   tokens.tokensBoughtThisDay,
   units.unitsUsedThisDay,
   ROUND(IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100), 2) as percentageUsedThisDay

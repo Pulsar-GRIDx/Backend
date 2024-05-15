@@ -120,6 +120,37 @@ exports.getTotalEnergyAmount = (req, res) => {
 };
 
 
+//Total tromnfoermers
+exports.getTotalTransformers = function(req, res) {
+  
+  energyService.getTotalTransformers()
+    .then(results => {
+      if (results.length === 0) {
+        console.error({ error: 'No data found' });
+        return res.json(0);
+      }
+
+      // results.forEach(result => {
+      //   if (!(result.date_time instanceof Date)) {
+      //     console.error({ error: 'Invalid date format for date_time' });
+      //   } else {
+      //     result.date_time = result.date_time.toISOString().substring(0, 10);
+      //   }
+
+      //   if (result.token_time === null) {
+      //     // console.error({ error: 'token_time is null' });
+      //     result.token_time = '0000-00-00 00:00:00';
+      //   }
+      // });
+
+      res.json(results);
+    })
+    .catch(error => {
+      console.error({ error: 'An error occurred while fetching token information', details: error });
+      res.status(500).json({ error: 'An error occurred' });
+    });
+}
+
 
   
 ///------------------------------CurrentWeekTotals-------------------------------------------//
@@ -191,7 +222,7 @@ exports.getCurrentDayEnergy = (req, res) => {
 exports.insertData = (req, res) => {
   const data = req.body; // Assuming the data is sent in the request body
   energyService.insertIntoMeterRealInfo(data)
-    .then(() => res.status(200).json({ message: 'Data inserted successfully into both tables' }))
+    .then(() => res.status(200).json({ message: 'Meter Data inserted successfully ' }))
     .catch(err => {
       console.error('Error inserting into the database:', err);
       return res.status(500).json({ error: 'Database insertion failed', details: err });
