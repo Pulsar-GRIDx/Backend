@@ -637,13 +637,13 @@ router.get('/time-periods-ratios', (req, res) => {
   SELECT 
   tokens.tokensBoughtToday,
   units.unitsUsedToday,
-  IF(tokens.tokensBoughtToday = 0, 0, (units.unitsUsedToday / tokens.tokensBoughtToday) * 100) as percentageUsedToday,
+  ROUND(IF(tokens.tokensBoughtToday = 0, 0, (units.unitsUsedToday / tokens.tokensBoughtToday) * 100), 2) as percentageUsedToday,
   tokens.tokensBoughtThisMonth,
   units.unitsUsedThisMonth,
-  IF(tokens.tokensBoughtThisMonth = 0, 0, (units.unitsUsedThisMonth / tokens.tokensBoughtThisMonth) * 100) as percentageUsedThisMonth,
+  ROUND(IF(tokens.tokensBoughtThisMonth = 0, 0, (units.unitsUsedThisMonth / tokens.tokensBoughtThisMonth) * 100), 2) as percentageUsedThisMonth,
   tokens.tokensBoughtThisYear,
   units.unitsUsedThisYear,
-  IF(tokens.tokensBoughtThisYear = 0, 0, (units.unitsUsedThisYear / tokens.tokensBoughtThisYear) * 100) as percentageUsedThisYear
+  ROUND(IF(tokens.tokensBoughtThisYear = 0, 0, (units.unitsUsedThisYear / tokens.tokensBoughtThisYear) * 100), 2) as percentageUsedThisYear
 FROM (
   SELECT 
     ABS(COALESCE(SUM(IF(DATE(date_time) = CURDATE(), token_amount, 0)), 0)) as tokensBoughtToday,
@@ -652,7 +652,7 @@ FROM (
   FROM 
     STSTokesInfo
   WHERE 
-    display_msg = 'Accept'
+    display_msg = 'Accept' AND YEAR(date_time) = YEAR(CURDATE()) 
 ) AS tokens,
 (
   SELECT 
@@ -678,7 +678,7 @@ router.get('/WeekRatio', (req, res) => {
   tokens.date,
   tokens.tokensBoughtThisDay,
   units.unitsUsedThisDay,
-  IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100) as percentageUsedThisDay
+  ROUND(IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100),2 ) as percentageUsedThisDay
 FROM (
   SELECT 
     DATE(date_time) as date,
@@ -686,7 +686,7 @@ FROM (
   FROM 
     STSTokesInfo
   WHERE 
-    display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) AND YEAR(date_time) = YEAR(CURDATE())
+    display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) AND MONTH(date_time) = MONTH(CURDATE()) AND  YEAR(date_time) = YEAR(CURDATE())  
   GROUP BY 
     DATE(date_time)
 ) AS tokens
@@ -709,7 +709,7 @@ ON tokens.date = units.date
   tokens.date,
   tokens.tokensBoughtThisDay,
   units.unitsUsedThisDay,
-  IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100) as percentageUsedThisDay
+  ROUND(IF(COALESCE(tokens.tokensBoughtThisDay, 0) = 0, 0, (COALESCE(units.unitsUsedThisDay, 0) / COALESCE(tokens.tokensBoughtThisDay, 0)) * 100), 2) as percentageUsedThisDay
 FROM (
   SELECT 
     DATE(date_time) as date,
@@ -717,7 +717,7 @@ FROM (
   FROM 
     STSTokesInfo
   WHERE 
-    display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 AND YEAR(date_time) = YEAR(CURDATE())
+    display_msg = 'Accept' AND WEEK(date_time, 1) = WEEK(CURDATE(), 1) - 1 AND  MONTH(date_time) = MONTH(CURDATE()) AND YEAR(date_time) = YEAR(CURDATE())  
   GROUP BY 
     DATE(date_time)
 ) AS tokens
@@ -761,7 +761,7 @@ router.get('/monthRatios', (req, res) => {
   tokens.month,
   tokens.tokensBoughtThisMonth,
   units.unitsUsedThisMonth,
-  IF(COALESCE(tokens.tokensBoughtThisMonth, 0) = 0, 0, (COALESCE(units.unitsUsedThisMonth, 0) / COALESCE(tokens.tokensBoughtThisMonth, 0)) * 100) as percentageUsedThisMonth
+  ROUND(IF(COALESCE(tokens.tokensBoughtThisMonth, 0) = 0, 0, (COALESCE(units.unitsUsedThisMonth, 0) / COALESCE(tokens.tokensBoughtThisMonth, 0)) * 100), 2) as percentageUsedThisMonth
 FROM (
   SELECT 
     MONTH(date_time) as month,
@@ -792,7 +792,7 @@ ON tokens.month = units.month
   tokens.month,
   tokens.tokensBoughtThisMonth,
   units.unitsUsedThisMonth,
-  IF(COALESCE(tokens.tokensBoughtThisMonth, 0) = 0, 0, (COALESCE(units.unitsUsedThisMonth, 0) / COALESCE(tokens.tokensBoughtThisMonth, 0)) * 100) as percentageUsedThisMonth
+  ROUND(IF(COALESCE(tokens.tokensBoughtThisMonth, 0) = 0, 0, (COALESCE(units.unitsUsedThisMonth, 0) / COALESCE(tokens.tokensBoughtThisMonth, 0)) * 100), 2) as percentageUsedThisMonth
 FROM (
   SELECT 
     MONTH(date_time) as month,
