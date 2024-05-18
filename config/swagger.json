@@ -1,0 +1,1616 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "GridX_Admin",
+    "description": "This is the GridX Admin Api Documentation",
+    "version": "1.0.0"
+  },
+  "host": "localhost:4000",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https://backend2.gridxmeter.com"
+  ],
+  "paths": {
+    "/adminSignup": {
+      "post": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "AdminSignUp",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Username": {
+                  "example": "any"
+                },
+                "Password": {
+                  "example": "any"
+                },
+                "FirstName": {
+                  "example": "any"
+                },
+                "LastName": {
+                  "example": "any"
+                },
+                "Email": {
+                  "example": "any"
+                },
+                "IsActive": {
+                  "example": "any"
+                },
+                "RoleName": {
+                  "example": "any"
+                },
+                "AccessLevel": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/signin": {
+      "post": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "Admin Siginin",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Email": {
+                  "example": "any"
+                },
+                "Password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/protected": {
+      "get": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/profile/{UserID}": {
+      "get": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "UserID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/allUsers": {
+      "get": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/allAdmins": {
+      "get": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/AdminUpdate/{Admin_ID}": {
+      "post": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "Admin_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "FirstName": {
+                  "example": "any"
+                },
+                "Email": {
+                  "example": "any"
+                },
+                "LastName": {
+                  "example": "any"
+                },
+                "AccessLevel": {
+                  "example": "any"
+                },
+                "Username": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/UserUpdate/{UserID}": {
+      "post": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "UserID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "FirstName": {
+                  "example": "any"
+                },
+                "Email": {
+                  "example": "any"
+                },
+                "LastName": {
+                  "example": "any"
+                },
+                "DRN": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deleteAdmin/{Admin_ID}": {
+      "delete": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "Admin_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/updateStatus/{Admin_ID}": {
+      "post": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "Admin_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/resetPassword/{Admin_ID}": {
+      "post": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "Admin_ID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/adminAuth/accessLevel": {
+      "get": {
+        "tags": [
+          "Admin_Auth"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/time-periods": {
+      "get": {
+        "tags": [
+          "Meter"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/currentAndLastYearMonthRevenueTotal": {
+      "get": {
+        "tags": [
+          "Meter"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/currentAndLastWeek": {
+      "get": {
+        "tags": [
+          "Meter"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/hourlyRevenue": {
+      "get": {
+        "tags": [
+          "Meter"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/suburbTimePeriod": {
+      "post": {
+        "tags": [
+          "Surburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/suburbWeeklyRevenue": {
+      "post": {
+        "tags": [
+          "Surburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/suburbYearlyRevenue": {
+      "post": {
+        "tags": [
+          "Surburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/energy-stats": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/meter_change": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/active_state_count": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/inactive_state_count": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/powerIncreaseOrDecrease": {
+      "get": {
+        "tags": [
+          "Power Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/suburbAdvancedPowerIncreaseOrDecrease": {
+      "post": {
+        "tags": [
+          "Suburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/tokenAmountIncreaseOrDecrease": {
+      "get": {
+        "tags": [
+          "Revenue"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/suburbRevenueIncreaseOrDecrease": {
+      "post": {
+        "tags": [
+          "Suburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/time-periods-ratios": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/WeekRatio": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/monthRatios": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/insertMeterData": {
+      "post": {
+        "tags": [
+          "Meter"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/insertTransformer": {
+      "post": {
+        "tags": [
+          "Transformer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "TransformerData": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/suburbEnergy": {
+      "get": {
+        "tags": [
+          "Transformer"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{allProcessedTokensByDRNDRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "allProcessedTokensByDRNDRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{meterWeekAndMonthDataDRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "meterWeekAndMonthDataDRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{getAllProcessedTokensByDRNDRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "getAllProcessedTokensByDRNDRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{meterDataByDRNDRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "meterDataByDRNDRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/activeInactiveMeters": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/totalMeters": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/tokenAmount": {
+      "get": {
+        "tags": [
+          "Meter Revenue"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/totalTokensBought": {
+      "get": {
+        "tags": [
+          "Meter Revenue"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/totalEnergyAmount": {
+      "get": {
+        "tags": [
+          "Meter Revenue"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/weeklyDataAmount": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/currentDayEnergy": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/gridTopology": {
+      "post": {
+        "tags": [
+          "Meter GridTopology"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "cities": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/energy-time-periods": {
+      "get": {
+        "tags": [
+          "Meter"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/yearly/currentAndLastYearMonthEnergyTotal": {
+      "get": {
+        "tags": [
+          "Meter "
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/weekly/currentAndLastWeekEnergyTotal": {
+      "get": {
+        "tags": [
+          "Meter "
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/hourlyPowerConsumption": {
+      "get": {
+        "tags": [
+          "Meter "
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/average-current-voltage": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/last-apparent-power": {
+      "get": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/suburb-time-periods": {
+      "post": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/search-by-weekly-power": {
+      "post": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/search-by-monthly-power": {
+      "post": {
+        "tags": [
+          "Meter Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/get-system-processed-tokens": {
+      "get": {
+        "tags": [
+          "Meter Revenue"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/total-tranformers": {
+      "get": {
+        "tags": [
+          "Meter Transformer"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getSuburbEnergy": {
+      "post": {
+        "tags": [
+          "Suburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getSuburbHourlyEnergy": {
+      "post": {
+        "tags": [
+          "Suburb"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "suburbs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/meterResetHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/meterCalibrationHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/meterControlHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/meterStateHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/heaterControlHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/heaterStateHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stsTokenHistory/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/tokenInformation/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter_DRN Stats"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/deleteNotifications/{id}": {
+      "delete": {
+        "tags": [
+          "Meter Notifications"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/notificationsByDRN/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter Notifications"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/criticalNotifications": {
+      "get": {
+        "tags": [
+          "Meter Notifications"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/getAll": {
+      "get": {
+        "tags": [
+          "Meter Notifications"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/notificationTypes": {
+      "get": {
+        "tags": [
+          "Meter Notifications"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/notificationsTypesByDRN/{DRN}": {
+      "get": {
+        "tags": [
+          "Meter Notifications"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "DRN",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  }
+}

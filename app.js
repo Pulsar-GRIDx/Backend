@@ -2,8 +2,21 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+
+//Cache
+
+const redis = require('redis');
+const client = redis.createClient();
+
+client.on('error', (err) => {
+  console.error('Redis Error:', err);
+});
+
+ 
+
 const app = express();
 const corsOptions = {
   origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001'],
@@ -17,6 +30,7 @@ const limiter = rateLimit({
   max: 1000000,
   message: 'Too many requests, please try again later.',
 });
+
 
 
 
@@ -77,8 +91,14 @@ const errorHandler = (err, req, res, next) => {
 app.use(errorHandler);
 
 
-// Use our routes
+// compress all responses
+app.use(compression({
+  level: 6,
+  threshold: 10 * 1000
+  
+}))
 
+// Use our routes
 app.use('/', getRoutes);
 app.use('/',meterRoutes);
 app.use('/', suburbEnergyRoute);
