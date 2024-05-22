@@ -34,7 +34,7 @@ exports.signIn = async (req, res) => {
       httpOnly: false,
       secure: true, // Set this to true for HTTPS
       maxAge: 40 * 60 * 1000,
-      domain: 'admin.gridxmeter.com', // Include the dot before the domain
+      domain: ['admin.gridxmeter.com','admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com'], // Include the dot before the domain
       path: '/',
       sameSite: 'None',
     });
