@@ -5,6 +5,7 @@ const path = require('path');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const db  = require('./config/db');
 
 //Cache
 
@@ -19,7 +20,7 @@ client.on('error', (err) => {
 
 const app = express();
 const corsOptions = {
-  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001'],
+  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001','http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com/'],
   methods:[['GET'],['POST'],['DELETE'],['PUT']],
   credentials: true,
   optionSuccessStatus: 200,
@@ -45,7 +46,8 @@ const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const notificationRoutes = require('./notifications/noficationsRoutes');
 const financialRoutes = require('./routes/financialRoutes');
 const suburbFinance = require('./financial/surburbFinance');
-const settingsRoutes = require('./settings/settingsRoutes');
+const meterProfileRoutes = require('./meterProfile/meterProfileRoutes');
+const systemSettingsRoutes = require('./routes/systemSettingsRoutes');
 
 
 
@@ -91,12 +93,12 @@ const errorHandler = (err, req, res, next) => {
 app.use(errorHandler);
 
 
-// compress all responses
+//compress all responses
 app.use(compression({
-  level: 6,
-  threshold: 10 * 1000
+  // level: 1 ,
+  // threshold: 0
   
-}))
+}));
 
 // Use our routes
 app.use('/', getRoutes);
@@ -107,7 +109,12 @@ app.use('/', notificationRoutes);
 app.use('/', meterPercentageRoutes);
 app.use('/finance', financialRoutes);
 app.use('/finance',suburbFinance);
-app.use('/settings', settingsRoutes);
+app.use('/settings', meterProfileRoutes);
+app.use('/systemSettings', systemSettingsRoutes);
+
+
+
+
 
 
 //Export the app server configuration

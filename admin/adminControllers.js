@@ -40,7 +40,7 @@ exports.signIn = async (req, res) => {
     });
 
     // Set CORS headers
-    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com', 'https://admin.gridxmeter.com', 'http://localhost:4000');
+    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com', 'https://admin.gridxmeter.com', 'http://localhost:4000', 'http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com/');
     res.header('Access-Control-Allow-Credentials', true);
 
     // Send the response with both token and user data

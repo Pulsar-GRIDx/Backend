@@ -15,7 +15,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 ###
 get http://localhost:4000/totalMeters
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTk4MzExNywiZXhwIjoxNzE1OTg2NzE3fQ.YTsvbqI38c1VLbNi8YdSkEzla7YwnJazEAha6_8u1cw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjA1NzczOSwiZXhwIjoxNzE2MDYxMzM5fQ.5yxzKUVVg4TfXhiQsB3NitaiI_PImAAxKxu7BgZy37E
+
 ###
 get https://backend2.gridxmeter.com/tokenAmount
 Content-Type: application/json
@@ -150,3 +151,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
     
   ]
 }
+
+
+####
+get http://localhost:4000/getTriggerDefinition
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjIyMDIyMiwiZXhwIjoxNzE2MjIzODIyfQ.JUStEurnY4KiyUux1hqwnyZKCWBUxckFfPkppZ39mm4

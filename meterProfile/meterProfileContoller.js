@@ -1,12 +1,12 @@
 const { error } = require('winston');
-const settingsService = require('./settingsService');
+const meterProfileService = require('./meterProfileService');
 
 
 // Controller to get meter reset history
 exports.getMeterResetHistory = function(req, res) {
   const DRN = req.params.DRN;
 
-  settingsService.getMeterResetHistory(DRN)
+  meterProfileService.getMeterResetHistory(DRN)
   .then(results => {
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
@@ -37,7 +37,7 @@ exports.getMeterResetHistory = function(req, res) {
 
 exports.getMeterCalibrationHistory = function(req,res){
   const DRN = req.params.DRN;
-  settingsService.getMeterCalibrationHistory(DRN)
+  meterProfileService.getMeterCalibrationHistory(DRN)
   .then(results =>{
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
@@ -60,7 +60,7 @@ exports.getMeterCalibrationHistory = function(req,res){
 
 exports.getMeterMainsControlHistory = function(req,res){
   const DRN = req.params.DRN;
-  settingsService.getMeterMainsControlHistory(DRN)
+  meterProfileService.getMeterMainsControlHistory(DRN)
   .then(results =>{
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
@@ -86,7 +86,7 @@ exports.getMeterMainsControlHistory = function(req,res){
 //Controller to get Meter Mains State History Data
 exports.getMeterMainsStateHistory = function(req,res){
   const DRN = req.params.DRN;
-  settingsService.getMeterMainsStateHistory(DRN)
+  meterProfileService.getMeterMainsStateHistory(DRN)
   .then(results =>{
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
@@ -113,7 +113,7 @@ exports.getMeterMainsStateHistory = function(req,res){
 
 exports.getMeterHeaterControlHistory = function(req,res){
   const DRN = req.params.DRN;
-  settingsService.getMeterHeaterControlHistory(DRN)
+  meterProfileService.getMeterHeaterControlHistory(DRN)
   .then(results =>{
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
@@ -141,7 +141,7 @@ exports.getMeterHeaterControlHistory = function(req,res){
 
 exports.getMeterHeaterStateHistory = function(req,res){
   const DRN = req.params.DRN;
-  settingsService.getMeterHeaterStateHistory(DRN)
+  meterProfileService.getMeterHeaterStateHistory(DRN)
   .then(results =>{
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
@@ -169,7 +169,7 @@ exports.getMeterHeaterStateHistory = function(req,res){
 
 exports.getMeterSTSTokenHistory = function(req,res){
   const DRN = req.params.DRN;
-  settingsService.getMeterSTSTokenHistory(DRN).then(results =>{
+  meterProfileService.getMeterSTSTokenHistory(DRN).then(results =>{
     results.forEach(result => {
       if (result.date_time instanceof Date) { // Check if result.date_time is a Date object
         result.date_time = result.date_time.toISOString().substring(0, 10);
@@ -191,7 +191,7 @@ exports.getMeterSTSTokenHistory = function(req,res){
 exports.getTokenInformation = function(req, res) {
   const DRN = req.params.DRN;
   // console.log(DRN);
-  settingsService.getTokenInformation(DRN)
+  meterProfileService.getTokenInformation(DRN)
     .then(results => {
       if (results.length === 0) {
         console.error({ error: 'No data found' });

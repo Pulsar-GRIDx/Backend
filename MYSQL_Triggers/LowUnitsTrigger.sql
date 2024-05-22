@@ -16,7 +16,7 @@ BEGIN
         END IF;
 
         INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type)
-        VALUES (NEW.DRN, 'Meter Units', CONCAT('Low units remaining: ', NEW.units), urgency_type, 'Warning');
+        VALUES (NEW.DRN, 'Meter Units', CONCAT('Low units remaining: ', NEW.units), urgency_type,'Warning');
     END IF;
 END;
 //
