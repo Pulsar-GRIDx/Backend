@@ -95,8 +95,8 @@ app.use(errorHandler);
 
 //compress all responses
 app.use(compression({
-  // level: 1 ,
-  // threshold: 0
+  level: 1 ,
+  threshold: 0
   
 }));
 
