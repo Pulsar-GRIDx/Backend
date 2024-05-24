@@ -78,7 +78,10 @@ exports.signIn = async (Email, Password, GuestID) => {
     // Regular Admin sign-in
     // Find the Admin by email
     const findUserQuery = 'SELECT * FROM SystemAdmins WHERE email = ?';
-    const updateUserQuery = 'UPDATE SystemAdmins SET login_count = login_count + 1 WHERE Admin_ID = ?';
+    const updateUserQuery = `UPDATE SystemAdmins
+    SET login_count = COALESCE(login_count, 0) + 1
+    WHERE Admin_ID = ?;
+`;
 
     const admin = await new Promise((resolve, reject) => {
       connection.query(findUserQuery, [Email], (err, results) => {

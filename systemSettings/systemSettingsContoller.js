@@ -81,12 +81,17 @@ class SystemController {
 //Current trigger
 
 getCurrentTriggerDefinition(req, res) {
-  this.systemService.getCurrentTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
+  this.systemService.getCurrentTriggerDefinition((error, triggerResults, statusResults) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
           // Extract the upper and lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+          const isActive = statusResults[0].IsActive;
+          const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           // console.log(triggerDefinition);
           const regexLower = /IF sum_current\s*<=\s*(\d+)/;
           const regexUpper = /IF sum_current\s*>=\s*(\d+)/;
@@ -111,7 +116,7 @@ getCurrentTriggerDefinition(req, res) {
             const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType });
+              res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType , IsActive : isActive });
           } else {
               res.send('No match found');
           }
@@ -119,14 +124,16 @@ getCurrentTriggerDefinition(req, res) {
 
           
       }
-  });
-}
+  )};
+
 
 
 updateCurrentThresholds(req, res) {
     const newUpperThreshold = req.body.newUpperThreshold;
     const newLowerThreshold = req.body.newLowerThreshold;
     const type = req.body.type;
+    const IsActive = req.body.IsActive;
+    const TriggerName = 'CurrentOverload';
 
     if(!newLowerThreshold || !newUpperThreshold || !type){
     console.error('Invalid request');
@@ -134,7 +141,7 @@ updateCurrentThresholds(req, res) {
     return;
     }
 
-    this.systemService.updateCurrentTriggerDefinition(newUpperThreshold, newLowerThreshold , type, (error, results, fields) => {
+    this.systemService.updateCurrentTriggerDefinition(newUpperThreshold, newLowerThreshold , type , TriggerName , IsActive, (error, results, fields) => {
         if (error) res.status(500).send(error);
         else res.send('Thresholds updated successfully!');
     });
@@ -142,17 +149,21 @@ updateCurrentThresholds(req, res) {
 
 //Active power
 getActivePowerTriggerDefinition(req, res) {
-  this.systemService.getActivePowerTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
+  this.systemService.getActivePowerTriggerDefinition((error,  triggerResults, statusResults) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
           // Extract the upper and lower threshold from the trigger definition
-const triggerDefinition = results[0]['SQL Original Statement'];
-// console.log('Trigger Definition:', triggerDefinition);
+          const isActive = statusResults[0].IsActive;
+          const triggerDefinition = triggerResults[0]['SQL Original Statement'];
 
-const regexLower = /IF NEW\.active_power\s*<=\s*(\d+)/;
-const regexUpper = /IF NEW\.active_power\s*>=\s*(\d+)/;
-const regexInsert = /INSERT INTO MeterNotifications \(DRN, AlarmType, Alarm, Urgency_Type, Type\)\s*VALUES \(.+?,.+?,.+?,.+?,\s*(.+?)\);/g;
+        const regexLower = /IF NEW\.active_power\s*<=\s*(\d+)/;
+        const regexUpper = /IF NEW\.active_power\s*>=\s*(\d+)/;
+        const regexInsert = /INSERT INTO MeterNotifications \(DRN, AlarmType, Alarm, Urgency_Type, Type\)\s*VALUES \(.+?,.+?,.+?,.+?,\s*(.+?)\);/g;
 
 
 const matchUpper = triggerDefinition.match(regexUpper);
@@ -174,7 +185,7 @@ if (matchUpper && matchLower && matchInserts.length > 0) {
     const uniqueType = uniqueTypes[0];
 
     // Send the thresholds and types to the user
-    res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1] });
+    res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1] ,Active : isActive});
 } else {
     res.send('No match found');
 }
@@ -183,14 +194,16 @@ if (matchUpper && matchLower && matchInserts.length > 0) {
 
           
       }
-  });
-}
+  )};
+
 
 
 updateActivePowerThresholds(req, res) {
     const newUpperThreshold = req.body.newUpperThreshold;
     const newLowerThreshold = req.body.newLowerThreshold;
     const type = req.body.type;
+    const IsActive = req.body.IsActive;
+    const TriggerName = 'HighAndLowActivePower';
 
     if(!newLowerThreshold || !newUpperThreshold || !type){
     console.error('Invalid request');
@@ -198,7 +211,7 @@ updateActivePowerThresholds(req, res) {
     return;
     }
 
-    this.systemService.updateActivePowerTriggerDefinition(newUpperThreshold, newLowerThreshold , type, (error, results, fields) => {
+    this.systemService.updateActivePowerTriggerDefinition(newUpperThreshold, newLowerThreshold , type , TriggerName , IsActive,(error, results, fields) => {
         if (error) res.status(500).send(error);
         else res.send('Thresholds updated successfully!');
     });
@@ -206,12 +219,17 @@ updateActivePowerThresholds(req, res) {
 
 //Reactive Power
 getReactivePowerTriggerDefinition(req, res) {
-  this.systemService.getReactivePowerTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
-          // Extract the upper and lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+  this.systemService.getReactivePowerTriggerDefinition((error, triggerResults, statusResults ) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
+           // Extract the upper and lower threshold from the trigger definition
+           const isActive = statusResults[0].IsActive;
+           const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           // console.log(triggerDefinition);
           const regexLower = /IF NEW\.reactive_power\s*<=\s*(\d+)/;
           const regexUpper = /IF NEW\.reactive_power\s*>=\s*(\d+)/;
@@ -244,7 +262,7 @@ getReactivePowerTriggerDefinition(req, res) {
             const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1]});
+              res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1] , Active : isActive});
           } else {
               res.send('No match found');
           }
@@ -252,14 +270,16 @@ getReactivePowerTriggerDefinition(req, res) {
 
           
       }
-  });
-}
+  )};
+
 
 
 updateReactivePowerThresholds(req, res) {
     const newUpperThreshold = req.body.newUpperThreshold;
     const newLowerThreshold = req.body.newLowerThreshold;
     const type = req.body.type;
+    const IsActive = req.body.IsActive;
+    const TriggerName = 'ReacTivePowerTrigger';
 
     if(!newLowerThreshold || !newUpperThreshold || !type){
     console.error('Invalid request');
@@ -267,19 +287,24 @@ updateReactivePowerThresholds(req, res) {
     return;
     }
 
-    this.systemService.updateReactivePowerTriggerDefinition(newUpperThreshold, newLowerThreshold , type, (error, results, fields) => {
+    this.systemService.updateReactivePowerTriggerDefinition(newUpperThreshold, newLowerThreshold , type , TriggerName , IsActive, (error, results, fields) => {
         if (error) res.status(500).send(error);
         else res.send('Thresholds updated successfully!');
     });
 }
 //Apparent Power
 getApparentPowerTriggerDefinition(req, res) {
-  this.systemService.getApparentPowerTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
-          // Extract the upper and lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+  this.systemService.getApparentPowerTriggerDefinition((error, triggerResults, statusResults ) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
+           // Extract the upper and lower threshold from the trigger definition
+           const isActive = statusResults[0].IsActive;
+           const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           // console.log(triggerDefinition);
           const regexLower = /IF NEW\.apparent_power\s*<=\s*(\d+)/;
           const regexUpper = /IF NEW\.apparent_power\s*>=\s*(\d+)/;
@@ -309,7 +334,7 @@ getApparentPowerTriggerDefinition(req, res) {
             const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1] });
+              res.send({upperThreshold: upperThreshold , lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1] , Active : isActive});
           } else {
               res.send('No match found');
           }
@@ -317,14 +342,16 @@ getApparentPowerTriggerDefinition(req, res) {
 
           
       }
-  });
-}
+  )};
+
 
 
 updateApparentPowerThresholds(req, res) {
     const newUpperThreshold = req.body.newUpperThreshold;
     const newLowerThreshold = req.body.newLowerThreshold;
     const type = req.body.type;
+    const IsActive = req.body.IsActive;
+    const TriggerName = 'ApparentPowerTrigger';
 
     if(!newLowerThreshold || !newUpperThreshold || !type){
     console.error('Invalid request');
@@ -332,7 +359,7 @@ updateApparentPowerThresholds(req, res) {
     return;
     }
 
-    this.systemService.updateApparentPowerTriggerDefinition(newUpperThreshold, newLowerThreshold , type, (error, results, fields) => {
+    this.systemService.updateApparentPowerTriggerDefinition(newUpperThreshold, newLowerThreshold , type , TriggerName , IsActive, (error, results, fields) => {
         if (error) res.status(500).send(error);
         else res.send('Thresholds updated successfully!');
     });
@@ -340,12 +367,18 @@ updateApparentPowerThresholds(req, res) {
 
 //Power Factor
 getPowerFactorTriggerDefinition(req, res) {
-  this.systemService.getPowerFactorTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
-          // Extract the upper and lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+  this.systemService.getPowerFactorTriggerDefinition((error, triggerResults, statusResults) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
+
+    // Extract the upper and lower threshold from the trigger definition
+    const isActive = statusResults[0].IsActive;
+    const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           
           const regexLower = /IF NEW\.power_factor\s*<=\s*(\d+(\.\d+)?)/;
 
@@ -380,7 +413,7 @@ getPowerFactorTriggerDefinition(req, res) {
             const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({ lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1]  });
+              res.send({ lowerThreshold: lowerThreshold ,type: uniqueType.split(',')[1] ,Active : isActive });
           } else {
               res.send('No match found');
           }
@@ -388,14 +421,17 @@ getPowerFactorTriggerDefinition(req, res) {
 
           
       }
-  });
-}
+  )};
+
 
 
 updatePowerFactorThresholds(req, res) {
     // const newUpperThreshold = req.body.newUpperThreshold;
     const newLowerThreshold = req.body.newLowerThreshold;
     const type = req.body.type;
+    const IsActive = req.body.IsActive;
+    const TriggerName = 'PowerFactorCorrection';
+
 
     if(!newLowerThreshold || !type){
     console.error('Invalid request');
@@ -403,19 +439,25 @@ updatePowerFactorThresholds(req, res) {
     return;
     }
 
-    this.systemService.updatePowerFactorTriggerDefinition( newLowerThreshold , type, (error, results, fields) => {
+    this.systemService.updatePowerFactorTriggerDefinition( newLowerThreshold , type, TriggerName , IsActive , (error, results, fields) => {
         if (error) res.status(500).send(error);
         else res.send('Thresholds updated successfully!');
     });
 }
 //Temperature
 getTemperatureTriggerDefinition(req, res) {
-  this.systemService.getTemperatureTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
-          // Extract the upper and lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+  this.systemService.getTemperatureTriggerDefinition((error, triggerResults, statusResults) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
+
+    // Extract the upper and lower threshold from the trigger definition
+    const isActive = statusResults[0].IsActive;
+    const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           // console.log(triggerDefinition);
           
           const regexUpper = /IF NEW\.temperature\s*>=\s*(\d+(\.\d+)?)/;
@@ -451,7 +493,7 @@ getTemperatureTriggerDefinition(req, res) {
             const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({ UpperThreshold: UpperThreshold,type: uniqueType.split(',')[1]  });
+              res.send({ UpperThreshold: UpperThreshold,type: uniqueType.split(',')[1] , Active : isActive });
           } else {
               res.send('No match found');
           }
@@ -459,13 +501,15 @@ getTemperatureTriggerDefinition(req, res) {
 
           
       }
-  });
-}
+  )};
+
 
 
 updateTemperatureThresholds(req, res) {
   const newUpperThreshold = req.body.newUpperThreshold;
   const type = req.body.type;
+  const IsActive = req.body.IsActive;
+  const TriggerName = 'TemperatureWarning';
 
   if (!newUpperThreshold || !type) {
       console.error('Invalid request');
@@ -474,7 +518,7 @@ updateTemperatureThresholds(req, res) {
   }
 
   // Assuming this.systemService.updateTemperatureTriggerDefinition is properly defined elsewhere
-  this.systemService.updateTemperatureTriggerDefinition(newUpperThreshold, type, (error, results, fields) => {
+  this.systemService.updateTemperatureTriggerDefinition(newUpperThreshold, type,TriggerName , IsActive , (error, results, fields) => {
       if (error) {
           console.error('Error updating thresholds:', error);
           res.status(500).send(error);
@@ -485,12 +529,18 @@ updateTemperatureThresholds(req, res) {
 }
 //Units
 getLowEnergyUnitsTriggerDefinition(req, res) {
-  this.systemService.getLowEnergyUnitsTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
-          // Extract the upper and lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+  this.systemService.getLowEnergyUnitsTriggerDefinition((error,  triggerResults, statusResults) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
+
+    // Extract the upper and lower threshold from the trigger definition
+    const isActive = statusResults[0].IsActive;
+    const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           
           const regexLower = /IF NEW\.units BETWEEN (\d+(\.\d+)?) AND (\d+(\.\d+)?)/;
           const regexInsert = /INSERT INTO MeterNotifications \(DRN, AlarmType, Alarm, Urgency_Type, Type\)\s*VALUES \(.+?,.+?,.+?,.+?,\s*'(.+?)'\);/g;
@@ -513,18 +563,20 @@ getLowEnergyUnitsTriggerDefinition(req, res) {
               const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({ lowerThreshold: lowerThreshold, upperThreshold: upperThreshold, type: uniqueType });
+              res.send({ lowerThreshold: lowerThreshold, upperThreshold: upperThreshold, type: uniqueType , Active : isActive});
           } else {
               res.send('No match found');
           }
       }
-  });
-}
+  )};
+
 
 updateLowEnergyUnitsThresholds(req, res) {
   const newLowerThreshold = req.body.newLowerThreshold;
   const newUpperThreshold = req.body.newUpperThreshold;
   const type = req.body.type;
+  const IsActive = req.body.IsActive;
+  const TriggerName = 'LowEnergyUnits';
 
   if (!newLowerThreshold || !newUpperThreshold || !type) {
       console.error('Invalid request');
@@ -532,7 +584,7 @@ updateLowEnergyUnitsThresholds(req, res) {
       return;
   }
 
-  this.systemService.updateLowEnergyUnitsTriggerDefinition(newLowerThreshold, newUpperThreshold, type, (error, results, fields) => {
+  this.systemService.updateLowEnergyUnitsTriggerDefinition(newUpperThreshold, newLowerThreshold , type , TriggerName , IsActive ,  (error, results, fields) => {
       if (error) {
           console.error('Error updating thresholds:', error);
           res.status(500).send(error);
@@ -543,12 +595,18 @@ updateLowEnergyUnitsThresholds(req, res) {
 }
 //Frequency
 getFrequencyDeviationTriggerDefinition(req, res) {
-  this.systemService.getFrequencyDeviationTriggerDefinition((error, results, fields) => {
-      if (error) {
-          res.status(500).send(error);
-      } else {
-          // Extract the lower threshold from the trigger definition
-          const triggerDefinition = results[0]['SQL Original Statement'];
+  this.systemService.getFrequencyDeviationTriggerDefinition((error, triggerResults, statusResults) => {
+    if (error) {
+        return res.status(500).send(error);
+    }
+    // Check if the status results have any data
+    if (!statusResults.length) {
+        return res.status(404).send({ message: 'No status found for the trigger.' });
+    }
+
+    // Extract the upper and lower threshold from the trigger definition
+    const isActive = statusResults[0].IsActive;
+    const triggerDefinition = triggerResults[0]['SQL Original Statement'];
           
           const regexLower = /IF NEW\.frequency\s*<\s*(\d+(\.\d+)?)/;
           const regexInsert = /INSERT INTO MeterNotifications \(DRN, AlarmType, Alarm, Urgency_Type, Type\)\s*VALUES \(.+?,.+?,.+?,.+?,(.+?)\);/g;
@@ -567,17 +625,19 @@ getFrequencyDeviationTriggerDefinition(req, res) {
               const uniqueType = uniqueTypes[0];
 
               // Send the thresholds and types to the user
-              res.send({ lowerThreshold: lowerThreshold, type: uniqueType.split(',')[1]  });
+              res.send({ lowerThreshold: lowerThreshold, type: uniqueType.split(',')[1] , Active : isActive  });
           } else {
               res.send('No match found');
           }
       }
-  });
-}
+  )};
+
 
 updateFrequencyDeviationThresholds(req, res) {
   const newLowerThreshold = req.body.newLowerThreshold;
   const type = req.body.type;
+  const IsActive = req.body.IsActive;
+const TriggerName = 'FrequencyDeviation';
 
   if (!newLowerThreshold || !type) {
       console.error('Invalid request');
@@ -585,7 +645,7 @@ updateFrequencyDeviationThresholds(req, res) {
       return;
   }
 
-  this.systemService.updateFrequencyDeviationTriggerDefinition(newLowerThreshold, type, (error, results, fields) => {
+  this.systemService.updateFrequencyDeviationTriggerDefinition(newLowerThreshold, type, TriggerName , IsActive ,(error, results, fields) => {
       if (error) {
           console.error('Error updating thresholds:', error);
           res.status(500).send(error);
@@ -594,7 +654,6 @@ updateFrequencyDeviationThresholds(req, res) {
       }
   });
 }
-
-
 }
+
 module.exports = SystemController;

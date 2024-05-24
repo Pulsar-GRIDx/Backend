@@ -1,131 +1,139 @@
 ###Voltage
-GET http://localhost:4000/systemSettings/getVoltageThresholds
+GET https://backend2.gridxmeter.com/systemSettings/getVoltageThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
-put http://localhost:4000/systemSettings/updateVoltageThresholds 
+put https://backend2.gridxmeter.com/systemSettings/updateVoltageThresholds 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       "newUpperThreshold"  : 300,
       "newLowerThreshold" : 100 ,
       "type" : "Critical",
-      "IsActive" : true
+      "IsActive" : false
 }
 ###Current
 get http://localhost:4000/systemSettings/getCurrentThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateCurrentThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
-      "newUpperThreshold"  : 30,
-      "newLowerThreshold" : 5 ,
-      "type" : "Warning"
+      "newUpperThreshold"  : 50,
+      "newLowerThreshold" : 10 ,
+      "type" : "Critical",
+      "IsActive" : false
 }
 ###ActivePower
 get http://localhost:4000/systemSettings/getActivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateActivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       "newUpperThreshold"  : 30,
       "newLowerThreshold" : 5 ,
-      "type" : "Warning"
-}
+      "type" : "Warning",
+      "IsActive" : false
+} 
 ###
 ###ReactivePower
 get http://localhost:4000/systemSettings/getReactivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateReactivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       "newUpperThreshold"  : 30,
       "newLowerThreshold" : 5 ,
-      "type" : "Warning"
+      "type" : "Critical",
+      "IsActive" : false
 }
 
 ###ApparentPower
 get http://localhost:4000/systemSettings/getApparentPowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateApparentPowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
-      "newUpperThreshold"  : 300,
-      "newLowerThreshold" : 100 ,
-      "type" : "Critical"
+      "newUpperThreshold"  : 40,
+      "newLowerThreshold" : 20 ,
+      "type" : "Warning",
+      "IsActive" : false
 }
 
 ###PowerFactor
 get http://localhost:4000/systemSettings/getPowerFactorThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updatePowerFactorThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       
       "newLowerThreshold" : 0.70 ,
-      "type" : "Critical"
+      "type" : "Critical",
+      "IsActive" : false
 }
 
 ###Temperature
 get http://localhost:4000/systemSettings/getTemperatureThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateTemperatureThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       
-      "newUpperThreshold" : 70,
-      "type" : "Critical"
+      "newUpperThreshold" : 80,
+      "type" : "Critical",
+      "IsActive" : false
 }
 ###Units
 get http://localhost:4000/systemSettings/getLowEnergyUnitsThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateLowEnergyUnitsThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       "newUpperThreshold"  : 300,
       "newLowerThreshold" : 100 ,
-      "type" : "Critical"
+      "type" : "Critical",
+      "IsActive" : false
 }
 ###FrequncyDeviation
-get http://localhost:4000/systemSettings/getFrequencyDeviationThresholds
+get http://localhost:4000/systemSettings/getFrequencyDeviationThresholds 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 ###
 put http://localhost:4000/systemSettings/updateFrequencyDeviationThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjMwMjYzNSwiZXhwIjoxNzE2MzA2MjM1fQ.z9OUYaT0GjukSWd-47DYt9MdkBSiwFBe293BlIwQAtc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
 
 {
       
       "newLowerThreshold" : 0.70 ,
-      "type" : "Warning"
+      "type" : "Warning",
+      "IsActive" : false
 }
