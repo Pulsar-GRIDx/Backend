@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-const compression = require('compression');
+
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const db  = require('./config/db');
@@ -93,12 +93,7 @@ const errorHandler = (err, req, res, next) => {
 app.use(errorHandler);
 
 
-//compress all responses
-app.use(compression({
-  level: 1 ,
-  threshold: 0
-  
-}));
+
 
 // Use our routes
 app.use('/', getRoutes);
