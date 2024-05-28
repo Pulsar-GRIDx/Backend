@@ -1,26 +1,26 @@
 ###Voltage
 GET https://backend2.gridxmeter.com/systemSettings/getVoltageThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
 put https://backend2.gridxmeter.com/systemSettings/updateVoltageThresholds 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       "newUpperThreshold"  : 300,
-      "newLowerThreshold" : 100 ,
+      "newLowerThreshold" : 10 ,
       "type" : "Critical",
       "IsActive" : false
 }
 ###Current
-get http://localhost:4000/systemSettings/getCurrentThresholds
+get https://backend2.gridxmeter.com/systemSettings/getCurrentThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateCurrentThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateCurrentThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       "newUpperThreshold"  : 50,
@@ -29,61 +29,61 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
       "IsActive" : false
 }
 ###ActivePower
-get http://localhost:4000/systemSettings/getActivePowerThresholds
+get https://backend2.gridxmeter.com/systemSettings/getActivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateActivePowerThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateActivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       "newUpperThreshold"  : 30,
       "newLowerThreshold" : 5 ,
       "type" : "Warning",
-      "IsActive" : false
+      "IsActive" : true
 } 
 ###
 ###ReactivePower
-get http://localhost:4000/systemSettings/getReactivePowerThresholds
+get https://backend2.gridxmeter.com/systemSettings/getReactivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateReactivePowerThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateReactivePowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       "newUpperThreshold"  : 30,
       "newLowerThreshold" : 5 ,
       "type" : "Critical",
-      "IsActive" : false
+      "IsActive" : true
 }
 
 ###ApparentPower
-get http://localhost:4000/systemSettings/getApparentPowerThresholds
+get https://backend2.gridxmeter.com/systemSettings/getApparentPowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateApparentPowerThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateApparentPowerThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       "newUpperThreshold"  : 40,
       "newLowerThreshold" : 20 ,
       "type" : "Warning",
-      "IsActive" : false
+      "IsActive" : true
 }
 
 ###PowerFactor
-get http://localhost:4000/systemSettings/getPowerFactorThresholds
+get https://backend2.gridxmeter.com/systemSettings/getPowerFactorThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updatePowerFactorThresholds
+put https://backend2.gridxmeter.com/systemSettings/updatePowerFactorThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       
@@ -93,47 +93,47 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 }
 
 ###Temperature
-get http://localhost:4000/systemSettings/getTemperatureThresholds
+get https://backend2.gridxmeter.com/systemSettings/getTemperatureThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateTemperatureThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateTemperatureThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       
       "newUpperThreshold" : 80,
       "type" : "Critical",
-      "IsActive" : false
+      "IsActive" : true
 }
 ###Units
-get http://localhost:4000/systemSettings/getLowEnergyUnitsThresholds
+get https://backend2.gridxmeter.com/systemSettings/getLowEnergyUnitsThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateLowEnergyUnitsThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateLowEnergyUnitsThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       "newUpperThreshold"  : 300,
       "newLowerThreshold" : 100 ,
       "type" : "Critical",
-      "IsActive" : false
+      "IsActive" : true
 }
 ###FrequncyDeviation
-get http://localhost:4000/systemSettings/getFrequencyDeviationThresholds 
+get https://backend2.gridxmeter.com/systemSettings/getFrequencyDeviationThresholds 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 ###
-put http://localhost:4000/systemSettings/updateFrequencyDeviationThresholds
+put https://backend2.gridxmeter.com/systemSettings/updateFrequencyDeviationThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjU1NDU2NywiZXhwIjoxNzE2NTU4MTY3fQ.pNNRNMCMO9PaUgAJYZfvohIeV9IuMDIsbgWfginCXWw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
 
 {
       
       "newLowerThreshold" : 0.70 ,
       "type" : "Warning",
-      "IsActive" : false
+      "IsActive" : true
 }
