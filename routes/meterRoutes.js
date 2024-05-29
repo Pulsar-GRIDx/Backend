@@ -3,7 +3,7 @@ const router = express.Router();
 const energyController = require('../meter/meterControllers');
 const authenticateTokenAndGetAdmin_ID = require('../middleware/authenticateTokenAndGet Admin_ID');
 const { authenticateToken } = require('../admin/authMiddllware');
-const cacheMiddleware = require('../middleware/cacheMiddleware');
+
 
 // Routes that require authentication and admin ID
 
@@ -59,10 +59,10 @@ router.post('/gridTopology',  authenticateToken,energyController.fetchDRNs);
 // Get all energy time periods
 router.get("/energy-time-periods",  authenticateToken,energyController.getEnergyData);
 
-router.get('/yearly/currentAndLastYearMonthEnergyTotal' , authenticateToken,cacheMiddleware,energyController.getMonthlyEnergyForCurrentAndLastYear);
+router.get('/yearly/currentAndLastYearMonthEnergyTotal' , authenticateToken,energyController.getMonthlyEnergyForCurrentAndLastYear);
 
 // CurrentAndLastWeek With the day starting on Monday
-router.get('/weekly/currentAndLastWeekEnergyTotal' , authenticateToken,cacheMiddleware,energyController.getWeeklyEnergyForCurrentAndLastWeek);
+router.get('/weekly/currentAndLastWeekEnergyTotal' , authenticateToken,energyController.getWeeklyEnergyForCurrentAndLastWeek);
 
 // Get hourly power consumption
 router.get('/hourlyPowerConsumption',  authenticateToken,energyController.getHourlyPowerConsumption);
