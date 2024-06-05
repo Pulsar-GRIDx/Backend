@@ -20,7 +20,7 @@ client.on('error', (err) => {
 
 const app = express();
 const corsOptions = {
-  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001','http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com/','http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com'],
+  origin: ['https://admin.gridxmeter.com', 'http://admin.gridxmeter.com','http://localhost:3000/','http://localhost:3000','http://localhost:3001/','http://localhost:3001','http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com/','http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com','http://admindemo.gridxmeter.com.s3-website-us-east-1.amazonaws.com/','http://admindemo.gridxmeter.com.s3-website-us-east-1.amazonaws.com'],
   methods:[['GET'],['POST'],['DELETE'],['PUT']],
   credentials: true,
   optionSuccessStatus: 200,
