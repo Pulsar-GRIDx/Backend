@@ -1,17 +1,62 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pulsar GridX_Admin</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .login-container {
+      width: 300px;
+      margin: 100px auto;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Please Login to test the API</h2>
+    <h6>Email: admin@pulsar.com</h6>
+    <h6>Password: Admin@123</h6>
+    <input type="text" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+    <p id="error-message" style="color: red;"></p>
+  </div>
+  <script>
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-  <html>
-    <head>
-      <title>Pulsar</title>
-    
-    </head>
-    <body>
-      <div class="login-container">
-        <h1>Welcome To the GridXMeter AdminServer 2.0</h1>
-        
-          
-
-    </body>
-  </html>
-
+      fetch('/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ Email: email, Password: password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          sessionStorage.setItem('jwtToken', data.token);
+          window.location.href = 'swagger-ui'; // Corrected path
+        } else {
+          document.getElementById('error-message').innerText = 'Login failed: ' + data.error;
+        }
+      })
+      .catch(error => {
+        document.getElementById('error-message').innerText = 'An error occurred: ' + error.message;
+      });
+    }
+  </script>
+</body>
 </html>

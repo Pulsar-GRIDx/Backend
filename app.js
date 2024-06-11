@@ -6,6 +6,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const db  = require('./config/db');
+const authSwaggerUi = require('./middleware/authenticateTokenAndGet Admin_ID')
 
 //Cache
 
@@ -50,12 +51,14 @@ const meterProfileRoutes = require('./meterProfile/meterProfileRoutes');
 const systemSettingsRoutes = require('./routes/systemSettingsRoutes');
 
 
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.get('/', (req, res) => {
-  res.render('index');
+app.get('/swagger-api', authSwaggerUi, (req, res) => {
+  res.sendFile(path.resolve(__dirname, './views/swagger-output.json'));
 });
 
 app.use('/healthCheck', (req, res) => {
@@ -96,6 +99,7 @@ app.use(errorHandler);
 
 
 // Use our routes
+app.use('/', require('./routes/index'))
 app.use('/', getRoutes);
 app.use('/',meterRoutes);
 app.use('/', suburbEnergyRoute);
@@ -106,6 +110,7 @@ app.use('/finance', financialRoutes);
 app.use('/finance',suburbFinance);
 app.use('/settings', meterProfileRoutes);
 app.use('/systemSettings', systemSettingsRoutes);
+
 
 
 
