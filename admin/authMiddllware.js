@@ -25,8 +25,8 @@ function authenticateToken(req, res, next) {
       if (err) {
         if (err.name === 'TokenExpiredError') {
           console.error('Token has expired');
-          // return res.status(401).send('Token Expired')
-          return res.status(401).json({ redirectTo: 'https://admin.gridxmeter.com/' });
+          return res.status(401).send('Token Expired')
+          // return res.status(401).json({ redirectTo: 'https://admin.gridxmeter.com/' });
         } else {
           return res.status(403).send('Forbidden');
         }
