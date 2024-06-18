@@ -5,10 +5,10 @@
     "description": "This is the GridX Admin Api Documentation",
     "version": "1.0.0"
   },
-  "host": "localhost:4000",
+  "host": "backend2.gridxmeter.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "tags":[
  {
