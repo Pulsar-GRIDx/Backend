@@ -5,10 +5,10 @@
     "description": "This is the GridX Admin Api Documentation",
     "version": "1.0.0"
   },
-  "host": "backend2.gridxmeter.com",
+  "host": "localhost:4000",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
   ],
   "tags":[
  {
@@ -609,7 +609,7 @@
     },
     "/meter_change": {
       "get": {
-        "tags": ["pecentages"],
+        "tags": ["percentages"],
         "description": "Meter percentage change between meters added to  the system in the current month and previous previous.",
         "responses": {
           "200": {
@@ -629,7 +629,7 @@
     },
     "/active_state_count": {
       "get": {
-        "tags": ["pecentage"],
+        "tags": ["percentages"],
         "description": "Percentage of active meters between the current day and previous day",
         "responses": {
           "200": {
@@ -649,7 +649,7 @@
     },
     "/inactive_state_count": {
       "get": {
-        "tags": ["pecentage"],
+        "tags": ["percentages"],
         "description": "Percentage of inactive meters between the current day and previous day",
         "responses": {
           "200": {
@@ -669,7 +669,7 @@
     },
     "/powerIncreaseOrDecrease": {
       "get": {
-        "tags":["pecentage"],
+        "tags":["percentages"],
         "description": "Energy Increase or decrease in the time periods (day,month.year)",
         "responses": {
           "200": {
@@ -689,7 +689,7 @@
     },
     "/suburbAdvancedPowerIncreaseOrDecrease": {
       "post": {
-        "tags":["pecentage"],
+        "tags":["percentages"],
         "description": "Specifc Suburb/Area energy increase or decrease in the time periods (day,month,year)",
         "parameters": [
           {
@@ -726,6 +726,7 @@
     },
     "/tokenAmountIncreaseOrDecrease": {
       "get": {
+        "tags":["finance"],
         "description": "",
         "responses": {
           "200": {
@@ -745,6 +746,7 @@
     },
     "/suburbRevenueIncreaseOrDecrease": {
       "post": {
+        "tags":["percentages"],
         "description": "",
         "parameters": [
           {
@@ -778,6 +780,7 @@
     },
     "/time-periods-ratios": {
       "get": {
+        "tags":["percentages"],
         "description": "",
         "responses": {
           "200": {
@@ -794,6 +797,7 @@
     },
     "/WeekRatio": {
       "get": {
+        "tags":["percentages"],
         "description": "",
         "responses": {
           "200": {
@@ -810,6 +814,7 @@
     },
     "/monthRatios": {
       "get": {
+        "tags":["percentages"],
         "description": "",
         "responses": {
           "200": {
@@ -826,6 +831,7 @@
     },
     "/insertMeterData": {
       "post": {
+        "tags":["meter_status"],
         "description": "",
         "responses": {
           "200": {
@@ -839,6 +845,7 @@
     },
     "/insertTransformer": {
       "post": {
+        "tags":["transformer_status"],
         "description": "",
         "parameters": [
           {
@@ -866,6 +873,7 @@
     },
     "/suburbEnergy": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -892,7 +900,8 @@
     },
     "/allProcessedTokensByDRN{DRN}": {
       "get": {
-        "description": "",
+        "tags":["finance"],
+        "description": "All Processed Tokens by DRN/Meter",
         "parameters": [
           {
             "name": "allProcessedTokensByDRNDRN",
@@ -927,7 +936,8 @@
     },
     "/meterWeekAndMonthData{DRN}": {
       "get": {
-        "description": "",
+        "tags":["energy"],
+        "description": "Weekly and monthly energy by meter",
         "parameters": [
           {
             "name": "meterWeekAndMonthDataDRN",
@@ -1026,6 +1036,7 @@
     },
     "/activeInactiveMeters": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1049,6 +1060,7 @@
     },
     "/totalMeters": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1075,6 +1087,7 @@
     },
     "/tokenAmount": {
       "get": {
+        "tags":["finance"],
         "description": "",
         "parameters": [
           {
@@ -1101,6 +1114,7 @@
     },
     "/totalTokensBought": {
       "get": {
+        "tags":["finance"],
         "description": "",
         "parameters": [
           {
@@ -1127,6 +1141,7 @@
     },
     "/weeklyDataAmount": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1153,6 +1168,7 @@
     },
     "/currentDayEnergy": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1179,6 +1195,7 @@
     },
     "/gridTopology": {
       "post": {
+        "tags":["grid_topology"],
         "description": "",
         "parameters": [
           {
@@ -1217,6 +1234,7 @@
     },
     "/energy-time-periods": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1243,6 +1261,7 @@
     },
     "/yearly/currentAndLastYearMonthEnergyTotal": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1269,6 +1288,7 @@
     },
     "/weekly/currentAndLastWeekEnergyTotal": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1295,6 +1315,7 @@
     },
     "/hourlyPowerConsumption": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1321,6 +1342,7 @@
     },
     "/average-current-voltage": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1347,6 +1369,7 @@
     },
     "/last-apparent-power": {
       "get": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1373,6 +1396,7 @@
     },
     "/suburb-time-periods": {
       "post": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1411,6 +1435,7 @@
     },
     "/search-by-weekly-power": {
       "post": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1449,6 +1474,7 @@
     },
     "/search-by-monthly-power": {
       "post": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1487,6 +1513,7 @@
     },
     "/get-system-processed-tokens": {
       "get": {
+        "tags":["finance"],
         "description": "",
         "parameters": [
           {
@@ -1516,6 +1543,7 @@
     },
     "/total-tranformers": {
       "get": {
+        "tags":["transformer_status"],
         "description": "",
         "parameters": [
           {
@@ -1542,6 +1570,7 @@
     },
     "/getSuburbEnergy": {
       "post": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1583,6 +1612,7 @@
     },
     "/getSuburbHourlyEnergy": {
       "post": {
+        "tags":["energy"],
         "description": "",
         "parameters": [
           {
@@ -1624,6 +1654,7 @@
     },
     "/meterResetHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1651,6 +1682,7 @@
     },
     "/meterCalibrationHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1675,6 +1707,7 @@
     },
     "/meterControlHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1702,6 +1735,7 @@
     },
     "/meterStateHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1729,6 +1763,7 @@
     },
     "/heaterControlHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1756,6 +1791,7 @@
     },
     "/heaterStateHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1783,6 +1819,7 @@
     },
     "/stsTokenHistory/{DRN}": {
       "get": {
+        "tags":["meter_status"],
         "description": "",
         "parameters": [
           {
@@ -1807,6 +1844,7 @@
     },
     "/tokenInformation/{DRN}": {
       "get": {
+        "tags":["finance"],
         "description": "",
         "parameters": [
           {
@@ -1834,6 +1872,7 @@
     },
     "/deleteNotifications/{id}": {
       "delete": {
+        "tags":["notifications"],
         "description": "",
         "parameters": [
           {
@@ -1855,6 +1894,7 @@
     },
     "/notificationsByDRN/{DRN}": {
       "get": {
+        "tags":["notifications"],
         "description": "",
         "parameters": [
           {
@@ -1876,6 +1916,7 @@
     },
     "/criticalNotifications": {
       "get": {
+        "tags":["notifications"],
         "description": "",
         "responses": {
           "200": {
@@ -1902,6 +1943,7 @@
     },
     "/notificationTypes": {
       "get": {
+        "tags":["notifications"],
         "description": "",
         "responses": {
           "200": {
@@ -1915,6 +1957,7 @@
     },
     "/notificationsTypesByDRN/{DRN}": {
       "get": {
+        "tags":["notifications"],
         "description": "",
         "parameters": [
           {
@@ -1961,9 +2004,36 @@
         "description": "",
         "parameters": [
           {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
+             "name":"body",
+             "in":"body",
+             "required":true,
+             "schema":{
+              "type":"object",
+              "properties":{
+                "newUpperThreshold":{
+                  "type":"number",
+                  "example":300
+
+                },
+                "newLowerThreshold":{
+                  "type":"number",
+                  "example":30
+                },
+                "type":{
+                  "type":"string",
+                  "example": "Warning"
+
+                },
+                "IsActive":{
+                  "type":"boolean",
+                  "example":true
+
+                }
+
+              }
+
+             }
+        
           }
         ],
         "responses": {
@@ -2003,9 +2073,36 @@
         "description": "",
         "parameters": [
           {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
+             "name":"body",
+             "in":"body",
+             "required":true,
+             "schema":{
+              "type":"object",
+              "properties":{
+                "newUpperThreshold":{
+                  "type":"number",
+                  "example":300
+
+                },
+                "newLowerThreshold":{
+                  "type":"number",
+                  "example":30
+                },
+                "type":{
+                  "type":"string",
+                  "example": "Warning"
+
+                },
+                "IsActive":{
+                  "type":"boolean",
+                  "example":true
+
+                }
+
+              }
+
+             }
+        
           }
         ],
         "responses": {
@@ -2045,11 +2142,37 @@
         "description": "",
         "parameters": [
           {
-            "newUpperThreshold"  : 30,
-            "newLowerThreshold" : 5 ,
-            "type" : "Warning",
-            "IsActive" : true
-      } 
+             "name":"body",
+             "in":"body",
+             "required":true,
+             "schema":{
+              "type":"object",
+              "properties":{
+                "newUpperThreshold":{
+                  "type":"number",
+                  "example":300
+
+                },
+                "newLowerThreshold":{
+                  "type":"number",
+                  "example":30
+                },
+                "type":{
+                  "type":"string",
+                  "example": "Warning"
+
+                },
+                "IsActive":{
+                  "type":"boolean",
+                  "example":true
+
+                }
+
+              }
+
+             }
+        
+          }
         ],
         "responses": {
           "401": {
@@ -2088,10 +2211,36 @@
         "description": "",
         "parameters": [
           {
-             "newUpperThreshold"  : 30,
-             "newLowerThreshold" : 5 ,
-              "type" : "Critical",
-              "IsActive" : true
+             "name":"body",
+             "in":"body",
+             "required":true,
+             "schema":{
+              "type":"object",
+              "properties":{
+                "newUpperThreshold":{
+                  "type":"number",
+                  "example":300
+
+                },
+                "newLowerThreshold":{
+                  "type":"number",
+                  "example":30
+                },
+                "type":{
+                  "type":"string",
+                  "example": "Warning"
+
+                },
+                "IsActive":{
+                  "type":"boolean",
+                  "example":true
+
+                }
+
+              }
+
+             }
+        
           }
         ],
         "responses": {
