@@ -81,10 +81,10 @@
               "type": "object",
               "properties": {
                 "Email": {
-                  "example": "any"
+                  "example": "admin@pulsar.com"
                 },
                 "Password": {
-                  "example": "any"
+                  "example": "Admin@123"
                 }
               }
             }
@@ -506,7 +506,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -540,7 +540,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -574,7 +574,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -756,7 +756,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -1411,7 +1411,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -1489,7 +1489,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -1585,7 +1585,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }
@@ -1627,7 +1627,7 @@
               "type": "object",
               "properties": {
                 "suburbs": {
-                  "example": "any"
+                  "example": "Academia"
                 }
               }
             }

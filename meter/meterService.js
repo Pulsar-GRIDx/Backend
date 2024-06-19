@@ -9,6 +9,7 @@ exports.getAllTotalMeters = function() {
         console.error('Error querying the database:', err);
         reject(err); // Reject the promise with the error
       } else if (results.length === 0) {
+        console.error('No results');
         resolve({ totalMeters: 0 }); // Resolve the promise with 0 if no results
       } else {
         resolve(results[0]); // Resolve the promise with the first result
@@ -49,7 +50,7 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
   db.query(getAllActiveAndInactiveMeters, (err, results) => {
       if (err) {
           console.log('Error querying the database:', err);
-          return callback({ error: 'Database query failed', details: err });
+          return callback({ error: 'Error querying the database:', details: err });
       }
 
       if (results.length === 0) {

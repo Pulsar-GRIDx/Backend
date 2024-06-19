@@ -3,9 +3,9 @@ const energyService = require('./meterService');
 exports.getTotalMeters = async (req, res) => {
   try {
     const totalMeters = await energyService.getAllTotalMeters();
-    res.json(totalMeters);
+    res.status(200).json(totalMeters);
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: 'An error occurred while processing your request.' });
   }
 };
@@ -16,11 +16,11 @@ exports.getAllActiveAndInactiveMeters = function (req, res) {
   energyService.getAllActiveAndInactiveMeters((err,data) =>{
     if (err) {
       console.error('Error querying MySQL:', err);
-      res.json(0);
+      res.status(200).json(0);
       return;
     }
 
-    res.json(data);
+    res.status(200).json(data);
   });
   }
 //------------------------------------------TotalTokenAmount-----------------------------//

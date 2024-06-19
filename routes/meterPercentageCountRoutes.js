@@ -191,13 +191,13 @@ router.get('/inactive_state_count', (req, res) => {
   });
 });
 
-// Function to format date as 'YYYY-MM-DD'
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+// // Function to format date as 'YYYY-MM-DD'
+// function formatDate(date) {
+//   const year = date.getFullYear();
+//   const month = String(date.getMonth() + 1).padStart(2, '0');
+//   const day = String(date.getDate()).padStart(2, '0');
+//   return `${year}-${month}-${day}`;
+// }
 
 
 function inactivePercent(previousValue, currentValue) {
@@ -310,11 +310,11 @@ function executeQuery(query) {
   });
 }
 
-// Function to calculate percentage change
+// // Function to calculate percentage change
 
-function calculatePercentageChange(currentValue, previousValue) {
-  return (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
-}
+// function calculatePercentageChange(currentValue, previousValue) {
+//   return (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
+// }
 
 
 
@@ -431,25 +431,25 @@ router.post('/suburbAdvancedPowerIncreaseOrDecrease', (req, res) => {
   });
 });
 
-// Function to execute SQL queries
-function executeQuery(query, values) {
-  return new Promise((resolve, reject) => {
-    connection.query(query, values, (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-}
+// // Function to execute SQL queries
+// function executeQuery(query, values) {
+//   return new Promise((resolve, reject) => {
+//     connection.query(query, values, (err, results) => {
+//       if (err) {
+//         reject(err);
+//       } else {
+//         resolve(results);
+//       }
+//     });
+//   });
+// }
 
-// Function to calculate percentage change
-function calculatePercentageChange(currentValue, previousValue) {
-  if (previousValue === 0) return 0; // Avoid division by zero
-  const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2)
-  return parseFloat(newValue);
-}
+// // Function to calculate percentage change
+// function calculatePercentageChange(currentValue, previousValue) {
+//   if (previousValue === 0) return 0; // Avoid division by zero
+//   const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2)
+//   return parseFloat(newValue);
+// }
 
 
 //---------------------------------------------------------------------System Token increase or decrease -----------------------------------------------------------------//
@@ -498,25 +498,25 @@ router.get('/tokenAmountIncreaseOrDecrease', (req, res) => {
   });
 });
 
-// Function to execute SQL queries
-function executeQuery(query) {
-  return new Promise((resolve, reject) => {
-    connection.query(query, (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-}
+// // Function to execute SQL queries
+// function executeQuery(query) {
+//   return new Promise((resolve, reject) => {
+//     connection.query(query, (err, results) => {
+//       if (err) {
+//         reject(err);
+//       } else {
+//         resolve(results);
+//       }
+//     });
+//   });
+// }
 
-// Function to calculate percentage change
-function calculatePercentageChange(currentValue, previousValue) {
-  if (previousValue === 0) return 0; // Avoid division by zero
-  const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
-  return parseFloat(newValue);
-}
+// // Function to calculate percentage change
+// function calculatePercentageChange(currentValue, previousValue) {
+//   if (previousValue === 0) return 0; // Avoid division by zero
+//   const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
+//   return parseFloat(newValue);
+// }
 
 
 //------------------------------------------------------------------------Suburb Token Increase or decrease ----------------------------------------------//
@@ -607,25 +607,25 @@ router.post('/suburbRevenueIncreaseOrDecrease', (req, res) => {
   });
 });
 
-// Function to execute SQL queries
-function executeQuery(query, values) {
-  return new Promise((resolve, reject) => {
-    connection.query(query, values, (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-}
+// // Function to execute SQL queries
+// function executeQuery(query, values) {
+//   return new Promise((resolve, reject) => {
+//     connection.query(query, values, (err, results) => {
+//       if (err) {
+//         reject(err);
+//       } else {
+//         resolve(results);
+//       }
+//     });
+//   });
+// }
 
-// Function to calculate percentage change
-function calculatePercentageChange(currentValue, previousValue) {
-  if (previousValue === 0) return 0; // Avoid division by zero
-  const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
-  return parseFloat(newValue);
-}
+// // Function to calculate percentage change
+// function calculatePercentageChange(currentValue, previousValue) {
+//   if (previousValue === 0) return 0; // Avoid division by zero
+//   const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2);
+//   return parseFloat(newValue);
+// }
 
 
 
