@@ -127,7 +127,7 @@ exports.getTotalTransformers = function(req, res) {
     .then(results => {
       if (results.length === 0) {
         console.error({ error: 'No data found' });
-        return res.json(0);
+        return res.status(400).json(0);
       }
 
       // results.forEach(result => {
@@ -143,7 +143,7 @@ exports.getTotalTransformers = function(req, res) {
       //   }
       // });
 
-      res.json(results);
+      res.status(200).json(results);
     })
     .catch(error => {
       console.error({ error: 'An error occurred while fetching token information', details: error });

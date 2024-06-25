@@ -75,7 +75,7 @@ exports.getAllActiveAndInactiveMeters = function(callback) {
           const inactiveMeters = totalMeters - activeMetersCount;
 
           // Pass the counts to the callback function
-          callback(null, { inactiveMeters, activeMeters: activeMetersCount });
+          callback(null, { inactiveMeters:inactiveMeters,  activeMeters:activeMetersCount });
       });
   });
 };

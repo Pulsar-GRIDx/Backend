@@ -1,4 +1,10 @@
-const { getTotalMeters,getAllActiveAndInactiveMeters } = require('../meter/meterControllers');
+const { 
+  getTotalMeters,
+  getAllActiveAndInactiveMeters,
+  getTotalTransformers
+
+ } = require('../meter/meterControllers');
+
 const energyService = require('../meter/meterService');
 
 
@@ -82,4 +88,61 @@ describe('getAllActiveAndInactiveMeters controller', () => {
   
     expect(console.error).toHaveBeenCalledWith(errorMessage, expect.any(Error));
   });
+});
+
+
+//Test Total transformers 
+
+describe('getTotalTransformers controller', () => {
+  it('should handle no data found', async () => {
+    const mockReq = {};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    // Mock your service function (e.g., energyService.getTotalTransformers)
+    energyService.getTotalTransformers = jest.fn(() => Promise.resolve([]));
+
+    await getTotalTransformers(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith(0);
+  });
+
+  it('should retrieve total transformers successfully', async () => {
+    const mockResults = [{ /* mock data */ }];
+    const mockReq = {};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    // Mock your service function with actual data
+    energyService.getTotalTransformers = jest.fn(() => Promise.resolve(mockResults));
+
+    await getTotalTransformers(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith(mockResults);
+  });
+
+  it('should handle service error', async () => {
+    const mockError = new Error('Test service error');
+    const mockReq = {};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    // Mock your service function to throw an error
+    energyService.getTotalTransformers = jest.fn(() => Promise.reject(mockError));
+
+    await getTotalTransformers(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: 'An error occurred' });
+  });
+
+  // Add more test cases as needed
 });
