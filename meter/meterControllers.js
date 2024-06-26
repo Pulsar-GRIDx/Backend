@@ -130,24 +130,13 @@ exports.getTotalTransformers = function(req, res) {
         return res.status(400).json(0);
       }
 
-      // results.forEach(result => {
-      //   if (!(result.date_time instanceof Date)) {
-      //     console.error({ error: 'Invalid date format for date_time' });
-      //   } else {
-      //     result.date_time = result.date_time.toISOString().substring(0, 10);
-      //   }
-
-      //   if (result.token_time === null) {
-      //     // console.error({ error: 'token_time is null' });
-      //     result.token_time = '0000-00-00 00:00:00';
-      //   }
-      // });
 
       res.status(200).json(results);
     })
-    .catch(error => {
-      console.error({ error: 'An error occurred while fetching token information', details: error });
-      res.status(500).json({ error: 'An error occurred' });
+    .catch(Error => {
+     res.status(500).json({ error: 'An error occurred' });
+     console.error({ error: 'An error occurred while fetching token information', details: Error });
+      
     });
 }
 
@@ -211,11 +200,11 @@ exports.getCurrentDayEnergy = (req, res) => {
   energyService.getCurrentDayData()
     .then(currentDayData => {
       const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.power_consumption), 0) ;
-      res.json({ totalEnergy  });
+      res.status(200).json({ totalEnergy  });
     })
     .catch(err => {
       console.error('Error querying the database:', err);
-      return res.status(500).send({ error: 'Database query failed', details: err });
+      return res.status(500)({ error: 'Database query failed', details: err });
     });
 };
 //--------------------------------------------------------InsertMeterData----------------------------------------------------------//

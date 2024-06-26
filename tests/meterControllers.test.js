@@ -1,7 +1,8 @@
 const { 
   getTotalMeters,
   getAllActiveAndInactiveMeters,
-  getTotalTransformers
+  getTotalTransformers,
+  getCurrentDayEnergy
 
  } = require('../meter/meterControllers');
 
@@ -94,46 +95,88 @@ describe('getAllActiveAndInactiveMeters controller', () => {
 //Test Total transformers 
 
 describe('getTotalTransformers controller', () => {
-  it('should handle no data found', async () => {
-    const mockReq = {};
-    const mockRes = {
-      status: jest.fn().mockReturnThis(),
+  let mockReq;
+  let mockRes;
+
+  beforeEach(() => {
+    mockReq = {};
+    mockRes = {
       json: jest.fn(),
+      status: jest.fn().mockReturnThis(),
     };
-
-    // Mock your service function (e.g., energyService.getTotalTransformers)
-    energyService.getTotalTransformers = jest.fn(() => Promise.resolve([]));
-
-    await getTotalTransformers(mockReq, mockRes);
-
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith(0);
   });
 
-  it('should retrieve total transformers successfully', async () => {
-    const mockResults = [{ /* mock data */ }];
-    const mockReq = {};
-    const mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    // Mock your service function with actual data
-    energyService.getTotalTransformers = jest.fn(() => Promise.resolve(mockResults));
+  console.error = jest.fn();
+
+  // Success Scenario
+  it('should return total number of transformers', async () => {
+    const mockResults = [{ totalTransformers: 10 }]; // Mock service response
+    energyService.getTotalTransformers.mockResolvedValue(mockResults);
 
     await getTotalTransformers(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith(mockResults);
+    expect(mockRes.json).toHaveBeenCalledWith(mockResults); // Verify extracted count
   });
 
-  it('should handle service error', async () => {
-    const mockError = new Error('Test service error');
-    const mockReq = {};
+  // No Transformers Found
+  it('should return 400 and error message for no transformers', async () => {
+    energyService.getTotalTransformers.mockResolvedValue([]);
+
+    await getTotalTransformers(mockReq, mockRes);
+
+    expect(console.error).toHaveBeenCalledWith({ error: 'No data found' });
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith(0);
+  });
+
+  // Database Error
+  it('should return a 500 status and an error message when there is an error', async () => {
+    await getTotalTransformers(mockReq, mockRes); // Wait for promise to resolve/reject
+    
+    expect(console.error).toHaveBeenCalledWith({ error: 'An error occurred while fetching token information' });
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: 'An error occurred' });
+  });
+});
+
+//Current day energy 
+
+describe('total energy', ()=>{
+  it('should return total energy and 200 ok', async () =>{
+
+
+    const mockResults = [{ totalEnergy : 20 }];
+    const mockReq = {totalEnergy : 20 };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
+
+    await getCurrentDayEnergy(mockReq, mockRes);
+
+    //Mocking the service
+    energyService.getCurrentDayData = jest.fn(() => Promise.reject(mockResults));
+
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith(mockResults);
+
+  });
+
+  it('should handle errors', async ()=>{
+    const mockError = 'Test error message';
+    const mockReq = {totalEnergy : 20};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+      send: jest.fn()
+      
+    };
+    console.error = jest.fn();
 
     // Mock your service function to throw an error
     energyService.getTotalTransformers = jest.fn(() => Promise.reject(mockError));
@@ -141,8 +184,8 @@ describe('getTotalTransformers controller', () => {
     await getTotalTransformers(mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: 'An error occurred' });
-  });
+    expect(mockRes.json).toHaveBeenCalledWith({ error: 'Database query failed' });
+    expect(console.error).toHaveBeenCalledWith(errorMessage, expect.any(Error));
 
-  // Add more test cases as needed
-});
+  })
+})
