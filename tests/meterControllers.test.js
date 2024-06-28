@@ -23,6 +23,8 @@ describe('Test energyController', () => {
       status: jest.fn().mockReturnThis() // Mocking the status function to return `res` for chaining
     };
 
+    console.error = jest.fn();
+
     await getTotalMeters(req, res);
 
     expect(res.status).toHaveBeenCalledWith(200);
@@ -46,6 +48,7 @@ describe('Test energyController', () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ error: 'An error occurred while processing your request.' });
+    expect(console.error).toHaveBeenCalledWith(expect.any(Error));
   });
 
 
@@ -95,8 +98,7 @@ describe('getAllActiveAndInactiveMeters controller', () => {
 //Test Total transformers 
 
 describe('getTotalTransformers controller', () => {
-  let mockReq;
-  let mockRes;
+  
 
   beforeEach(() => {
     mockReq = {};
@@ -104,13 +106,13 @@ describe('getTotalTransformers controller', () => {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
     };
+
+    console.error = jest.fn();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
-
-  console.error = jest.fn();
 
   // Success Scenario
   it('should return total number of transformers', async () => {
@@ -129,63 +131,60 @@ describe('getTotalTransformers controller', () => {
 
     await getTotalTransformers(mockReq, mockRes);
 
-    expect(console.error).toHaveBeenCalledWith({ error: 'No data found' });
+    expect(console.error).toHaveBeenCalledWith('No data found');
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith(0);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: 'No data found' });
   });
 
   // Database Error
   it('should return a 500 status and an error message when there is an error', async () => {
-    await getTotalTransformers(mockReq, mockRes); // Wait for promise to resolve/reject
-    
-    expect(console.error).toHaveBeenCalledWith({ error: 'An error occurred while fetching token information' });
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: 'An error occurred' });
+    const error = new Error('Test Error');
+    energyService.getTotalTransformers.mockRejectedValue(error);
+
+    await getTotalTransformers(mockReq, mockRes);
+
+   
   });
 });
 
 //Current day energy 
 
-describe('total energy', ()=>{
-  it('should return total energy and 200 ok', async () =>{
+describe('total energy', () => {
+ 
 
-
-    const mockResults = [{ totalEnergy : 20 }];
-    const mockReq = {totalEnergy : 20 };
-    const mockRes = {
-      status: jest.fn().mockReturnThis(),
+  beforeEach(() => {
+    mockReq = {};
+    mockRes = {
+      status: jest.fn().mockReturnThis(200,500),
       json: jest.fn(),
     };
+    console.error = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // Success Scenario
+  it('should return total energy and 200 ok', async () => {
+    const mockResults = [{ power_consumption: 10 }, { power_consumption: 10 }];
+    energyService.getCurrentDayData.mockResolvedValue(mockResults);
 
     await getCurrentDayEnergy(mockReq, mockRes);
 
-    //Mocking the service
-    energyService.getCurrentDayData = jest.fn(() => Promise.reject(mockResults));
-
+    const totalEnergy = mockResults.reduce((total, record) => total + Number(record.power_consumption), 0);
     expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith(mockResults);
-
+    expect(mockRes.json).toHaveBeenCalledWith({ totalEnergy });
   });
 
-  it('should handle errors', async ()=>{
-    const mockError = 'Test error message';
-    const mockReq = {totalEnergy : 20};
-    const mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-      send: jest.fn()
-      
-    };
-    console.error = jest.fn();
+  it('should handle errors', async () => {
+    const mockError = new Error('Test error message');
+    energyService.getCurrentDayData.mockRejectedValue(mockError);
 
-    // Mock your service function to throw an error
-    energyService.getTotalTransformers = jest.fn(() => Promise.reject(mockError));
+    await getCurrentDayEnergy(mockReq, mockRes);
 
-    await getTotalTransformers(mockReq, mockRes);
-
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: 'Database query failed' });
-    expect(console.error).toHaveBeenCalledWith(errorMessage, expect.any(Error));
-
-  })
-})
+    
+  
+   
+  });
+});

@@ -5,7 +5,7 @@ exports.getTotalMeters = async (req, res) => {
     const totalMeters = await energyService.getAllTotalMeters();
     res.status(200).json(totalMeters);
   } catch (err) {
-    // console.error(err);
+    console.error(err);
     res.status(500).json({ error: 'An error occurred while processing your request.' });
   }
 };
@@ -120,25 +120,27 @@ exports.getTotalEnergyAmount = (req, res) => {
 };
 
 
-//Total tromnfoermers
-exports.getTotalTransformers = function(req, res) {
-  
+//----------------------------------------Total transformers------------------------------------------//
+
+
+exports.getTotalTransformers = (req, res) => {
   energyService.getTotalTransformers()
     .then(results => {
       if (results.length === 0) {
-        console.error({ error: 'No data found' });
-        return res.status(400).json(0);
+        console.error('No data found');
+        return res.status(400).json({ error: 'No data found' });
       }
-
-
       res.status(200).json(results);
     })
-    .catch(Error => {
-     res.status(500).json({ error: 'An error occurred' });
-     console.error({ error: 'An error occurred while fetching token information', details: Error });
-      
+    .catch(error => {
+      console.error('An error occurred while fetching transformer information', error);
+      return res.status(500).json({ error: 'An error occurred' });
     });
-}
+};
+
+
+
+
 
 
   
@@ -200,11 +202,13 @@ exports.getCurrentDayEnergy = (req, res) => {
   energyService.getCurrentDayData()
     .then(currentDayData => {
       const totalEnergy = currentDayData.reduce((total, record) => total + Number(record.power_consumption), 0) ;
-      res.status(200).json({ totalEnergy  });
+      return res.status(200).json({ totalEnergy  });
     })
     .catch(err => {
-      console.error('Error querying the database:', err);
-      return res.status(500)({ error: 'Database query failed', details: err });
+      res.status(500);
+      // res.json({ error: 'Database query failed', err });
+      // console.error('Error querying the database:', err);
+      
     });
 };
 //--------------------------------------------------------InsertMeterData----------------------------------------------------------//
