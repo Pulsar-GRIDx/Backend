@@ -1,4 +1,9 @@
-const { getAllTotalMeters,getAllActiveAndInactiveMeters } = require('../meter/meterService');
+const { 
+  getAllTotalMeters,
+  getAllActiveAndInactiveMeters,
+  getTotalTransformers,
+  getCurrentDayData,
+  etCurrentDayData } = require('../meter/meterService');
 const db = require('../config/db');
 
 
@@ -146,4 +151,62 @@ describe('getAllActiveAndInactiveMeters service', () => {
 
   
 
+});
+
+
+//Total Transformers
+
+describe('total transformers', ()=>{
+
+
+  //Success scenario
+  it('should return total transformers', async () => {
+
+    const mockResult = [{ totalTransformers: 10}]; // Mock database query result
+    db.query.mockImplementation((query, callback) => {
+      callback(null, mockResult);
+    });
+
+    const result = await getTotalTransformers();
+    expect(result).toEqual({ totalTransformers: 10});
+
+  });
+//Handle database errors
+  it('should handle errors', async () => {
+      const errorMessage = 'Test error message';
+      db.query.mockImplementation((query, callback) => {
+        callback(new Error(errorMessage), null);
+      });
+
+      await expect(getTotalTransformers()).rejects.toThrow(errorMessage);
+      expect(console.error).toHaveBeenCalledWith('Error querying the database:', expect.any(Error));
+  });
+});
+
+
+//Total Energy
+
+describe('Total Energy', () =>{
+  //Success scenario
+  it('should return total energy', async () => {
+    const mockResult = { totalEnergy: 10}; // Mock database query result
+    db.query.mockImplementation((query, callback) => {
+      callback(null, mockResult);
+    });
+
+    const result = await getCurrentDayData();
+    expect(result).toEqual({ totalEnergy: 10});
+    });
+
+  it('should handle errors', async () => {
+
+    const errorMessage = 'Test error message';
+      db.query.mockImplementation((query, callback) => {
+        callback(new Error(errorMessage), null);
+      });
+
+      await expect(getCurrentDayData()).rejects.toThrow(errorMessage);
+      expect(console.error).toHaveBeenCalledWith('Error querying the database:', expect.any(Error));
+
+  });  
 });

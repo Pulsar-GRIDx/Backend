@@ -25,6 +25,7 @@ exports.getTotalTransformers = () =>{
   return new Promise((resolve, reject) =>{
     db.query(getTotalTransformers,(err,results) =>{
       if (err) {
+        console.error('Error querying the database:', err);
         reject(err);
         
       } else {
@@ -369,7 +370,11 @@ WHERE
   
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData, (err, currentDayData) => {
-      if (err) reject(err);
+      if (err) {
+        
+        reject(err);
+        console.error('Error querying the database:', err);
+      }
       else resolve(currentDayData);
     });
   });
@@ -390,7 +395,9 @@ exports.insertIntoMeterRealInfo = (data) => {
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO MeterProfileReal SET ?', meterRealInfoData, (err) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve();
     });
     // console.log(meterRealInfoData);
@@ -410,7 +417,9 @@ exports.insertIntoAnotherTable = (data) => {
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO MeterLocationInfoTable SET ?', anotherTableData, (err) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve();
     });
     
@@ -424,7 +433,9 @@ exports.getDrnsBySuburb = (suburbs) => {
   const getDrnsBySuburb = 'SELECT DRN FROM MeterLocations WHERE Suburb = ?';
   return new Promise((resolve, reject) => {
     db.query(getDrnsBySuburb, [suburbs], (err, DRN) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve(DRN.map(record => record.DRN));
      
     });
@@ -435,7 +446,9 @@ exports.getEnergyByDrn = (suburb, drn) => {
   const getEnergyByDrn = 'SELECT apparent_power FROM MeterEnergyUsageSummary WHERE DRN = ? AND DATE(date_time) = DATE(NOW()) ORDER BY date_time DESC LIMIT 1';
   return new Promise((resolve, reject) => {
     db.query(getEnergyByDrn, [drn], (err, energyData) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else {
         console.log(`Query results for DRN ${drn} in suburb ${suburb}:`, energyData);
         if (energyData.length > 0) {
@@ -558,8 +571,8 @@ DATE(t.date_time)
   return new Promise((resolve, reject) => {
     db.query(query, [DRN],(err, data) => {
       if (err) {
-        reject(err);
-      } else {
+        reject(err);  
+        console.error('Error querying the database:', err);} else {
         resolve(data);
       }
     });
@@ -595,8 +608,8 @@ GROUP BY
   return new Promise((resolve, reject) => {
     db.query(query, [DRN],(err, data) => {
       if (err) {
-        reject(err);
-      } else {
+        reject(err);  
+        console.error('Error querying the database:', err);} else {
         resolve(data);
       }
     });
@@ -622,7 +635,9 @@ exports.getDRNVoltageAndCurrent = (DRN) => {
   // console.log(CURDATE());
   return new Promise((resolve, reject) => {
     db.query(getVoltageAndCurrentQuery, [DRN],(err, current , voltage) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve(current , voltage);
       // console.log(current,voltage);
     });
@@ -681,7 +696,9 @@ exports.getDailyMeterEnergyByDRN = (DRN) => {
 
   return new Promise((resolve, reject) => {
     db.query(getMetaData, [DRN], (err, power_consumption) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve(power_consumption);
       
     });
@@ -709,7 +726,9 @@ exports.getAllProcessedTokens =(DRN) =>{
   const getAllProcessedTokens = "SELECT token_id ,date_time ,token_amount FROM STSTokesInfo WHERE DRN  = ? AND display_msg = 'Accept' ";
   return new Promise((resolve ,reject) =>{
     db.query(getAllProcessedTokens, [DRN],(err,processedTokens)=>{
-      if(err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve(processedTokens);
       // console.log(processedTokens);
 
@@ -734,7 +753,9 @@ exports.insertIntoTransformerRealInfo = (TransformerData) => {
   };
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO TransformerInformation SET ?', transformerRealInfoData, (err) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else resolve();
     });
     
@@ -753,8 +774,9 @@ exports.getGridTopologyActivePower = (meterDRN) => {
 
     db.query(getActiveEnergy, [meterDRN], (err, results) => {
       if (err) {
-        reject(err);
-      } else {
+        reject(err);  
+        console.error('Error querying the database:', err);}
+         else {
         // Convert active energy to numerical type
         const numericActiveEnergy = results.map(result => parseFloat(result.apparent_power / 1000)) ;
         resolve(numericActiveEnergy[0]); // Assuming there's only one result per meter DRN
@@ -774,8 +796,8 @@ exports.fetchDRNs = async (city) => {
     `;
     db.query(query, [city], async (error, results) => {
       if (error) {
-        reject(error);
-      } else {
+        reject(err);  
+        console.error('Error querying the database:', error);} else {
         try {
           const data = {};
           for (const row of results) {
@@ -865,17 +887,23 @@ exports.getEnergyData = () => {
 
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayData, (err, currentDayData) => {
-      if (err) reject(err);
+      if (err) {
+        reject(err);  
+        console.error('Error querying the database:', err);}
       else {
         const dayEnergy = currentDayData.length > 0 ? parseFloat(currentDayData[0].total_energy || 0) : 0;
 
         db.query(getCurrentMonthData, (err, currentMonthData) => {
-          if (err) reject(err);
+          if (err) {
+            reject(err);  
+            console.error('Error querying the database:', err);}
           else {
             const monthEnergy = currentMonthData.length > 0 ? parseFloat(currentMonthData[0].total_energy || 0) : 0;
 
             db.query(getCurrentYearData, (err, currentYearData) => {
-              if (err) reject(err);
+              if (err) {
+                reject(err);  
+                console.error('Error querying the database:', err);}
               else {
                 const yearEnergy = currentYearData.length > 0 ? parseFloat(currentYearData[0].total_energy || 0) : 0;
 
@@ -910,7 +938,10 @@ ORDER BY
   return new Promise((resolve, reject) => {
     db.query(getMonthlyDataForCurrentAndLastYear,
        (err, monthlyData) => {
-      if (err) reject(err);
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err);
+      }
       else resolve(monthlyData);
     });
   });
@@ -951,7 +982,10 @@ GROUP BY
   return new Promise((resolve, reject) => {
     db.query(getWeeklyDataForCurrentAndLastWeek,
        (err, weeklyData) => {
-      if (err) reject(err);
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err);
+      }
       else resolve(weeklyData);
     });
   });
@@ -1243,7 +1277,10 @@ exports.getAllSystemProcessedTokens = () => {
   const getAllProcessedTokens = "SELECT token_id, date_time, token_amount FROM STSTokesInfo WHERE display_msg = 'Accept'";
   return new Promise((resolve, reject) => {
     db.query(getAllProcessedTokens, (err, processedTokens) => {
-      if (err) reject(err);
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err);
+      }
       else resolve(processedTokens);
     });
   });

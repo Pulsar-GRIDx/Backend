@@ -16,7 +16,7 @@ describe('Test energyController', () => {
     const mockTotalMeters = { totalMeters: 100 }; // Mock total meters
 
     energyService.getAllTotalMeters.mockResolvedValue(mockTotalMeters);
-
+ 
     const req = {};
     const res = {
       json: jest.fn(),
