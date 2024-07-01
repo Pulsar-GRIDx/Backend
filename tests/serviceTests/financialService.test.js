@@ -1,14 +1,26 @@
+//Import all functions to be tested.
+
 const {
   getTokenAmounts,
   getMonthlyTokenAmountForCurrentAndLastYear,
   getWeeklyTokenAmountForCurrentAndLastWeek,
-  getTotalRevenuePerHour} = require('../../financial/financialService');
+  getTotalRevenuePerHour,
+  getRevenueByTimePeriodsBySuburb} = require('../../financial/financialService');
 const db = require('../../config/db');
 
 
 //Mocking the database for testing purposes
-jest.mock('../../config/db');
+// jest.mock('../../config/db');
+
+jest.mock('../../config/db', () => ({
+  query: jest.fn(),
+  
+}));
 jest.spyOn(console, 'error').mockImplementation(() => {});
+
+
+// Mock suburbs array for testing
+const suburbs = ['Academia'];
 
 
 //getTokenAmounts
@@ -62,76 +74,38 @@ describe('getTokenAmounts', () => {
 
 //getMonthlyTokenAmountForCurrentAndLastYear
 
+
 describe('getMonthlyTokenAmountForCurrentAndLastYear', () => {
-  beforeEach(() => {
-    db.query.mockClear(); // Clear mock calls before each test
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('should return correct token amounts for current and last year in the expected format', async () => {
-    const currentYear = new Date().getFullYear();
-    const lastYear = currentYear - 1;
-
-    const monthlyData = [
-      { year: lastYear, month: 1, total_token_amount: 20 },
-      { year: lastYear, month: 3, total_token_amount: 1000 },
-      { year: lastYear, month: 4, total_token_amount: 3001 },
-      { year: lastYear, month: 5, total_token_amount: 3911 },
-      { year: lastYear, month: 7, total_token_amount: 1000 },
-      { year: lastYear, month: 8, total_token_amount: 2000 },
-      { year: lastYear, month: 9, total_token_amount: 1020 },
-      { year: lastYear, month: 10, total_token_amount: 1400 },
-      { year: lastYear, month: 11, total_token_amount: 2060 },
-      { year: lastYear, month: 12, total_token_amount: 20 },
-      { year: currentYear, month: 1, total_token_amount: 0 },
-      { year: currentYear, month: 2, total_token_amount: 0 },
-      { year: currentYear, month: 3, total_token_amount: 0 },
-      { year: currentYear, month: 4, total_token_amount: 22017 },
-      { year: currentYear, month: 5, total_token_amount: 4199 },
-      { year: currentYear, month: 6, total_token_amount: 9360 },
-      { year: currentYear, month: 7, total_token_amount: 0 },
-      { year: currentYear, month: 8, total_token_amount: 0 },
-      { year: currentYear, month: 9, total_token_amount: 0 },
-      { year: currentYear, month: 10, total_token_amount: 0 },
-      { year: currentYear, month: 11, total_token_amount: 0 },
-      { year: currentYear, month: 12, total_token_amount: 0 },
+  it('should return monthly token amounts for current and last year', async () => {
+    const mockData = [
+      { year: 2024, month: 1, total_token_amount: 100 },
+      { year: 2024, month: 2, total_token_amount: 200 },
+      { year: 2023, month: 12, total_token_amount: 300 },
     ];
 
-    db.query.mockImplementationOnce((query, callback) => callback(null, monthlyData));
-
-    const expectedResult = {
-      Last: [20, 0, 1000, 3001, 3911, 0, 1000, 2000, 1020, 1400, 2060, 20],
-      Current: [0, 0, 0, 22017, 4199, 9360, 0, 0, 0, 0, 0, 0]
-    };
+    db.query.mockImplementation((query, callback) => {
+      callback(null, mockData);
+    });
 
     const result = await getMonthlyTokenAmountForCurrentAndLastYear();
 
-    // Transform result to match expected format
-    const transformedResult = {
-      Last: Array(12).fill(0),
-      Current: Array(12).fill(0)
-    };
-
-    // Filter and map the data to the transformedResult
-    monthlyData.forEach(({ year, month, total_token_amount }) => {
-      if (year === lastYear && month >= 1 && month <= 12) {
-        transformedResult.Last[month - 1] = total_token_amount;
-      } else if (year === currentYear && month >= 1 && month <= 12) {
-        transformedResult.Current[month - 1] = total_token_amount;
-      }
-    });
-
-    expect(transformedResult).toEqual(expectedResult);
+    expect(result).toEqual(mockData);
     expect(db.query).toHaveBeenCalledTimes(1);
+    expect(db.query.mock.calls[0][0]).toMatch(/SELECT.*FROM.*STSTokesInfo/);
   });
 
-  test('should handle database query errors', async () => {
-    const error = new Error('Database error');
+  it('should reject with an error if the database query fails', async () => {
+    const mockError = new Error('Database error');
 
-    db.query.mockImplementationOnce((query, callback) => callback(error, null));
+    db.query.mockImplementation((query, callback) => {
+      callback(mockError, null);
+    });
 
     await expect(getMonthlyTokenAmountForCurrentAndLastYear()).rejects.toThrow('Database error');
-    expect(console.error).toHaveBeenCalledWith('Error querying the database:', expect.any(Error));
-
     expect(db.query).toHaveBeenCalledTimes(1);
   });
 });
@@ -269,5 +243,79 @@ describe('getTotalRevenuePerHour', () => {
     expect(callback).toHaveBeenCalledWith({ error: 'Database query failed', details: error });
     expect(console.error).toHaveBeenCalledWith('Error querying the database:', expect.any(Error));
     expect(db.query).toHaveBeenCalledTimes(1);
+  });
+});
+
+
+
+////getRevenueByTimePeriodsBySuburb
+
+
+
+describe('getRevenueByTimePeriodsBySuburb', () => {
+  // Test case for successful query with results
+  test('returns correct revenue data when results are found', () => {
+    const mockResults = [
+      {
+        currentDayRevenue: 100,
+        currentMonthRevenue: 500,
+        currentYearRevenue: 1500,
+      },
+    ];
+
+    // Mock the database query function to return mock results
+    db.query.mockImplementation((query, params, callback) => {
+      callback(null, mockResults);
+    });
+
+    // Define the expected output
+    const expectedOutput = {
+      currentDayRevenue: 100,
+      currentMonthRevenue: 500,
+      currentYearRevenue: 1500,
+    };
+
+    // Call the function with suburbs and expect it to return expected output
+    getRevenueByTimePeriodsBySuburb(suburbs, (err, data) => {
+      expect(err).toBeNull();
+      expect(data).toEqual(expectedOutput);
+    });
+  });
+
+  test('returns zeros when no results are found', () => {
+    // Mock the database query function to simulate returning no results
+    db.query.mockImplementationOnce((query, params, callback) => {
+      // Simulate no results by calling callback with null data
+      callback(null, []);
+    });
+
+    // Define the expected output
+    const expectedOutput = {
+      currentDayRevenue: 0,
+      currentMonthRevenue: 0,
+      currentYearRevenue: 0,
+    };
+
+    // Call the function with suburbs and expect it to return expected output
+    getRevenueByTimePeriodsBySuburb(suburbs, (err, data) => {
+      expect(err).toBeNull();
+      expect(data).toEqual(expectedOutput);
+    });
+  });
+
+  // Test case for database query error
+  test('returns error when database query fails', () => {
+    const errorMessage = 'Database query failed';
+
+    // Mock the database query function to simulate an error
+    db.query.mockImplementation((query, params, callback) => {
+      callback(errorMessage);
+    });
+
+    // Call the function with suburbs and expect it to return an error
+    getRevenueByTimePeriodsBySuburb(suburbs, (err, data) => {
+      expect(err).toEqual({ error: 'Database query failed', details: errorMessage });
+      expect(data).toBeUndefined(); // No data should be returned on error
+    });
   });
 });
