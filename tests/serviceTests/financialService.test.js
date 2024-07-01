@@ -49,7 +49,7 @@ describe('getTokenAmounts', () => {
 
     db.query
       .mockImplementationOnce((query, callback) => callback(error, null))
-      .mockImplementationOnce((query, callback) => callback(null, [])) // These won't be called due to the first error
+      .mockImplementationOnce((query, callback) => callback(null, [])) 
       .mockImplementationOnce((query, callback) => callback(null, []));
 
     await expect(getTokenAmounts()).rejects.toThrow('Database error');
