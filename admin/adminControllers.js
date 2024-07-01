@@ -93,7 +93,12 @@ exports.getAllUsers = (req, res) => {
 exports.getAllAdmins = (req, res) => {
   adminService.getAllAdmins()
     .then(users => res.status(200).json({ users: users }))
-    .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
 
 
@@ -102,34 +107,71 @@ exports.updateUserInfo = (req, res) => {
   const { UserID } = req.params;
   const { FirstName, Email, LastName, DRN } = req.body;
 
+  if (!UserID) {
+    return res.status(400).json({ error: 'Invalid Admin_ID, enter a valid ID' });
+  }
+
   adminService.updateUserInfo(UserID, FirstName, Email, LastName, DRN)
     .then(() => res.status(200).json({ message: 'User information updated successfully' }))
-    .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
 //Update admin
 exports.updateAdminInfo = (req, res) => {
   const { Admin_ID } = req.params;
   const { FirstName, Email, LastName, AccessLevel, Username } = req.body;
 
+  if (!Admin_ID) {
+    return res.status(400).json({ error: 'Invalid Admin_ID, enter a valid ID' });
+  }
+
   adminService.updateAdminInfo(Admin_ID, FirstName, Email, LastName, AccessLevel, Username)
     .then(() => res.status(200).json({ message: 'Admin information updated successfully' }))
-    .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
 //Delete Admin
 exports.deleteAdmin = (req, res) => {
   const { Admin_ID } = req.params;
 
+  if (!Admin_ID) {
+    return res.status(400).json({ error: 'Invalid Admin_ID, enter a valid ID' });
+  }
+
+
   adminService.deleteAdmin(Admin_ID)
     .then(() => res.status(200).json({ message: 'Admin deleted successfully' }))
-    .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
 //Update AdminStatus
 exports.updateAdminStatus = (req, res) => {
   const { Admin_ID } = req.params;
 
+  if (!Admin_ID) {
+    return res.status(400).json({ error: 'Invalid Admin_ID, enter a valid ID' });
+  }
+
   adminService.updateAdminStatus(Admin_ID)
     .then(newStatus => res.status(200).json({ message: 'Admin status updated successfully', newStatus }))
-    .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
 
 //Reset Admin Password
@@ -143,7 +185,12 @@ exports.resetAdminPassword = (req, res) => {
 
   adminService.resetAdminPassword(Admin_ID, Password)
     .then(() => res.status(200).json({ message: 'Password updated successfully' }))
-    .catch(err => res.status(500).json({ error: 'Internal server error', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
 
 //Get Admin Data
@@ -152,10 +199,15 @@ exports.getAdminData = (req, res) => {
   const { Admin_ID } = req.params;
 
   if (!Admin_ID) {
-    return res.status(400).json({ error: 'Invalid Admin_ID' });
+    return res.status(400).json({ error: 'Invalid Admin_ID, enter a valid ID' });
   }
 
   adminService.getAdminData(Admin_ID)
     .then(adminData => res.status(200).json(adminData))
-    .catch(err => res.status(500).json({ error: 'Failed to fetch admin data', details: err }));
+    .catch(err => {
+      if (err.message === 'Admin not found') {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error', details: err });
+    });
 };
