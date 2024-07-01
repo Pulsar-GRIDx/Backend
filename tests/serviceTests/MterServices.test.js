@@ -3,13 +3,13 @@ const {
   getAllActiveAndInactiveMeters,
   getTotalTransformers,
   getCurrentDayData,
-  etCurrentDayData } = require('../meter/meterService');
-const db = require('../config/db');
+  etCurrentDayData } = require('../../meter/meterService');
+const db = require('../../config/db');
 
 
 
 //Mocking the database for testing purposes
-jest.mock('../config/db');
+jest.mock('../../config/db');
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
 //Total meters description

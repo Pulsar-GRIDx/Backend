@@ -8,13 +8,22 @@ exports.getTokenAmounts = () => {
 
   return new Promise((resolve, reject) => {
     db.query(getCurrentDayTokenAmount, (err, dayResult) => {
-      if (err) reject(err);
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err); // Reject the promise with the error
+      }
       else {
         db.query(getCurrentMonthTokenAmount, (err, monthResult) => {
-          if (err) reject(err);
+          if (err) {
+        console.error('Error querying the database:', err);
+        reject(err); // Reject the promise with the error
+      }
           else {
             db.query(getCurrentYearTokenAmount, (err, yearResult) => {
-              if (err) reject(err);
+              if (err) {
+        console.error('Error querying the database:', err);
+        reject(err); // Reject the promise with the error
+      }
               else {
                 resolve({
                   day: dayResult[0].total_token_amount,
@@ -51,7 +60,10 @@ exports.getMonthlyTokenAmountForCurrentAndLastYear = () => {
   return new Promise((resolve, reject) => {
     db.query(getMonthlyTokenAmountForCurrentAndLastYear,
        (err, monthlyData) => {
-      if (err) reject(err);
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err); // Reject the promise with the error
+      }
       else resolve(monthlyData);
     });
   });
@@ -77,7 +89,10 @@ exports.getWeeklyTokenAmountForCurrentAndLastWeek = () => {
   return new Promise((resolve, reject) => {
     db.query(getWeeklyTokenAmountForCurrentAndLastWeek,
        (err, weeklyData) => {
-      if (err) reject(err);
+      if (err) {
+        console.error('Error querying the database:', err);
+        reject(err); // Reject the promise with the error
+      }
       else resolve(weeklyData);
     });
   });

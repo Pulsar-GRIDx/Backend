@@ -4,12 +4,12 @@ const {
   getTotalTransformers,
   getCurrentDayEnergy
 
- } = require('../meter/meterControllers');
+ } = require('../../meter/meterControllers');
 
-const energyService = require('../meter/meterService');
+const energyService = require('../../meter/meterService');
 
 
-jest.mock('../meter/meterService');
+jest.mock('../../meter/meterService');
 
 describe('Test energyController', () => {
   it('should return total meters', async () => {
