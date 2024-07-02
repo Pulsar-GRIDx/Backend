@@ -8,8 +8,8 @@ exports.getTokenAmounts = (req, res) => {
       res.json(tokenAmounts);
     })
     .catch(err => {
-      console.log('Error querying the database:', err);
-      return res.status(500).send({ error: 'Database query failed', details: err });
+      console.error('Error querying the database:', err);
+      return res.status(500).json({ error: 'Database query failed', details: err });
     });
 };
 

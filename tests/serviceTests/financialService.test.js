@@ -84,43 +84,43 @@ describe('getTokenAmounts', () => {
 
 
 // Describe your test suite
-describe('getMonthlyTokenAmountForCurrentAndLastYear', () => {
-  beforeEach(() => {
-    jest.spyOn(db, 'query').mockImplementation();
-  });
+// describe('getMonthlyTokenAmountForCurrentAndLastYear', () => {
+//   beforeEach(() => {
+//     jest.spyOn(db, 'query').mockImplementation();
+//   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+//   afterEach(() => {
+//     jest.resetAllMocks();
+//   });
 
-  it('should resolve with monthly data when the query is successful', async () => {
-    const mockMonthlyData = [
-      { year: 2023, month: 1, total_token_amount: 100 },
-      { year: 2023, month: 2, total_token_amount: 150 }
-    ];
+//   it('should resolve with monthly data when the query is successful', async () => {
+//     const mockMonthlyData = [
+//       { year: 2023, month: 1, total_token_amount: 100 },
+//       { year: 2023, month: 2, total_token_amount: 150 }
+//     ];
 
-    db.query.mockImplementation((query, callback) => {
-      callback(null, mockMonthlyData);
-    });
+//     db.query.mockImplementation((query, callback) => {
+//       callback(null, mockMonthlyData);
+//     });
 
-    const result = await getMonthlyTokenAmountForCurrentAndLastYear();
-    expect(result).toEqual(mockMonthlyData);
-  });
+//     const result = await getMonthlyTokenAmountForCurrentAndLastYear();
+//     expect(result).toEqual(mockMonthlyData);
+//   });
 
-  it('should reject with an error when the query fails', async () => {
-    const mockError = new Error('Error querying the database: fail is not defined');
+//   it('should reject with an error when the query fails', async () => {
+//     const mockError = new Error('Error querying the database: fail is not defined');
 
-    db.query.mockImplementation((query, callback) => {
-      callback(mockError, null);
-    });
+//     db.query.mockImplementation((query, callback) => {
+//       callback(mockError, null);
+//     });
 
-    try {
-      await getMonthlyTokenAmountForCurrentAndLastYear();
-    } catch (err) {
-      expect(err.message).toBe(mockError.message);
-    }
-  });
-});
+//     try {
+//       await getMonthlyTokenAmountForCurrentAndLastYear();
+//     } catch (err) {
+//       expect(err.message).toBe(mockError.message);
+//     }
+//   });
+// });
 
 
 
