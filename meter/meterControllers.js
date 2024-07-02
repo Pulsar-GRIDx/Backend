@@ -266,6 +266,10 @@ exports.getSuburbEnergy = (req, res) => {
 
 exports.getDRNDATA = (req, res) => {
   const DRN = req.params.DRN;
+
+  if (!DRN) {
+    return res.status(400).json({ message: 'Please enter a DRN' });
+  }
   
   Promise.all([
     energyService.getCurrentWeekData(DRN),

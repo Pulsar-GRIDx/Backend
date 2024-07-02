@@ -2,9 +2,14 @@
 const adminService = require('./adminService');
 
 exports.adminSignup = async (req, res) => {
-    
   try {
     const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
+
+    // Check if any of the required fields are missing
+    if (!Username || !Password || !FirstName || !LastName || !Email || IsActive === undefined || !RoleName || AccessLevel === undefined) {
+      return res.status(400).json({ error: 'Missing required fields in request body' });
+    }
+
     await adminService.registerAdmin(Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel);
     res.status(201).json({ message: 'Registration successful' });
   } catch (error) {
@@ -13,34 +18,46 @@ exports.adminSignup = async (req, res) => {
   }
 };
 
+
 //Admin SignIn
 
 
 exports.signIn = async (req, res) => {
   try {
     const { Email, Password } = req.body;
+
+    // Check if Email or Password is missing
+    if (!Email || !Password) {
+      return res.status(400).json({ error: 'Email and Password are required' });
+    }
+
     // Regular expression for email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    // Check if Email has invalid syntax
     if (!emailRegex.test(Email)) {
-      // Email is invalid
       return res.status(400).json({ error: 'Invalid email syntax' });
     }
 
     const result = await adminService.signIn(Email, Password);
+
+    // If signIn service did not return a valid result
+    if (!result || !result.token || !result.user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
 
     // Set the access token in a cookie
     res.cookie('accessToken', result.token, {
       httpOnly: false,
       secure: true, // Set this to true for HTTPS
       maxAge: 40 * 60 * 1000,
-      domain: ['admin.gridxmeter.com','admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com'], // Include the dot before the domain
+      domain: '.gridxmeter.com', // Example domain, adjust as needed
       path: '/',
       sameSite: 'None',
     });
 
     // Set CORS headers
-    res.header('Access-Control-Allow-Origin', 'http://admin.gridxmeter.com', 'https://admin.gridxmeter.com', 'http://localhost:4000', 'http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com/');
+    res.header('Access-Control-Allow-Origin', ['http://admin.gridxmeter.com', 'https://admin.gridxmeter.com', 'http://localhost:4000', 'http://admintest.gridxmter.com.s3-website-us-east-1.amazonaws.com']);
     res.header('Access-Control-Allow-Credentials', true);
 
     // Send the response with both token and user data
@@ -63,6 +80,7 @@ exports.signIn = async (req, res) => {
     }
   }
 };
+
 
 
 exports.protected = (req, res) => {
