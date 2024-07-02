@@ -102,7 +102,8 @@ X_scaled = scaler.fit_transform(X)
 X_reshaped = X_scaled.reshape((X_scaled.shape[0], n_lags, len(features)))
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X_reshaped, y, test_size=0.2, random_state=42)
+# We can tweak the test_size
+X_train, X_test, y_train, y_test = train_test_split(X_reshaped, y, test_size=0.3, random_state=42)
 
 # Define the LSTM model
 model = Sequential()
