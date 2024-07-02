@@ -1,26 +1,25 @@
-get https://backend2.gridxmeter.com/finance/time-periods
+get http://localhost:4000/finance/time-periods
 Content-Type: application/json
-Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzc3NTQxMSwiZXhwIjoxNzEzNzc5MDExfQ.iLFvIbc78qSX8azxHVYuf2u3PaPqjxC6eP9OLrGRmjU 
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo 
 
 ####
-get https://backend2.gridxmeter.com/finance/currentAndLastYearMonthRevenueTotal 
+get http://localhost:4000/finance/currentAndLastYearMonthRevenueTotal 
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTgyMjU5OCwiZXhwIjoxNzE5ODI2MTk4fQ.2nsymZTse3Oo3DLsjZKAfcjeGtUELq-qq9VUMYQuyrM  
-
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo
 
 ###
-get https://backend2.gridxmeter.com/finance/currentAndLastWeek
+get http://localhost:4000/finance/currentAndLastWeek
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTgyMjU5OCwiZXhwIjoxNzE5ODI2MTk4fQ.2nsymZTse3Oo3DLsjZKAfcjeGtUELq-qq9VUMYQuyrM   
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo   
 
 ####
-get httpss://backend2.gridxmeter.com/finance/hourlyRevenue
+get https://localhost:4000/finance/hourlyRevenue
 Content-Type: application/json
 Cookie: Bearer accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxMzYyNjg0NSwiZXhwIjoxNzEzNjMwNDQ1fQ.OIt21Mg070cocAK1tbY56YJr7ZqtSlNaO5oVzSnueR0
 ###
-post https://backend2.gridxmeter.com/finance/suburbTimePeriod
+post http://localhost:4000/finance/suburbTimePeriod
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTgyMjU5OCwiZXhwIjoxNzE5ODI2MTk4fQ.2nsymZTse3Oo3DLsjZKAfcjeGtUELq-qq9VUMYQuyrM   
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo   
 
 {
     "suburbs":[
@@ -29,9 +28,9 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 }
 
 ###
-post https://backend2.gridxmeter.com/finance/suburbWeeklyRevenue 
+post http://localhost:4000/finance/suburbWeeklyRevenue 
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTgyMjU5OCwiZXhwIjoxNzE5ODI2MTk4fQ.2nsymZTse3Oo3DLsjZKAfcjeGtUELq-qq9VUMYQuyrM   
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo   
 
 {
     "suburbs":[
@@ -39,9 +38,9 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
     ]
 }
 ###
-post https://backend2.gridxmeter.com/finance/suburbYearlyRevenue
+post http://localhost:4000/finance/suburbYearlyRevenue
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTgyMjU5OCwiZXhwIjoxNzE5ODI2MTk4fQ.2nsymZTse3Oo3DLsjZKAfcjeGtUELq-qq9VUMYQuyrM   
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo   
 
 {
     "suburbs":[
@@ -51,9 +50,9 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 
 ###
 
-post https://backend2.gridxmeter.com/finance/getSuburbChartRevenue
+post http://localhost:4000/finance/getSuburbChartRevenue
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTgyMjU5OCwiZXhwIjoxNzE5ODI2MTk4fQ.2nsymZTse3Oo3DLsjZKAfcjeGtUELq-qq9VUMYQuyrM   
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxOTkxNjM2NywiZXhwIjoxNzE5OTE5OTY3fQ.P7NEVJN0HQHEJSvZZI4CbrnC61wzm2G8rCORruP-3wo   
 
 {
     "suburbs":[
@@ -98,11 +97,11 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
        "Windhoek West" 
     ]}
 ###
-get https://backend2.gridxmeter.com/tokenAmountIncreaseOrDecrease
+get http://localhost:4000/tokenAmountIncreaseOrDecrease
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDM4ODAxNiwiZXhwIjoxNzE0MzkxNjE2fQ.lmxHi6tSVvsnAnlcDOj90JI9fvLmELbo8CduocbowZs
 ###
-GET https://backend2.gridxmeter.com/suburbRevenueIncreaseOrDecrease
+GET http://localhost:4000/suburbRevenueIncreaseOrDecrease
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNDM4ODAxNiwiZXhwIjoxNzE0MzkxNjE2fQ.lmxHi6tSVvsnAnlcDOj90JI9fvLmELbo8CduocbowZs
 

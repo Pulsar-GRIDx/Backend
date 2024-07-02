@@ -59,12 +59,13 @@ exports.getMonthlyTokenAmountForCurrentAndLastYear = () => {
   `;
   return new Promise((resolve, reject) => {
     db.query(getMonthlyTokenAmountForCurrentAndLastYear,
-       (err, monthlyData) => {
+       (err, monthlyData) => {  
       if (err) {
         console.error('Error querying the database:', err);
         reject(err); // Reject the promise with the error
       }
-      else resolve(monthlyData);
+      else resolve(monthlyData);  
+      
     });
   });
 };
