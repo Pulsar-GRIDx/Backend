@@ -1,91 +1,82 @@
-// const SystemController = require('../../systemSettings/systemSettingsContoller');
-// const systemSettingsService = require('../../systemSettings/systemSettingsService');
+const SystemController = require('../../systemSettings/systemSettingsContoller');
+const systemSettingsService = require('../../systemSettings/systemSettingsService');
 
-// jest.mock('../../systemSettings/systemSettingsService');
+jest.mock('../../systemSettings/systemSettingsService');
 
-// describe('SystemController', () => {
-//   let systemController;
-//   let mockRequest;
-//   let mockResponse;
+describe('SystemController', () => {
+  let systemController;
+  let req;
+  let res;
 
-//   beforeEach(() => {
-//     systemController = new SystemController();
-//     mockRequest = {
-//       body: {}
-//     };
-//     mockResponse = {
-//       status: jest.fn().mockReturnThis(),
-//       send: jest.fn(),
-//       json: jest.fn()
-//     };
-//   });
+  beforeEach(() => {
+      systemSettingsService.mockClear();
+      systemController = new SystemController();
+      req = {};
+      res = {
+          status: jest.fn().mockReturnThis(),
+          send: jest.fn()
+      };
+  });
 
-//   describe('getVoltageTriggerDefinition', () => {
-//     it('should return voltage trigger definition', async () => {
-//       const mockTriggerResults = [{
-//         'SQL Original Statement': 'IF NEW.voltage >= 240 THEN INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type) VALUES ("test", "High Voltage", "High Voltage Detected", "Warning", "Voltage"); END IF; IF NEW.voltage <= 200 THEN INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type) VALUES ("test", "Low Voltage", "Low Voltage Detected", "Warning", "Voltage"); END IF;'
-//       }];
-//       const mockStatusResults = [{ IsActive: true }];
+  it('should return the voltage trigger definition correctly', () => {
+      const triggerResults = [{
+          'SQL Original Statement': 'IF NEW.voltage >= 250 THEN INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type) VALUES (1, 2, 3, 4, "Alert"); IF NEW.voltage <= 150 THEN INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type) VALUES (5, 6, 7, 8, "Warning");'
+      }];
+      const statusResults = [{ IsActive: true }];
 
-//       systemSettingsService.getVoltageTriggerDefinition.mockImplementation((callback) => {
-//         callback(null, mockTriggerResults, mockStatusResults);
-//       });
+      systemController.systemService.getVoltageTriggerDefinition = jest.fn((callback) => {
+          callback(null, triggerResults, statusResults);
+      });
 
-//       await systemController.getVoltageTriggerDefinition(mockRequest, mockResponse);
+      systemController.getVoltageTriggerDefinition(req, res);
 
-//       expect(mockResponse.send).toHaveBeenCalledWith({
-//         upperThreshold: '240',
-//         lowerThreshold: '200',
-//         type: '"Voltage"',
-//         Active: true
-//       });
-//     });
+      expect(res.send).toHaveBeenCalledWith({
+          upperThreshold: '250',
+          lowerThreshold: '150',
+          type: 'Warning',
+          Active: true
+      });
+  });
 
-//     it('should handle errors', async () => {
-//       systemSettingsService.getVoltageTriggerDefinition.mockImplementation((callback) => {
-//         callback(new Error('Database error'), null, null);
-//       });
+  it('should return 500 on error', () => {
+      systemController.systemService.getVoltageTriggerDefinition = jest.fn((callback) => {
+          callback(new Error('Test error'), null, null);
+      });
 
-//       await systemController.getVoltageTriggerDefinition(mockRequest, mockResponse);
+      systemController.getVoltageTriggerDefinition(req, res);
 
-//       expect(mockResponse.status).toHaveBeenCalledWith(500);
-//       expect(mockResponse.send).toHaveBeenCalledWith(expect.any(Error));
-//     });
-//   });
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.send).toHaveBeenCalledWith(new Error('Test error'));
+  });
 
-//   describe('updateVoltageThresholds', () => {
-//     it('should update voltage thresholds', async () => {
-//       mockRequest.body = {
-//         newUpperThreshold: 250,
-//         newLowerThreshold: 190,
-//         type: 'Voltage',
-//         IsActive: true
-//       };
+  it('should return 404 if no status results found', () => {
+      const triggerResults = [{
+          'SQL Original Statement': 'IF NEW.voltage >= 250 THEN INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type) VALUES (1, 2, 3, 4, "Alert"); IF NEW.voltage <= 150 THEN INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type) VALUES (5, 6, 7, 8, "Warning");'
+      }];
+      const statusResults = [];
 
-//       systemSettingsService.updateVoltageTriggerDefinition.mockImplementation((upper, lower, type, name, isActive, callback) => {
-//         callback(null, 'Success', null);
-//       });
+      systemController.systemService.getVoltageTriggerDefinition = jest.fn((callback) => {
+          callback(null, triggerResults, statusResults);
+      });
 
-//       await systemController.updateVoltageThresholds(mockRequest, mockResponse);
+      systemController.getVoltageTriggerDefinition(req, res);
 
-//       expect(mockResponse.send).toHaveBeenCalledWith('Thresholds updated successfully!');
-//     });
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.send).toHaveBeenCalledWith({ message: 'No status found for the trigger.' });
+  });
 
-//     it('should handle invalid input', async () => {
-//       mockRequest.body = {
-//         newUpperThreshold: 250,
-//         newLowerThreshold: null,
-//         type: 'Voltage',
-//         IsActive: true
-//       };
+  it('should return "No match found" if no regex matches', () => {
+      const triggerResults = [{
+          'SQL Original Statement': 'INVALID SQL STATEMENT'
+      }];
+      const statusResults = [{ IsActive: true }];
 
-//       await systemController.updateVoltageThresholds(mockRequest, mockResponse);
+      systemController.systemService.getVoltageTriggerDefinition = jest.fn((callback) => {
+          callback(null, triggerResults, statusResults);
+      });
 
-//       expect(mockResponse.status).toHaveBeenCalledWith(400);
-//       expect(mockResponse.json).toHaveBeenCalledWith({ error: 'Thresholds, type, and IsActive cannot be empty.' });
-//     });
-//   });
+      systemController.getVoltageTriggerDefinition(req, res);
 
-//   // Similar test cases can be written for other methods like getCurrentTriggerDefinition, updateCurrentThresholds, etc.
-
-// });
+      expect(res.send).toHaveBeenCalledWith('No match found');
+  });
+});

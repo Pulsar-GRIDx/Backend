@@ -1,7 +1,7 @@
 ###Voltage
-GET https://backend2.gridxmeter.com/systemSettings/getVoltageThresholds
+GET http://localhost:4000/systemSettings/getVoltageThresholds
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNjkwMzQ3NSwiZXhwIjoxNzE2OTA3MDc1fQ.QzrPiKBmlGCwr2RZ68Tpcl1WL4f8ooMVQxAD_CAN0eQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDA4NzYzOSwiZXhwIjoxNzIwMDkxMjM5fQ._72CEgbwMaSYkh2kY7ed2uR2ZOs9Sq-3h8b2c0fW2es
 ###
 put https://backend2.gridxmeter.com/systemSettings/updateVoltageThresholds 
 Content-Type: application/json
