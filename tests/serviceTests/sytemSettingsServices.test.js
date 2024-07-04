@@ -5,7 +5,7 @@ jest.mock('../../config/db'); // Mock the db module
 
 //Voltage
 
-describe('SystemService', () => {
+describe('SystemService - getVoltageTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -151,7 +151,7 @@ describe('SystemService', () => {
 
 
 //current
-describe('SystemService', () => {
+describe('SystemService - getCurrentTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -208,7 +208,7 @@ describe('SystemService', () => {
 //ActivePower
 
 
-describe('SystemService', () => {
+describe('SystemService getActivePowerTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -266,7 +266,7 @@ describe('SystemService', () => {
 
 
 
-describe('SystemService', () => {
+describe('SystemService - getReactivePowerTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -323,7 +323,7 @@ describe('SystemService', () => {
 
 
 
-describe('SystemService', () => {
+describe('SystemService - getApparentPowerTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -380,7 +380,7 @@ describe('SystemService', () => {
 //PowerFactor
 
 
-describe('SystemService', () => {
+describe('SystemService - getPowerFactorTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -437,7 +437,7 @@ describe('SystemService', () => {
 //Temperature
 
 
-describe('SystemService', () => {
+describe('SystemService - getTemperatureTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -494,7 +494,7 @@ describe('SystemService', () => {
 
 
 
-describe('SystemService', () => {
+describe('SystemService - getUnitsTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
@@ -552,7 +552,7 @@ describe('SystemService', () => {
 
 
 
-describe('SystemService', () => {
+describe('SystemService- getFrequencyTriggerDefinition', () => {
     let systemService;
 
     beforeEach(() => {
