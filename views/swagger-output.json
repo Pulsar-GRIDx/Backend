@@ -18,7 +18,37 @@
  {
    "name": "energy",
    "description": "Energy Endpoints with energy Analysis."
- }],
+ },
+{
+  "name":"finance",
+  "description": "Finance Endpoints with finance Analysis."
+},
+{
+  "name":"meter",
+  "description": "Meter Endpoints with meter Analysis."
+},{
+  "name":"percentages",
+  "description": "Percentage Endpoints with percentage Analysis."
+},
+{
+  "name": "meter_status",
+  "description": "Meter Status Endpoints with meter status Analysis."
+},{
+  "name":"transformer_status",
+  "description": "Transformer Status Endpoints with transformer status Analysis."
+},
+{
+  "name":"grid_topology",
+  "description": "Grid Topology Endpoints with grid topology Analysis."
+},
+{
+  "name": "notifications",
+  "description": "Notification Endpoints with notification Analysis."
+},
+{
+  "name":"system_Settings",
+  "description": "System Settings Endpoints with system settings Analysis."
+}],
   "paths": {
     "/adminSignup": {
       "post": {
