@@ -38,7 +38,7 @@ id,DRN,user,state,processed,reason,date_time
 """
 
 # Load data into a DataFrame
-df = pd.read_csv(StringIO(results))
+df = pd.read_csv(StringIO(data_str))
 
 # Convert date_time column to datetime type, coerce errors to NaT (Not a Time)
 df['date_time'] = pd.to_datetime(df['date_time'], errors='coerce')
