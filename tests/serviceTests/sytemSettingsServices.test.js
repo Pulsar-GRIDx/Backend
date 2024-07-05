@@ -1,7 +1,11 @@
 const SystemService = require('../../systemSettings/systemSettingsService'); // Adjust the path as needed
 const mockDb = require('../../config/db');
 
-jest.mock('../../config/db'); // Mock the db module
+// jest.mock('../../config/db'); // Mock the db module
+
+jest.mock('../../config/db', () => ({
+    query: jest.fn()
+  }));
 
 //Voltage
 
@@ -146,6 +150,112 @@ describe('SystemService - getVoltageTriggerDefinition', () => {
             );
         });
     });
+});
+
+
+
+describe('SystemService', () => {
+  let systemService;
+
+  beforeEach(() => {
+    systemService = new SystemService();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('updateVoltageTriggerDefinition', () => {
+    it('should update trigger and status successfully', (done) => {
+      const newUpperThreshold = 240;
+      const newLowerThreshold = 180;
+      const type = 'TypeA';
+      const TriggerName = 'VoltageTrigger';
+      const IsActive = true;
+
+      const mockResults = { affectedRows: 1 };
+
+      mockDb.query
+        .mockImplementationOnce((query, callback) => callback(null, mockResults)) // DROP TRIGGER
+        .mockImplementationOnce((query, callback) => callback(null, mockResults)) // CREATE TRIGGER
+        .mockImplementationOnce((query, callback) => callback(null, mockResults)); // INSERT/UPDATE TriggerStatus
+
+      systemService.updateVoltageTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe('Trigger and status updated successfully!');
+        expect(mockDb.query).toHaveBeenCalledTimes(3);
+        expect(mockDb.query).toHaveBeenNthCalledWith(1, 'DROP TRIGGER IF EXISTS LowAndHighVoltageTrigger;', expect.any(Function));
+        expect(mockDb.query).toHaveBeenNthCalledWith(2, expect.stringContaining('CREATE TRIGGER LowAndHighVoltageTrigger'), expect.any(Function));
+        expect(mockDb.query).toHaveBeenNthCalledWith(3, expect.stringContaining(`INSERT INTO TriggerStatus (TriggerName, IsActive)`), expect.any(Function));
+        done();
+      });
+    });
+
+    it('should handle errors when dropping the trigger', (done) => {
+      const newUpperThreshold = 240;
+      const newLowerThreshold = 180;
+      const type = 'TypeA';
+      const TriggerName = 'VoltageTrigger';
+      const IsActive = true;
+
+      const mockError = new Error('Error dropping trigger');
+
+      mockDb.query
+        .mockImplementationOnce((query, callback) => callback(mockError));
+
+      systemService.updateVoltageTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+        expect(error).toBe(mockError);
+        expect(result).toBeUndefined();
+        expect(mockDb.query).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
+
+    it('should handle errors when creating the trigger', (done) => {
+      const newUpperThreshold = 240;
+      const newLowerThreshold = 180;
+      const type = 'TypeA';
+      const TriggerName = 'VoltageTrigger';
+      const IsActive = true;
+
+      const mockResults = { affectedRows: 1 };
+      const mockError = new Error('Error creating trigger');
+
+      mockDb.query
+        .mockImplementationOnce((query, callback) => callback(null, mockResults)) // DROP TRIGGER
+        .mockImplementationOnce((query, callback) => callback(mockError)); // CREATE TRIGGER
+
+      systemService.updateVoltageTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+        expect(error).toBe(mockError);
+        expect(result).toBeUndefined();
+        expect(mockDb.query).toHaveBeenCalledTimes(2);
+        done();
+      });
+    });
+
+    it('should handle errors when updating the trigger status', (done) => {
+      const newUpperThreshold = 240;
+      const newLowerThreshold = 180;
+      const type = 'TypeA';
+      const TriggerName = 'VoltageTrigger';
+      const IsActive = true;
+
+      const mockResults = { affectedRows: 1 };
+      const mockError = new Error('Error updating trigger status');
+
+      mockDb.query
+        .mockImplementationOnce((query, callback) => callback(null, mockResults)) // DROP TRIGGER
+        .mockImplementationOnce((query, callback) => callback(null, mockResults)) // CREATE TRIGGER
+        .mockImplementationOnce((query, callback) => callback(mockError)); // INSERT/UPDATE TriggerStatus
+
+      systemService.updateVoltageTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+        expect(error).toBe(mockError);
+        expect(result).toBeUndefined();
+        expect(mockDb.query).toHaveBeenCalledTimes(3);
+        done();
+      });
+    });
+  });
 });
 
 
