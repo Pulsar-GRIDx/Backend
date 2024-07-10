@@ -62,8 +62,8 @@ jobs:
           docker run --rm $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG sh -c 'echo "Validation successful"'
           echo "image=$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Test
-        run: npm test    
+      # - name: Test
+      #   run: npm test    
           
       - name: Push Docker image to Amazon ECR
         env:

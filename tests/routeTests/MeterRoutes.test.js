@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../../app');
 
-const JWT_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDAwMzQwOSwiZXhwIjoxNzIwMDA3MDA5fQ.vGz1rz8U34KoYEjfeZat0ti7e4KkQZsyeL6SWDHwp_8';
+const JWT_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDYwMjk5MCwiZXhwIjoxNzIwNjA2NTkwfQ.8YUDQQTELCzdb_jKMzkBVRmk6UYUIiAgiuyvENHw6OU';
 
 
 jest.spyOn(console, 'error').mockImplementation(() => {});

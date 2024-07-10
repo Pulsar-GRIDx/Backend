@@ -864,7 +864,128 @@ describe('SystemService - getApparentPowerTriggerDefinition', () => {
     });
 });
 
+describe('SystemService - updateApparentPowerThresholds', () => {
+    let systemService;
 
+    beforeEach(() => {
+        systemService = new SystemService();
+        jest.clearAllMocks(); // Reset mocks before each test
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks after each test
+    });
+
+    describe('updateApparentPowerTriggerDefinition', () => {
+        it('should update trigger and status successfully', (done) => {
+            const newUpperThreshold = 500;
+            const newLowerThreshold = 100;
+            const type = 'TypeB';
+            const TriggerName = 'ApparentPowerTrigger';
+            const IsActive = true;
+
+            const mockResults = { affectedRows: 1 };
+
+            mockDb.query
+                .mockImplementationOnce((query, callback) => {
+                    callback(null, mockResults); // DROP TRIGGER
+                })
+                .mockImplementationOnce((query, callback) => {
+                    callback(null, mockResults); // CREATE TRIGGER
+                })
+                .mockImplementationOnce((query, callback) => {
+                    callback(null, mockResults); // INSERT/UPDATE TriggerStatus
+                });
+
+            systemService.updateApparentPowerTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+                expect(error).toBeNull();
+                expect(result).toBe('Trigger and status updated successfully!');
+                expect(mockDb.query).toHaveBeenCalledTimes(3);
+                expect(mockDb.query).toHaveBeenNthCalledWith(1, 'DROP TRIGGER IF EXISTS ApparentPowerTrigger;', expect.any(Function));
+                expect(mockDb.query).toHaveBeenNthCalledWith(2, expect.stringContaining('CREATE TRIGGER ApparentPowerTrigger'), expect.any(Function));
+                expect(mockDb.query).toHaveBeenNthCalledWith(3, expect.stringContaining(`INSERT INTO TriggerStatus (TriggerName, IsActive)`), expect.any(Function));
+                done();
+            });
+        });
+
+        it('should handle errors when dropping the trigger', (done) => {
+            const newUpperThreshold = 500;
+            const newLowerThreshold = 100;
+            const type = 'TypeB';
+            const TriggerName = 'ApparentPowerTrigger';
+            const IsActive = true;
+
+            const mockError = new Error('Error dropping trigger');
+
+            mockDb.query
+                .mockImplementationOnce((query, callback) => {
+                    callback(mockError);
+                });
+
+            systemService.updateApparentPowerTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+                expect(error).toBe(mockError);
+                expect(result).toBeUndefined();
+                expect(mockDb.query).toHaveBeenCalledTimes(1);
+                done();
+            });
+        });
+
+        it('should handle errors when creating the trigger', (done) => {
+            const newUpperThreshold = 500;
+            const newLowerThreshold = 100;
+            const type = 'TypeB';
+            const TriggerName = 'ApparentPowerTrigger';
+            const IsActive = true;
+
+            const mockResults = { affectedRows: 1 };
+            const mockError = new Error('Error creating trigger');
+
+            mockDb.query
+                .mockImplementationOnce((query, callback) => {
+                    callback(null, mockResults); // DROP TRIGGER
+                })
+                .mockImplementationOnce((query, callback) => {
+                    callback(mockError); // CREATE TRIGGER
+                });
+
+            systemService.updateApparentPowerTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+                expect(error).toBe(mockError);
+                expect(result).toBeUndefined();
+                expect(mockDb.query).toHaveBeenCalledTimes(2);
+                done();
+            });
+        });
+
+        it('should handle errors when updating the trigger status', (done) => {
+            const newUpperThreshold = 500;
+            const newLowerThreshold = 100;
+            const type = 'TypeB';
+            const TriggerName = 'ApparentPowerTrigger';
+            const IsActive = true;
+
+            const mockResults = { affectedRows: 1 };
+            const mockError = new Error('Error updating trigger status');
+
+            mockDb.query
+                .mockImplementationOnce((query, callback) => {
+                    callback(null, mockResults); // DROP TRIGGER
+                })
+                .mockImplementationOnce((query, callback) => {
+                    callback(null, mockResults); // CREATE TRIGGER
+                })
+                .mockImplementationOnce((query, callback) => {
+                    callback(mockError); // INSERT/UPDATE TriggerStatus
+                });
+
+            systemService.updateApparentPowerTriggerDefinition(newUpperThreshold, newLowerThreshold, type, TriggerName, IsActive, (error, result) => {
+                expect(error).toBe(mockError);
+                expect(result).toBeUndefined();
+                expect(mockDb.query).toHaveBeenCalledTimes(3);
+                done();
+            });
+        });
+    });
+});
 //PowerFactor
 
 

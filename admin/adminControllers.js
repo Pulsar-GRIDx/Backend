@@ -6,7 +6,7 @@ exports.adminSignup = async (req, res) => {
     const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
     // Check if any of the required fields are missing
-    if (!Username || !Password || !FirstName || !LastName || !Email || IsActive === undefined || !RoleName || AccessLevel === undefined) {
+    if (!Username || !Password || !FirstName || !LastName || !Email || IsActive === undefined || !RoleName || !AccessLevel === undefined) {
       return res.status(400).json({ error: 'Missing required fields in request body' });
     }
 
