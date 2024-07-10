@@ -595,7 +595,7 @@ router.post('/suburbRevenueIncreaseOrDecrease', (req, res) => {
     const yearPercentage = calculatePercentageChange(currentYearRevenue, previousYearRevenue);
 
     // Send the percentage increase/decrease as JSON response
-    res.json({ 
+    return res.status(200).json({ 
       dayPercentage,
       monthPercentage,
       yearPercentage
@@ -667,7 +667,7 @@ FROM (
 
   connection.query(sql, (err, result) => {
     if (err) throw err;
-    res.send(result);
+    return res.status(200).send(result);
   });
 });
 
@@ -746,7 +746,7 @@ ON tokens.date = units.date
         lastWeek: lastWeekResults
       };
 
-      res.status(200).json(response);
+      return res.status(200).json(response);
     });
   });
 });
@@ -825,7 +825,7 @@ ON tokens.month = units.month
       if (error) throw error;
 
       const response = { currentYear: currentYearResults, lastYear: lastYearResults };
-      res.status(200).json(response);
+     return res.status(200).json(response);
     });
   });
 });
