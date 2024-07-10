@@ -135,3 +135,11 @@ plt.show()
 
 
 #####---------------------------------Testing---------------------------------#####
+
+
+
+#Follow this link to view the futter energy consumption prediction
+
+#https://colab.research.google.com/drive/1ZKw23VAbMUdmh8KAfrUJ5c3e_CJvPHX2#scrollTo=8NF7NRZ4pKkE
+
+#
