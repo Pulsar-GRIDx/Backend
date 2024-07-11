@@ -13,16 +13,16 @@ exports.getMeterResetHistory = function(req, res) {
         result.date_time = result.date_time.toISOString().substring(0, 10);
       } else {
         console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
       }
     });
 
     if (results.length === 0) {
       console.log({ error: 'No data found' });
-      return res.json(0);
+      return res.status(404).json(0);
     }
 
-    res.json(results);
+    res.status(200).json(results);
   })
   .catch(error => {
     console.error('Error getting data', error);
@@ -44,14 +44,14 @@ exports.getMeterCalibrationHistory = function(req,res){
         result.date_time = result.date_time.toISOString().substring(0, 10);
       } else {
         console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
       }
     });
     if(results.length === 0){
       console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
     }
-    res.json(results);
+    res.status(200).json(results);
 
   })
 }
@@ -67,14 +67,14 @@ exports.getMeterMainsControlHistory = function(req,res){
         result.date_time = result.date_time.toISOString().substring(0, 10);
       } else {
         console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
       }
     });
     if(results.length === 0){
       console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
     }
-    res.json(results);
+    res.status(200).json(results);
   })
   .catch(error =>{
     console.error('Error getting data' , error);
@@ -97,9 +97,9 @@ exports.getMeterMainsStateHistory = function(req,res){
     });
     if(results.length === 0){
       console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
     }
-    res.json(results);
+    res.status(200).json(results);
   })
   .catch(error =>{
     console.error('Error getting data' , error);
@@ -120,14 +120,14 @@ exports.getMeterHeaterControlHistory = function(req,res){
         result.date_time = result.date_time.toISOString().substring(0, 10);
       } else {
         console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
       }
     });
     if(results.length === 0){
       console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
     }
-    res.json(results);
+    res.status(200).json(results);
   })
   .catch(error =>{
     console.error('Error getting data' , error);
@@ -148,14 +148,14 @@ exports.getMeterHeaterStateHistory = function(req,res){
         result.date_time = result.date_time.toISOString().substring(0, 10);
       } else {
         console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
       }
     });
     if(results.length === 0){
       console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
     }
-    res.json(results);
+    res.status(200).json(results);
   })
   .catch(error =>{
     console.error('Error getting data' , error);
@@ -175,15 +175,15 @@ exports.getMeterSTSTokenHistory = function(req,res){
         result.date_time = result.date_time.toISOString().substring(0, 10);
       } else {
         console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
       }
     });
     
     if(results.length === 0){
       console.error({error: 'No data found'});
-      return res.json(0);
+      return res.status(404).json(0);
     }
-    res.json(results);
+    res.status(200).json(results);
   })
 
 }
@@ -195,7 +195,7 @@ exports.getTokenInformation = function(req, res) {
     .then(results => {
       if (results.length === 0) {
         console.error({ error: 'No data found' });
-        return res.json(0);
+        return res.status(404).json(0);
       }
 
       results.forEach(result => {
@@ -211,7 +211,7 @@ exports.getTokenInformation = function(req, res) {
         }
       });
 
-      res.json(results);
+      res.status(200).json(results);
     })
     .catch(error => {
       console.error({ error: 'An error occurred while fetching token information', details: error });

@@ -5,7 +5,7 @@ const financialService = require('./financialService');
 exports.getTokenAmounts = (req, res) => {
   financialService.getTokenAmounts()
     .then(tokenAmounts => {
-      res.json(tokenAmounts);
+      res.status(200).json(tokenAmounts);
     })
     .catch(err => {
       console.error('Error querying the database:', err);
@@ -26,7 +26,7 @@ exports.getMonthlyTokenAmountForCurrentAndLastYear = (req, res) => {
         monthlyTokenAmount[yearKey][monthIndex] = Number(record.total_token_amount);
       });
 
-      res.json( monthlyTokenAmount );
+      res.status(200).json( monthlyTokenAmount );
     })
     .catch(err => {
       console.log('Error querying the database:', err);
@@ -48,7 +48,7 @@ exports.getWeeklyTokenAmountForCurrentAndLastWeek = (req, res) => {
         weeklyTokenAmount[weekKey][dayIndex] = Number(record.total_token_amount);
       });
 
-      res.json(weeklyTokenAmount);
+      res.status(200).json(weeklyTokenAmount);
     })
     .catch(err => {
       console.log('Error querying the database:', err);
@@ -63,7 +63,7 @@ exports.getTotalRevenuePerHour = function(req, res) {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
 
-    res.json({ revenues });
+    res.status(200).json({ revenues });
   });
 }
 
@@ -78,7 +78,7 @@ exports.getTimePeriodRevenueBySuburb = function(req, res) {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
 
-    res.json(result);
+    res.status(200).json(result);
   });
 }
 
@@ -92,7 +92,7 @@ exports.getWeeklyRevenueBySuburb = function(req, res) {
       return res.status(500).send({ error: 'Failed to get the revenue', details: err });
     }
 
-    res.send(results);
+    res.status(200).send(results);
   });
 }
 
@@ -106,6 +106,6 @@ exports.getYearlyRevenueBySuburb = function(req, res) {
       return res.status(500).send({ error: 'Failed to get the revenue', details: err });
     }
 
-    res.send(results);
+    res.status(200).send(results);
   });
 }

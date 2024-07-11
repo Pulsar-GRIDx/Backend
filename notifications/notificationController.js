@@ -7,7 +7,7 @@ exports.getAllNotificationsByDRN = (req, res) => {
   notificationService.getNotificationsByDRN(DRN)
     .then(notifications => {
       // Add any necessary logic here
-      res.json(notifications);
+      res.status(200).json(notifications);
     })
     .catch(err => {
       console.error(err);
@@ -21,7 +21,7 @@ exports.getAllCriticalNotifications = (req, res) => {
   notificationService.getAllCriticalNotifications()
     .then(notifications => {
       // Add any necessary logic here
-      res.json(notifications);
+      res.status(200).json(notifications);
     })
     .catch(err => {
       console.error(err);
@@ -36,7 +36,7 @@ exports.getAll = (req, res) =>{
   .then(notifications => {
     //Get All Notofications
 
-    res.json({notification: [notifications]});
+    res.status(200).json({notification: [notifications]});
   })
  .catch(err =>{
   console.error(err);
@@ -55,7 +55,7 @@ exports.getMeterNotificationsByType = function(req, res) {
             return;
         }
 
-        res.json(data);
+        res.status(200).json(data);
     });
 }
 
@@ -74,7 +74,7 @@ exports.getMeterNotificationsByTypeByDRN = function(req, res) {
             return;
         }
 
-        res.json(data);
+        res.status(200).json(data);
     });
 }
 
