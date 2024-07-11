@@ -3,11 +3,42 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
+// Check if Username already exists
+exports.isUsernameTaken = (Username) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      'SELECT COUNT(*) AS count FROM SystemAdmins WHERE Username = ?',
+      [Username],
+      (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results[0].count > 0);
+        }
+      }
+    );
+  });
+};
 
-//Register New Admin//
+// Check if Email already exists
+exports.isEmailTaken = (Email) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      'SELECT COUNT(*) AS count FROM SystemAdmins WHERE Email = ?',
+      [Email],
+      (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results[0].count > 0);
+        }
+      }
+    );
+  });
+};
 
+// Register New Admin
 exports.registerAdmin = async (Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel) => {
- 
   const hashedPassword = await bcrypt.hash(Password, 10);
 
   return new Promise((resolve, reject) => {
@@ -16,15 +47,15 @@ exports.registerAdmin = async (Username, Password, FirstName, LastName, Email, I
       [Username, hashedPassword, FirstName, LastName, Email, IsActive, RoleName, AccessLevel],
       (err, result) => {
         if (err) {
-          console.error('Registration error:', err);
           reject(err);
+        } else {
+          resolve(result);
         }
-        console.log('Registration successful');
-        resolve(result);
       }
     );
   });
 };
+
 
 //Admin SignIn//
 

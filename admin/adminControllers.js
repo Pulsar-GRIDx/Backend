@@ -1,4 +1,3 @@
-
 const adminService = require('./adminService');
 
 exports.adminSignup = async (req, res) => {
@@ -6,17 +5,39 @@ exports.adminSignup = async (req, res) => {
     const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
     // Check if any of the required fields are missing
-    if (!Username || !Password || !FirstName || !LastName || !Email || IsActive === undefined || !RoleName || !AccessLevel === undefined) {
+    if (
+      !Username || 
+      !Password || 
+      !FirstName || 
+      !LastName || 
+      !Email || 
+      (typeof IsActive !== 'boolean' && typeof IsActive !== 'number') || 
+      !RoleName || 
+      AccessLevel === undefined || AccessLevel === null
+    ) {
       return res.status(400).json({ error: 'Missing required fields in request body' });
+    }
+
+    // Check for duplicate Username
+    const isUsernameTaken = await adminService.isUsernameTaken(Username);
+    if (isUsernameTaken) {
+      return res.status(409).json({ error: 'Username already exists' });
+    }
+
+    // Check for duplicate Email
+    const isEmailTaken = await adminService.isEmailTaken(Email);
+    if (isEmailTaken) {
+      return res.status(409).json({ error: 'Email already exists' });
     }
 
     await adminService.registerAdmin(Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel);
     res.status(201).json({ message: 'Registration successful' });
   } catch (error) {
     console.error('Error during registration:', error);
-    res.status(500).json({ error: 'Registration failed', error });
+    res.status(500).json({ error: 'Registration failed', details: error.message });
   }
 };
+
 
 
 //Admin SignIn
