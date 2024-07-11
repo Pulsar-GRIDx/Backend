@@ -10,7 +10,7 @@ const app = express();
 app.use('/', router);
 
 // Mock JWT token
-const INCORRECT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDYwNzQ1OCwiZXhwIjoxNzIwNjExMDU4fQ.k9fzlA7dWP6Sbb16X58nFTLdqgEb75KXj5t0znXsanY';
+const INCORRECT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDY5NjcyMiwiZXhwIjoxNzIwNzAwMzIyfQ.RdgARr3aHiscUZa2qH1TIQMIAGMwtOIF9qaMKiYq6JI';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const AUTH_TOKEN = jwt.sign({ user: 'testUser' }, SECRET_KEY, { expiresIn: '1h' });

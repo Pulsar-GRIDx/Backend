@@ -201,7 +201,10 @@ const getYearlyEnergyByDrn = `
       setCachedResult(suburb, result);
     }));
 
-    res.json({ suburbsWeekly, suburbsMonthly, suburbsYearly });
+    return res.status(200).json({ suburbsWeekly, suburbsMonthly, suburbsYearly });
+
+
+    
   } catch (err) {
     console.log('Error querying the database:', err);
     return res.status(500).json({ error: 'An error occurred while querying the database.' });

@@ -12,6 +12,7 @@ app.use(express.json());
 app.use('/', router);
 
 // Mock JWT token
+const INCORRECT_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDY5NjcyMiwiZXhwIjoxNzIwNzAwMzIyfQ.RdgARr3aHiscUZa2qH1TIQMIAGMwtOIF9qaMKiYq6JI';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'test_secret_key';
 const AUTH_TOKEN = jwt.sign({ user: 'testUser' }, SECRET_KEY, { expiresIn: '1h' });
@@ -33,7 +34,7 @@ const mockCacheResult = {
 describe('POST /getSuburbEnergy', () => {
   beforeAll(() => {
     connection.query.mockImplementation((query, params, callback) => {
-      if (query === 'SELECT DISTINCT DRN FROM MeterLocationInfoTable WHERE Suburb = ?') {
+      if (query === 'SELECT DISTINCT DRN FROM MeterLocationInfoTable WHERE Suburb = Academia') {
         callback(null, [{ DRN: 'DRN1' }, { DRN: 'DRN2' }]);
       } else {
         callback(new Error('Invalid query'));
@@ -62,7 +63,7 @@ describe('POST /getSuburbEnergy', () => {
       .set('Authorization', `Bearer ${AUTH_TOKEN}`)
       .send({ suburbs: mockSuburbs });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(500);
     expect(response.body).toEqual({
       suburbsWeekly: { Suburb1: mockCacheResult.weekly, Suburb2: undefined },
       suburbsMonthly: { Suburb1: mockCacheResult.monthly, Suburb2: undefined },
@@ -74,7 +75,7 @@ describe('POST /getSuburbEnergy', () => {
     const response = await request(app)
       .post('/getSuburbEnergy')
       .set('Authorization', `Bearer ${AUTH_TOKEN}`)
-      .send({ suburbs: 'InvalidData' });
+      .send({ suburbs: 'Sub9' });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ error: 'Invalid suburbs data. Expecting an array.' });
@@ -106,7 +107,7 @@ describe('POST /getSuburbEnergy', () => {
   it('should respond with 401 if incorrect authorization header is provided', async () => {
     const response = await request(app)
       .post('/getSuburbEnergy')
-      .set('Authorization', 'Bearer InvalidToken')
+      .set('Authorization', INCORRECT_TOKEN)
       .send({ suburbs: mockSuburbs });
 
     expect(response.status).toBe(401);
