@@ -25,7 +25,7 @@ Content-Type: application/json
     "Email": "jose@gmail.com",
     "IsActive": 1,
     "RoleName": "Engineer",
-    "AccessLevel": 0
+    "AccessLevel": 0,
 }
 ###
 post https://backend2.gridxmeter.com/forgot-password

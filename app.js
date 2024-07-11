@@ -74,10 +74,10 @@ app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // Middleware for handling errors
-app.use((err, req, res, next) => {
+// app.use((err, req, res, next) => {
  
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+//   res.status(500).json({ error: 'Something went wrong!' });
+// });
 
 // Define global error handling middleware
 const errorHandler = (err, req, res, next) => {

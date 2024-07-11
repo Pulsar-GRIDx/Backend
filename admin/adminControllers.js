@@ -4,18 +4,18 @@ exports.adminSignup = async (req, res) => {
   try {
     const { Username, Password, FirstName, LastName, Email, IsActive, RoleName, AccessLevel } = req.body;
 
-    // Check if any of the required fields are missing
+    // Check if any of the required fields are missing or invalid
     if (
-      !Username || 
-      !Password || 
-      !FirstName || 
-      !LastName || 
-      !Email || 
-      (typeof IsActive !== 'boolean' && typeof IsActive !== 'number') || 
-      !RoleName || 
-      AccessLevel === undefined || AccessLevel === null
+      typeof Username !== 'string' || !Username.trim() ||
+      typeof Password !== 'string' || !Password.trim() ||
+      typeof FirstName !== 'string' || !FirstName.trim() ||
+      typeof LastName !== 'string' || !LastName.trim() ||
+      typeof Email !== 'string' || !Email.trim() ||
+      (typeof IsActive !== 'boolean' && typeof IsActive !== 'number') ||
+      typeof RoleName !== 'string' || !RoleName.trim() ||
+      (typeof AccessLevel !== 'number')
     ) {
-      return res.status(400).json({ error: 'Missing required fields in request body' });
+      return res.status(400).json({ error: 'Missing or invalid required fields in request body' });
     }
 
     // Check for duplicate Username
@@ -37,6 +37,8 @@ exports.adminSignup = async (req, res) => {
     res.status(500).json({ error: 'Registration failed', details: error.message });
   }
 };
+
+
 
 
 
