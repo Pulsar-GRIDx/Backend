@@ -459,13 +459,10 @@ BEGIN
 DECLARE urgency_type INT DEFAULT 0;
 DECLARE isActive BOOLEAN;
     
--- Check if the trigger is active
-SELECT IsActive INTO isActive FROM TriggerStatus WHERE TriggerName = ${TriggerName};
 
-IF isActive THEN
     
 
-    IF NEW.units BETWEEN ${newLowerThreshold} AND ${newUpperThreshold} THEN
+    IF NEW.units BETWEEN ${newUpperThreshold} AND ${newLowerThreshold} THEN
         IF NEW.units <= 20 THEN
             SET urgency_type = 1;
         ELSEIF NEW.units <= 25 THEN
@@ -477,7 +474,7 @@ IF isActive THEN
         INSERT INTO MeterNotifications (DRN, AlarmType, Alarm, Urgency_Type, Type)
         VALUES (NEW.DRN, 'Meter Units', CONCAT('Low units remaining: ', NEW.units), urgency_type, '${type}');
     END IF;
-  END IF;  
+   
 END;
   `;
 

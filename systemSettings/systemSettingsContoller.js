@@ -572,11 +572,24 @@ getLowEnergyUnitsTriggerDefinition(req, res) {
 
 
 updateLowEnergyUnitsThresholds(req, res) {
-  const newLowerThreshold = req.body.newLowerThreshold;
-  const newUpperThreshold = req.body.newUpperThreshold;
+  
+  const newLowerThreshold = parseInt(req.body.newLowerThreshold, 10);
+  const newUpperThreshold = parseInt(req.body.newUpperThreshold, 10);
   const type = req.body.type;
   const IsActive = req.body.IsActive;
   const TriggerName = 'LowEnergyUnits';
+
+  if (newUpperThreshold > 50){
+    console.error('Invalid request: Upper threshold cannot be greater than 50.');
+    res.status(400).json({ error: 'Upper threshold cannot be greater than 50.' });
+    return;
+  }
+
+  if(newLowerThreshold < 1){
+    console.error('Invalid request: Lower threshold cannot be less than 1.');
+    res.status(400).json({ error: 'Lower threshold cannot be less than 1.' });
+    return;
+  }
 
   if (!newLowerThreshold || !newUpperThreshold || !type) {
       console.error('Invalid request');
