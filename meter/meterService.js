@@ -956,7 +956,7 @@ exports.getWeeklyDataForCurrentAndLastWeek = () => {
   WEEK(record_date, 1) as week,
   DAYNAME(record_date) as day,
   record_date as date,
-  SUM(final_units - initial_units) as total_apparent_power
+  SUM(ABS(final_units - initial_units)) as total_apparent_power
 FROM (
   SELECT 
     DRN,
@@ -976,7 +976,8 @@ GROUP BY
   YEAR(record_date),
   WEEK(record_date, 1),
   DAYNAME(record_date),
-  record_date;
+  record_date
+
 
   `;
   return new Promise((resolve, reject) => {
