@@ -69,14 +69,14 @@ router.get('/meter_change', (req, res) => {
   });
 });
 
-// Function to calculate percentage change
-function calculatePercentageChange(previousValue, currentValue) {
-  if (previousValue === 0) {
-    return currentValue === 0 ? 0 : 100;
-  }
+// // Function to calculate percentage change
+// function calculatePercentageChange(previousValue, currentValue) {
+//   if (previousValue === 0) {
+//     return currentValue === 0 ? 0 : 100;
+//   }
 
-  return ((currentValue - previousValue) / previousValue) * 100;
-}
+//   return ((currentValue - previousValue) / previousValue) * 100;
+// }
 
 
 router.get('/active_state_count', (req, res) => {
@@ -273,7 +273,7 @@ router.get('/powerIncreaseOrDecrease', (req, res) => {
     
   ])
   .then(results => {
-    // console.log('Query results:', results); 
+    console.log('Query results:', results); 
     const currentDayConsumption = results[0][0].day_consumption;
     const currentMonthConsumption = results[1][0].month_consumption;
     const currentYearConsumption = results[2][0].year_consumption;
@@ -425,7 +425,7 @@ router.post('/suburbAdvancedPowerIncreaseOrDecrease', (req, res) => {
     const yearPercentage = calculatePercentageChange(currentYearTotal, previousYearTotal);
 
     // Send the percentage increase/decrease as JSON response
-    res.json({ dayPercentage, monthPercentage, yearPercentage });
+    res.status(200).json({ dayPercentage, monthPercentage, yearPercentage });
   })
   .catch(error => {
     console.error('Error querying the database:', error);
@@ -446,12 +446,12 @@ router.post('/suburbAdvancedPowerIncreaseOrDecrease', (req, res) => {
 //   });
 // }
 
-// // Function to calculate percentage change
-// function calculatePercentageChange(currentValue, previousValue) {
-//   if (previousValue === 0) return 0; // Avoid division by zero
-//   const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2)
-//   return parseFloat(newValue);
-// }
+// Function to calculate percentage change
+function calculatePercentageChange(currentValue, previousValue) {
+  if (previousValue === 0) return 0; // Avoid division by zero
+  const newValue = (((currentValue - previousValue) / previousValue) * 100).toFixed(2)
+  return parseFloat(newValue);
+}
 
 
 //---------------------------------------------------------------------System Token increase or decrease -----------------------------------------------------------------//
@@ -500,18 +500,18 @@ router.get('/tokenAmountIncreaseOrDecrease', (req, res) => {
   });
 });
 
-// // Function to execute SQL queries
-// function executeQuery(query) {
-//   return new Promise((resolve, reject) => {
-//     connection.query(query, (err, results) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         resolve(results);
-//       }
-//     });
-//   });
-// }
+// Function to execute SQL queries
+function executeQuery(query, values) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, values, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
 
 // // Function to calculate percentage change
 // function calculatePercentageChange(currentValue, previousValue) {
