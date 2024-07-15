@@ -288,7 +288,7 @@ router.get('/powerIncreaseOrDecrease', (req, res) => {
     const year = calculatePercentageChange(currentYearConsumption, previousYearConsumption);
 
     // Send the percentage increase/decrease as JSON response
-    res.json({ day, month, year });
+    res.status(200).json({ day : day.toFixed(2), month : month.toFixed(2), year : year.toFixed(2) });
   })
   .catch(error => {
     console.error('Error querying the database:', error);
@@ -325,8 +325,9 @@ function executeQuery(query) {
 //Suburb percentage increases
 router.post('/suburbAdvancedPowerIncreaseOrDecrease', (req, res) => {
   const suburbs = req.body.suburbs;
+  console.log(suburbs);
 
-  // Define SQL queries to fetch current and previous day, month, and year data
+  // Define SQL query to fetch current and previous day data
   const currentDayAndPreviousDay = `
     SELECT 
       SUM(IF(DATE(record_date) = CURDATE(), final_units - initial_units, 0)) as currentDayTotal,
@@ -348,9 +349,10 @@ router.post('/suburbAdvancedPowerIncreaseOrDecrease', (req, res) => {
     WHERE t.DRN IN (
         SELECT DRN
         FROM MeterLocationInfoTable
-        WHERE Suburb = ?
-    )
+        WHERE Suburb IN (?)
+    );
   `;
+    
 
   const currentMonthAndPreviousMonth = `
     SELECT 

@@ -924,7 +924,7 @@ exports.getMonthlyDataForCurrentAndLastYear = () => {
   SELECT 
     YEAR(date) AS year,
     MONTH(date) AS month,
-    ABS(SUM(daily_power_consumption)) AS total_apparent_power
+    SUM(ABS(daily_power_consumption)) AS total_apparent_power
 FROM 
     DailyPowerConsumption
 WHERE 
@@ -932,7 +932,8 @@ WHERE
 GROUP BY 
     YEAR(date), MONTH(date)
 ORDER BY 
-    YEAR(date), MONTH(date);
+    YEAR(date), MONTH(date)
+
 
   `;
   return new Promise((resolve, reject) => {
