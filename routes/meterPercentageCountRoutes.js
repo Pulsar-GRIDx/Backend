@@ -256,9 +256,10 @@ WHERE
     WHERE DATE(date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
   `;
   const previousMonth = `
-    SELECT ABS(SUM(daily_power_consumption)) AS month_consumption
-    FROM DailyPowerConsumption
-    WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE()) - 1
+    SELECT COALESCE(SUM(ABS(daily_power_consumption)), 0) AS month_consumption
+FROM DailyPowerConsumption
+WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE()) - 1;
+
   `;
   const previousYear = `
     SELECT ABS(SUM(daily_power_consumption)) AS year_consumption
