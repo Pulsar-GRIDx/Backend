@@ -237,9 +237,13 @@ router.get('/powerIncreaseOrDecrease', (req, res) => {
   ) t
 `;
   const currentMonthAndPreviousMonth = `
-    SELECT ABS(SUM(daily_power_consumption)) AS month_consumption
-    FROM DailyPowerConsumption
-    WHERE MONTH(date) = MONTH(CURDATE())
+    
+SELECT SUM(ABS(daily_power_consumption)) AS month_consumption
+FROM DailyPowerConsumption
+WHERE 
+    MONTH(date) = MONTH(CURDATE()) 
+    AND YEAR(date) = YEAR(CURDATE());
+
   `;
   const currentYearAndPreviousYear = `
     SELECT ABS(SUM(daily_power_consumption)) AS year_consumption
