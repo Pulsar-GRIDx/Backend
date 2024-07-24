@@ -161,3 +161,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsI
 get http://localhost:4000/total-tranformers
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcxNTc4NDQ1NCwiZXhwIjoxNzE1Nzg4MDU0fQ.ke_qy1bjItLUM1Ic-KZCNbuAADa0fPVakYrXIS2JkMM
+
+###ScatterPlot
+get https://backend2.gridxmeter.com/meanStan
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMTgxNDc4NSwiZXhwIjoxNzIxODE4Mzg1fQ.BSP3j6evNiMy19vhYo71k7MFttL7Ils3d8eZb3ElOzU
+
+
+
+
+git config --global user.email "etangoking6@gmail.com"
+git config --global user.name "kinghiholike"

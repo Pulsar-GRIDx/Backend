@@ -1287,3 +1287,40 @@ exports.getAllSystemProcessedTokens = () => {
     });
   });
 };
+
+
+///-------------------------------------------------ScarterPlot-----------------------------------------------//
+
+
+
+exports.calculateEnergyStats = (callback) => {
+    const query = `
+        SELECT 
+            DRN,
+            ROUND(AVG(final_units - initial_units), 2) AS Mean,
+            ROUND(STDDEV(final_units - initial_units), 2) AS Standard_Deviation
+        FROM (
+            SELECT 
+                DRN, 
+                date_time, 
+                MIN(CAST(units AS DECIMAL(10, 2))) AS initial_units,
+                MAX(CAST(units AS DECIMAL(10, 2))) AS final_units
+            FROM MeterCumulativeEnergyUsage
+            GROUP BY 
+                DRN, 
+                DATE(date_time)
+        ) t
+        GROUP BY DRN;
+    `;
+
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error('Error executing query:', error);
+            callback(error, null);
+        } else {
+            callback(null, results);
+        }
+    });
+}
+
+

@@ -649,3 +649,19 @@ exports.getAllSystemProcessedTokensController = (req, res) => {
       res.status(500).json({ error: 'Database query failed, try again', details: err.message });
     });
 };
+
+
+//-----------------------------------------------ScatterPlot--------------------------------------------//
+
+
+
+exports.getEnergyStats = (req, res) => {
+    energyService.calculateEnergyStats((error, results) => {
+        if (error) {
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+}
+

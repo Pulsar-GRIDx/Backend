@@ -85,5 +85,7 @@ router.post('/search-by-monthly-power',  authenticateToken,energyController.getY
 router.get('/get-system-processed-tokens' , authenticateToken,energyController.getAllSystemProcessedTokensController);
 //Total Tranformers
 router.get('/total-tranformers', authenticateToken,energyController.getTotalTransformers);
+//SctterPlot
+router.get('/meanStan',  authenticateToken, energyController.getEnergyStats);
 
 module.exports = router;
