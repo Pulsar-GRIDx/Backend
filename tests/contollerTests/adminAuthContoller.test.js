@@ -1,5 +1,4 @@
-const request = require('supertest');
-const express = require('express');
+
 const bodyParser = require('body-parser');
 const adminController = require('../../admin/adminControllers');
 const adminService = require('../../admin/adminService');
@@ -38,7 +37,7 @@ describe('adminSignup Controller', () => {
     await adminController.adminSignup(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Missing required fields in request body' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Missing required fields in request body ' });
   });
 
   it('should return 201 and success message on successful registration', async () => {
