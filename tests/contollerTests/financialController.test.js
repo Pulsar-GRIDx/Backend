@@ -1,9 +1,7 @@
 const financialService = require('../../financial/financialService');
-const { getTokenAmounts } = require('../../financial/financialContoller');
-const { json } = require('body-parser');
+const { getTokenAmounts } = require('../../financial/financialContoller'); // Adjust the path accordingly
 
 jest.mock('../../financial/financialService');
-
 
 describe('getTokenAmounts', () => {
   let req, res;
@@ -11,45 +9,55 @@ describe('getTokenAmounts', () => {
   beforeEach(() => {
     req = {};
     res = {
-      json: jest.fn(),
       status: jest.fn().mockReturnThis(),
-      send: jest.fn()
-      
+      json: jest.fn(),
     };
-    console.error = jest.fn();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should return token amounts on success', async () => {
-    const mockTokenAmounts = { Current: [1, 2, 3], Last: [4, 5, 6] };
+  it('should return token amounts with status 200', async () => {
+    const mockTokenAmounts = [{ token: 'BTC', amount: 100 }, { token: 'ETH', amount: 200 }];
     financialService.getTokenAmounts.mockResolvedValue(mockTokenAmounts);
 
     await getTokenAmounts(req, res);
 
-    expect(financialService.getTokenAmounts).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockTokenAmounts);
   });
-  it('should return a 500 error on database failure', async () => {
-    const mockError = new Error('Database query failed');
+
+  it('should handle database query errors and return status 500', async () => {
+    const mockError = new Error('Database error');
     financialService.getTokenAmounts.mockRejectedValue(mockError);
-  
+
     await getTokenAmounts(req, res);
 
-    jest.spyOn(financialService, 'getTokenAmounts').mockRejectedValue(new Error('Database query failed'));
-  
-    expect(financialService.getTokenAmounts).toHaveBeenCalledTimes(1);
-    expect(500);
-    // expect(res.json).toHaveBeenCalledWith({
-    //   error: 'Database query failed',
-    //   details: 'Error: Database query failed'
-    // });
-    // expect(console.error).toHaveBeenCalledWith('Error querying the database:');
-    expect(console.error).toHaveBeenCalledWith('Error querying the database:', mockError);
-    // expect(console.error).toHaveBeenCalledWith(expect.any(Error));
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Database query failed', details: mockError });
   });
-  
-  
+
+  it('should log the error when database query fails', async () => {
+    const mockError = new Error('Database error');
+    financialService.getTokenAmounts.mockRejectedValue(mockError);
+    console.error = jest.fn();
+
+    await getTokenAmounts(req, res);
+
+    expect(console.error).toHaveBeenCalledWith('Error querying the database:', mockError);
+  });
+
+  it('should call financialService.getTokenAmounts once', async () => {
+    financialService.getTokenAmounts.mockResolvedValue([]);
+
+    await getTokenAmounts(req, res);
+
+    expect(financialService.getTokenAmounts).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return an empty array if no token amounts are found', async () => {
+    financialService.getTokenAmounts.mockResolvedValue([]);
+
+    await getTokenAmounts(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([]);
+  });
 });

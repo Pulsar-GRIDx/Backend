@@ -2,12 +2,14 @@ const {
   getTotalMeters,
   getAllActiveAndInactiveMeters,
   getTotalTransformers,
-  getCurrentDayEnergy
+  getCurrentDayEnergy,
+  getEnergyStats
 
  } = require('../../meter/meterControllers');
 
 const energyService = require('../../meter/meterService');
 
+// const energyService = require('../../meter/meterService');
 
 jest.mock('../../meter/meterService');
 
@@ -186,5 +188,80 @@ describe('total energy', () => {
     
   
    
+  });
+});
+
+
+
+
+
+
+
+describe('getEnergyStats', () => {
+  let req, res;
+
+  beforeEach(() => {
+    req = {};
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+  });
+
+  it('should return 500 and an error message if an unexpected error occurs', () => {
+    const error = new Error('Unexpected error');
+    energyService.calculateEnergyStats.mockImplementation((callback) => {
+      callback(error, null);
+    });
+
+    getEnergyStats(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+  });
+
+  it('should return 200 and the results if no error occurs', () => {
+    const results = { some: 'data' };
+    energyService.calculateEnergyStats.mockImplementation((callback) => {
+      callback(null, results);
+    });
+
+    getEnergyStats(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(results);
+  });
+
+  it('should handle null results gracefully', () => {
+    energyService.calculateEnergyStats.mockImplementation((callback) => {
+      callback(null, null);
+    });
+
+    getEnergyStats(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(null);
+  });
+
+  it('should handle empty results gracefully', () => {
+    energyService.calculateEnergyStats.mockImplementation((callback) => {
+      callback(null, {});
+    });
+
+    getEnergyStats(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({});
+  });
+
+  it('should handle undefined results gracefully', () => {
+    energyService.calculateEnergyStats.mockImplementation((callback) => {
+      callback(null, undefined);
+    });
+
+    getEnergyStats(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(undefined);
   });
 });

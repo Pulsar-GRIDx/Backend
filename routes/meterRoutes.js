@@ -88,4 +88,5 @@ router.get('/total-tranformers', authenticateToken,energyController.getTotalTran
 //SctterPlot
 router.get('/meanStan',  authenticateToken, energyController.getEnergyStats);
 
+
 module.exports = router;
