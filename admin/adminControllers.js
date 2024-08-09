@@ -10,12 +10,17 @@ exports.adminSignup = async (req, res) => {
       typeof Password !== 'string' || !Password.trim() ||
       typeof FirstName !== 'string' || !FirstName.trim() ||
       typeof LastName !== 'string' || !LastName.trim() ||
-      typeof Email !== 'string' || !Email.trim() ||
+      typeof Email !== 'string' || !Email.trim() || !validateEmail(Email) ||
       (typeof IsActive !== 'boolean' && typeof IsActive !== 'number') ||
       typeof RoleName !== 'string' || !RoleName.trim() ||
-      (typeof AccessLevel !== 'number')
+      typeof AccessLevel !== 'number'
     ) {
       return res.status(400).json({ error: 'Missing or invalid required fields in request body' });
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
     }
 
     // Check for duplicate Username
@@ -37,6 +42,7 @@ exports.adminSignup = async (req, res) => {
     res.status(500).json({ error: 'Registration failed', details: error.message });
   }
 };
+
 
 
 

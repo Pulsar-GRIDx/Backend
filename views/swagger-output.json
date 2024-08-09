@@ -62,28 +62,28 @@
               "type": "object",
               "properties": {
                 "Username": {
-                  "example": "any"
+                  "example": "Admin100"
                 },
                 "Password": {
-                  "example": "any"
+                  "example": "Admin@123"
                 },
                 "FirstName": {
-                  "example": "any"
+                  "example": "Gridx"
                 },
                 "LastName": {
-                  "example": "any"
+                  "example": "Pulsar"
                 },
                 "Email": {
-                  "example": "any"
+                  "example": "admin@pulsar.com"
                 },
                 "IsActive": {
-                  "example": "any"
+                  "example": 1
                 },
                 "RoleName": {
-                  "example": "any"
+                  "example": "Admin"
                 },
                 "AccessLevel": {
-                  "example": "any"
+                  "example": 2
                 }
               }
             }

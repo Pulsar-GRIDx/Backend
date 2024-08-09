@@ -14,7 +14,6 @@ Content-Type: application/json
 ###
 
 post http://localhost:4000/adminSignup
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbl9JRCI6MTAsIkVtYWlsIjoiYWRtaW5AcHVsc2FyLmNvbSIsIkFjY2Vzc0xldmVsIjoiMSIsImlhdCI6MTcyMDcwMTc2NSwiZXhwIjoxNzIwNzA1MzY1fQ.dESnWSQU14ku6m7m8V16RYUh2oCdV2KlMGY60maPi2c
 Content-Type: application/json
 
 {
@@ -25,7 +24,7 @@ Content-Type: application/json
     "Email": "jose@gmail.com",
     "IsActive": 1,
     "RoleName": "Engineer",
-    "AccessLevel": 0,
+    "AccessLevel": 0
 }
 ###
 post https://backend2.gridxmeter.com/forgot-password
