@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../admin/adminControllers');
 const { authenticateToken } = require('../admin/authMiddllware');
+const authenticateAdmin = require('../middleware/authenticateTokenAndGet Admin_ID')
 
 // Admin Signup Router
-router.post('/adminSignup', adminController.adminSignup);
+router.post('/adminSignup', authenticateAdmin,adminController.adminSignup);
 
 // ADMIN Signin Router
 router.post('/signin', adminController.signIn);
