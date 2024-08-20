@@ -21,10 +21,10 @@ router.post('/insertTransformer', authenticateTokenAndGetAdmin_ID, energyControl
 router.get('/suburbEnergy',  authenticateToken,energyController.getSuburbEnergy);
 
 // Get all ProcessedTokens By DRN
-router.get('/allProcessedTokensByDRN:DRN',  authenticateToken,energyController.getAllProcessedTokens);
+router.get('/allProcessedTokensByDRN/:DRN',  authenticateToken,energyController.getAllProcessedTokens);
 
 // Weekly and Monthly data for the entire system
-router.get('/meterWeekAndMonthData:DRN',  authenticateToken,energyController.getDRNDATA);
+router.get('/meterWeekAndMonthData/:DRN',  authenticateToken,energyController.getDRNDATA);
 
 // Getting all processed Tokens for a specific DRN
 router.get('/getAllProcessedTokensByDRN:DRN' ,  authenticateToken,energyController.getAllProcessedTokens);
